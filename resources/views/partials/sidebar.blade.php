@@ -16,6 +16,12 @@
         </ul>
         <p class="menu-label">Master</p>
         <ul class="menu-list">
+            <li class="{{ Request::is('kelas') || Request::is('kelas/*') ? 'active' : '' }}">
+                <a href="{{ route('kelas') }}">
+                    <span class="icon"><i class="mdi mdi-lock"></i></span>
+                    <span class="menu-item-label">Kelas</span>
+                </a>
+            </li>
             <li class="{{ Request::is('siswa') || Request::is('siswa/*') ? 'active' : '' }}">
                 <a href="{{ route('siswa') }}">
                     <span class="icon"><i class="mdi mdi-lock"></i></span>

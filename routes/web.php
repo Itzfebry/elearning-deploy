@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\KelasContoller;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,3 +26,8 @@ Route::get('guru/edit/{id}', [GuruController::class, 'edit'])->name('guru.edit')
 Route::get('admin', [AdminController::class, 'index'])->name('admin');
 Route::get('admin/create', [AdminController::class, 'create'])->name('admin.create');
 Route::get('admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+
+// kelas
+Route::get('kelas', [KelasContoller::class, 'index'])->name('kelas');
+Route::get('kelas/create', [KelasContoller::class, 'create'])->name('kelas.create');
+Route::get('kelas/edit/{id}', [KelasContoller::class, 'edit'])->name('kelas.edit');

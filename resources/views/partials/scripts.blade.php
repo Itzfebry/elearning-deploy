@@ -1,6 +1,6 @@
-<script type="text/javascript" src="{{ asset(" template/js/main.min.js?v=--date-now-millis") }}"></script>
+<script type="text/javascript" src="{{ asset('template/js/main.min.js') }}"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
-<script type="text/javascript" src="{{ asset(" template/js/chart.sample.min.js") }}"></script>
+<script type="text/javascript" src="{{ asset('template/js/chart.sample.min.js') }}"></script>
 
 <script>
   !function(f,b,e,v,n,t,s)

@@ -10,10 +10,10 @@
     <!-- Tailwind is included -->
     <link rel="stylesheet" href="{{ asset('template/css/main.css') }}">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset(" template/apple-touch-icon.png") }}" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset(" template/apple-touch-icon.png") }}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset(" template/apple-touch-icon.png") }}" />
-    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#00b4b6" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset(' template/apple-touch-icon.png') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset(' template/apple-touch-icon.png') }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset( 'template/apple-touch-icon.png') }}" />
+    <link rel="mask-icon" href="{{ asset('template/safari-pinned-tab.svg') }}" color="#00b4b6" />
 
     <meta name="description" content="Admin One - free Tailwind dashboard">
 

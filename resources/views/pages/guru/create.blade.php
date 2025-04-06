@@ -25,7 +25,7 @@
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
                     <div class="field">
                         <label class="label">NIP</label>
-                        <input class="input" type="text" name="NIP" placeholder="contoh.1298787288" required
+                        <input class="input" type="text" name="nip" placeholder="contoh.1298787288" required
                             maxlength="18">
                     </div>
                     <div class="field">

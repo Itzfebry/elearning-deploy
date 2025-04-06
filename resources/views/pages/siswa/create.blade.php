@@ -25,7 +25,8 @@
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
                     <div class="field">
                         <label class="label">NISN</label>
-                        <input class="input" type="text" name="nisn" placeholder="contoh.1298787288" required>
+                        <input class="input" type="text" name="nisn" placeholder="contoh.1298787288" required
+                            maxlength="10">
                     </div>
                     <div class="field">
                         <label class="label">Email</label>

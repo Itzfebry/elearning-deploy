@@ -2,9 +2,8 @@
 @section('title', "Siswa")
 @section('titleHeader', "Data Siswa")
 @section('addBtn')
-<a href="https://github.com/justboil/admin-one-tailwind" target="_blank" class="button blue">
-    <span class="icon"><i class="mdi mdi-github-circle"></i></span>
-    <span>GitHub</span>
+<a href="{{ route('guru.create') }}" class="button blue">
+    <span>Tambah</span>
 </a>
 @endsection
 

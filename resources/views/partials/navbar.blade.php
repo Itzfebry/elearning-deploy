@@ -16,7 +16,7 @@
                     <div class="user-avatar">
                         <img src="{{ asset('template/img/user.jpg') }}" class="rounded-full">
                     </div>
-                    <div class="is-user-name text-white"><span>John Doe</span></div>
+                    <div class="is-user-name text-red-300"><span>John Doe</span></div>
                     <span class="icon text-white"><i class="mdi mdi-chevron-down"></i></span>
                 </a>
                 <div class="navbar-dropdown">

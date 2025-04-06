@@ -73,6 +73,7 @@
     </div>
     @include('partials.footer')
 
+    @include('sweetalert::alert')
     @include('partials.scripts')
     @stack('extraScript')
 </body>

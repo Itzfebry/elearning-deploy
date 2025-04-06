@@ -28,12 +28,12 @@
                     <span class="menu-item-label">Guru</span>
                 </a>
             </li>
-            {{-- <li class="{{ Request::is('admin') || Request::is('admin/*') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin') || Request::is('admin/*') ? 'active' : '' }}">
                 <a href="{{ route('admin') }}">
                     <span class="icon"><i class="mdi mdi-lock"></i></span>
                     <span class="menu-item-label">Admin</span>
                 </a>
-            </li> --}}
+            </li>
             <li>
                 <a class="dropdown">
                     <span class="icon"><i class="mdi mdi-view-list"></i></span>

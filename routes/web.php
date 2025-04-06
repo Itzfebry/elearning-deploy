@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
@@ -19,3 +20,8 @@ Route::get('siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edi
 Route::get('guru', [GuruController::class, 'index'])->name('guru');
 Route::get('guru/create', [GuruController::class, 'create'])->name('guru.create');
 Route::get('guru/edit/{id}', [GuruController::class, 'edit'])->name('guru.edit');
+
+// admin
+Route::get('admin', [AdminController::class, 'index'])->name('admin');
+Route::get('admin/create', [AdminController::class, 'create'])->name('admin.create');
+Route::get('admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');

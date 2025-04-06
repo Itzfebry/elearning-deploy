@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('admin', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("user_id");
-            $table->String("nip", 18);
+            $table->String("nip", 18)->unique();
             $table->String("nama", 100);
             $table->enum("jk", ["L", "P"]);
             $table->timestamps();

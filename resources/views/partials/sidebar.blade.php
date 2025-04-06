@@ -8,7 +8,7 @@
         <p class="menu-label">General</p>
         <ul class="menu-list">
             <li class="--set-active-index-html">
-                <a href="index.html">
+                <a href="{{ url('/') }}">
                     <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
                     <span class="menu-item-label">Dashboard</span>
                 </a>
@@ -16,10 +16,10 @@
         </ul>
         <p class="menu-label">Master</p>
         <ul class="menu-list">
-            <li>
-                <a href="#">
+            <li class="{{ Request::is('siswa') || Request::is('siswa/*') ? 'active' : '' }}">
+                <a href="{{ route('siswa') }}">
                     <span class="icon"><i class="mdi mdi-lock"></i></span>
-                    <span class="menu-item-label">Login</span>
+                    <span class="menu-item-label">Siswa</span>
                 </a>
             </li>
             <li>

@@ -55,13 +55,9 @@
             <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
                 <ul>
                     <li>Admin</li>
-                    <li>Dashboard</li>
+                    <li>@yield('title','Dashboard')</li>
                 </ul>
                 @yield('addBtn')
-                {{-- <a href="https://github.com/justboil/admin-one-tailwind" target="_blank" class="button blue">
-                    <span class="icon"><i class="mdi mdi-github-circle"></i></span>
-                    <span>GitHub</span>
-                </a> --}}
             </div>
         </section>
         <section class="is-hero-bar">

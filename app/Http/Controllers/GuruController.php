@@ -20,9 +20,12 @@ class GuruController extends Controller
         $this->param2 = $userRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view("pages.guru.index");
+        $limit = $request->has('page_length') ? $request->get('page_length') : 5;
+        $search = $request->has('search') ? $request->get('search') : null;
+        $guru = $this->param->getData($search, $limit);
+        return view("pages.guru.index", compact("guru"));
     }
 
     /**

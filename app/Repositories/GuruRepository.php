@@ -13,9 +13,19 @@ class GuruRepository
         $this->model = $guru;
     }
 
-    public function find($id)
+    public function getData($search, $limit = 10)
     {
+        $search = strtolower($search);
+        $query = $this->model
+            ->where(function ($query) use ($search) {
+                $query->where("nama", "like", "%" . $search . "%");
+            })
+            ->orWhereHas("user", function ($query) use ($search) {
+                $query->where("email", "like", "%" . $search . "%");
+            })
+            ->paginate($limit);
 
+        return $query;
     }
 
     public function store($data)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guru;
 use Illuminate\Http\Request;
 
 class KelasContoller extends Controller
@@ -19,6 +20,8 @@ class KelasContoller extends Controller
      */
     public function create()
     {
+        $guru = Guru::all();
+        dd($guru);
         return view("pages.kelas.create");
     }
 

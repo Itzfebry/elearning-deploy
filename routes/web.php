@@ -27,6 +27,7 @@ Route::middleware(["auth", "web"])->group(function () {
     // guru
     Route::get('guru', [GuruController::class, 'index'])->name('guru');
     Route::get('guru/create', [GuruController::class, 'create'])->name('guru.create');
+    Route::post('guru/store', [GuruController::class, 'store'])->name('guru.store');
     Route::get('guru/edit/{id}', [GuruController::class, 'edit'])->name('guru.edit');
 
     // admin

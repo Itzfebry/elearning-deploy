@@ -16,6 +16,11 @@ class Guru extends Model
         'jk',
     ];
 
+    public function kelas()
+    {
+        return $this->hasOne(Kelas::class, 'nip_wali', 'nip');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

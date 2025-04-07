@@ -14,16 +14,9 @@
         <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
         <form action="{{ route('login.action') }}" method="POST" class="space-y-5">
             @csrf
-            <!-- Email or Nip -->
-            {{-- <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email atau Nip</label>
-                <input type="email" id="email" name="email" placeholder="you@example.com"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required>
-            </div> --}}
             <div>
-                <label for="nip" class="block text-sm font-medium text-gray-700">Email atau Nip</label>
-                <input type="text" id="nip" name="login" placeholder="contoh.12389271389192"
+                <label for="nip" class="block text-sm font-medium text-gray-700">Email atau NIP</label>
+                <input type="text" id="nip" name="login" placeholder="Masukkan Email atau NIP"
                     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required value="{{ old('login') }}">
             </div>

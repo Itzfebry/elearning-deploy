@@ -13,7 +13,7 @@
         <header class="card-header">
             <p class="card-header-title">
                 <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-                Admin
+                Kelas
             </p>
         </header>
         <div class="card-content">

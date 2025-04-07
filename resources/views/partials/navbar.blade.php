@@ -19,13 +19,16 @@
                     <div class="is-user-name red"><span>John Doe</span></div>
                     <span class="icon text-white"><i class="mdi mdi-chevron-down"></i></span>
                 </a>
-                <div class="navbar-dropdown">
-                    <hr class="navbar-divider">
-                    <a class="navbar-item">
-                        <span class="icon"><i class="mdi mdi-logout"></i></span>
-                        <span>Log Out</span>
-                    </a>
-                </div>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <div class="navbar-dropdown">
+                        <hr class="navbar-divider">
+                        <button type="submit" class="navbar-item">
+                            <span class="icon"><i class="mdi mdi-logout"></i></span>
+                            <span>Log Out</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

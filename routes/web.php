@@ -9,25 +9,34 @@ use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', [DashboardController::class, 'index']);
-Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::middleware(["guest", "web"])->group(function () {
+    Route::get('/login', [AuthController::class, 'index'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.action');
+});
 
-// Siswa
-Route::get('siswa', [SiswaController::class, 'index'])->name('siswa');
-Route::get('siswa/create', [SiswaController::class, 'create'])->name('siswa.create');
-Route::get('siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edit');
+Route::middleware(["auth", "web"])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// guru
-Route::get('guru', [GuruController::class, 'index'])->name('guru');
-Route::get('guru/create', [GuruController::class, 'create'])->name('guru.create');
-Route::get('guru/edit/{id}', [GuruController::class, 'edit'])->name('guru.edit');
+    Route::get('/', [DashboardController::class, 'index']);
 
-// admin
-Route::get('admin', [AdminController::class, 'index'])->name('admin');
-Route::get('admin/create', [AdminController::class, 'create'])->name('admin.create');
-Route::get('admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+    // Siswa
+    Route::get('siswa', [SiswaController::class, 'index'])->name('siswa');
+    Route::get('siswa/create', [SiswaController::class, 'create'])->name('siswa.create');
+    Route::get('siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edit');
 
-// kelas
-Route::get('kelas', [KelasContoller::class, 'index'])->name('kelas');
-Route::get('kelas/create', [KelasContoller::class, 'create'])->name('kelas.create');
-Route::get('kelas/edit/{id}', [KelasContoller::class, 'edit'])->name('kelas.edit');
+    // guru
+    Route::get('guru', [GuruController::class, 'index'])->name('guru');
+    Route::get('guru/create', [GuruController::class, 'create'])->name('guru.create');
+    Route::get('guru/edit/{id}', [GuruController::class, 'edit'])->name('guru.edit');
+
+    // admin
+    Route::get('admin', [AdminController::class, 'index'])->name('admin');
+    Route::get('admin/create', [AdminController::class, 'create'])->name('admin.create');
+    Route::get('admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+
+    // kelas
+    Route::get('kelas', [KelasContoller::class, 'index'])->name('kelas');
+    Route::get('kelas/create', [KelasContoller::class, 'create'])->name('kelas.create');
+    Route::get('kelas/edit/{id}', [KelasContoller::class, 'edit'])->name('kelas.edit');
+});
+

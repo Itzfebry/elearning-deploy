@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
+use App\Models\Guru;
+use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -14,51 +21,59 @@ class AuthController extends Controller
         return view("pages.auth.index");
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function login(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                "login" => "required|string",
+                "password" => "required|string",
+            ]);
+
+            $login = $request->login;
+            $user = User::where('email', $login)->first();
+
+            if (!$user) {
+                $admin = Admin::where('nip', $login)->first();
+                if ($admin) {
+                    $user = $admin->user;
+                }
+
+                if (!$user) {
+                    $guru = Guru::where('nip', $login)->first();
+                    if ($guru) {
+                        $user = $guru->user;
+                    }
+                }
+            }
+
+            if ($user && Hash::check($request->password, $user->password)) {
+                Auth::login($user);
+                $request->session()->regenerate();
+
+                if ($user->role == 'admin') {
+                    return redirect()->route('/');
+                } elseif ($user->role == 'guru') {
+                    return redirect()->route('/');
+                }
+            }
+
+            return redirect()->route('login')->with('error', "Nip atau Password anda salah!");
+        } catch (Exception $e) {
+            Log::error("Error saat login: " . $e->getMessage());
+            return redirect()->route("login")->with("error", "Terjadi kesalahan sistem. Silahkan coba lagi. $e");
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function logout(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        try {
+            Auth::logout();
+            $request->session()->invalidate();
+            // DB::table('sessions')->where('user_id', Auth::user()->nip)->delete();
+            $request->session()->regenerateToken();
+            return redirect()->route('login');
+        } catch (Exception $e) {
+            Log::error("Error saat login: " . $e->getMessage());
+        }
     }
 }

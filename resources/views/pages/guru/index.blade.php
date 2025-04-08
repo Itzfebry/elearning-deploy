@@ -74,17 +74,40 @@
                                     <a href="{{ route('guru.edit', $item->id) }}" class="button small blue --jb-modal"
                                         data-target="sample-modal-2" type="button">
                                         <span class="icon">
-                                            <x-icon name="edit" class="w-2 h-2 text-white" />
+                                            <x-icon name="edit" class="w-4 h-4 text-white" />
                                         </span>
                                     </a>
-                                    <button class="button small red --jb-modal" data-target="sample-modal"
+                                    <button class="button small red btn-delete-guru" data-formid="{{ $item->id }}"
+                                        data-formuserid="{{ $item->user_id }}" data-formname="{{ $item->nama }}"
                                         type="button">
                                         <span class="icon">
-                                            <x-icon name="delete" class="w-2 h-2 text-white" />
+                                            <x-icon name="delete" class="w-4 h-4 text-white" />
                                         </span>
                                     </button>
+
                                 </div>
                             </td>
+                            {{-- Modal Delete --}}
+                            {{-- <div id="modal-{{ $item->id }}" class="modal modal-delete-item">
+                                <div class="modal-background --jb-modal-close"></div>
+                                <div class="modal-card">
+                                    <header class="modal-card-head">
+                                        <p class="modal-card-title">Warning!</p>
+                                    </header>
+                                    <section class="modal-card-body">
+                                        <p>Apakah anda ingin menghapus Guru <b>{{ $item->nama }}</b>?</p>
+                                    </section>
+                                    <form action="{{ route('guru.delete') }}" method="POST">
+                                        @csrf
+                                        <input type="text" name="user_id" value="{{ $item->user_id }}" hidden>
+                                        <input type="text" name="formid" value="{{ $item->id }}" hidden>
+                                        <footer class="modal-card-foot">
+                                            <button class="button --jb-modal-close">Cancel</button>
+                                            <button type="submit" class="button red">Hapus</button>
+                                        </footer>
+                                    </form>
+                                </div>
+                            </div> --}}
                         </tr>
                         @empty
                         <tr>
@@ -100,27 +123,85 @@
         </div>
     </form>
 </section>
-
-<div id="sample-modal" class="modal">
-    <div class="modal-background --jb-modal-close"></div>
-    <div class="modal-card">
-        <header class="modal-card-head">
-            <p class="modal-card-title">Warning!</p>
-        </header>
-        <section class="modal-card-body">
-            <p>Apakah anda ingin menghapus Guru <b>Jaka Rian</b>?</p>
-        </section>
-        <footer class="modal-card-foot">
-            <button class="button --jb-modal-close">Cancel</button>
-            <button class="button red --jb-modal-close">Confirm</button>
-        </footer>
-    </div>
-</div>
 @endsection
 @push('extraScript')
 <script>
     $('#page_length').on('change', function() {
         $('#form').submit();
     });
+
+    $(document).ready(function () {
+        $('.btn-delete-guru').on('click', function () {
+            var formId = $(this).data('formid');
+            var formUserId = $(this).data('formuserid');
+            var formname = $(this).data('formname');
+
+            console.log("Form ID:", formId);
+            console.log("Form User ID:", formUserId);
+            console.log("Form Name:", formname);
+
+            $(document).on('click', '.--jb-modal-close', function () {
+                $(this).closest('.modal').remove(); // atau gunakan `.removeClass('is-active')` kalau modal reusable
+            });
+
+            // Buat modal dinamis
+            $('body').append(`
+                <div id="modal-${formId}" class="modal modal-delete-item is-active">
+                    <div class="modal-background --jb-modal-close"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Warning!</p>
+                        </header>
+                        <section class="modal-card-body">
+                            <p>Apakah anda ingin menghapus Guru <b>${formname}</b>?</p>
+                        </section>
+                        <form action="{{ route('guru.delete') }}" method="POST">
+                            @csrf
+                            <input type="text" name="user_id" value="${formUserId}" hidden>
+                            <input type="text" name="formid" value="${formId}" hidden>
+                            <footer class="modal-card-foot">
+                                <button type="button" class="button --jb-modal-close">Cancel</button>
+                                <button type="submit" class="button red">Hapus</button>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            `);
+        });
+    });
+
+
+
+    // $(document).on('click', '.modal-delete-item', function() {
+    //     console.log("TESS");
+    //     var formId = $(this).data('formid');
+    //     var formUserId = $(this).data('formuserid');
+    //     var formname = $(this).data('formname');
+
+    //     $(`#modal-${formId}`).remove();
+    //     $('.actions-cell').after(`
+    //         <div id="modal-${formId}" class="modal modal-delete-item">
+    //             <div class="modal-background --jb-modal-close"></div>
+    //             <div class="modal-card">
+    //                 <header class="modal-card-head">
+    //                     <p class="modal-card-title">Warning!</p>
+    //                 </header>
+    //                 <section class="modal-card-body">
+    //                     <p>Apakah anda ingin menghapus Guru <b>${formname}</b>?</p>
+    //                 </section>
+    //                 <form action="{{ route('guru.delete') }}" method="POST">
+    //                     @csrf
+    //                     <input type="text" name="user_id" value="${formUserId}" hidden>
+    //                     <input type="text" name="formid" value="${formId}" hidden>
+    //                     <footer class="modal-card-foot">
+    //                         <button class="button --jb-modal-close">Cancel</button>
+    //                         <button type="submit" class="button red">Hapus</button>
+    //                     </footer>
+    //                 </form>
+    //             </div>
+    //         </div>
+    //     `);
+    //     console.log("TESS111");
+    // });
 </script>
 @endpush

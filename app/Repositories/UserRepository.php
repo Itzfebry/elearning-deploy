@@ -34,4 +34,9 @@ class UserRepository
         ]);
     }
 
+    public function destroy($id)
+    {
+        return $this->model->where('id', $id)->delete();
+    }
+
 }

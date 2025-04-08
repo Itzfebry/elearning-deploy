@@ -30,6 +30,7 @@ Route::middleware(["auth", "web"])->group(function () {
     Route::post('guru/store', [GuruController::class, 'store'])->name('guru.store');
     Route::get('guru/edit/{id}', [GuruController::class, 'edit'])->name('guru.edit');
     Route::put('guru/update/{id}', [GuruController::class, 'update'])->name('guru.update');
+    Route::post('guru/delete', [GuruController::class, 'destroy'])->name('guru.delete');
 
     // admin
     Route::get('admin', [AdminController::class, 'index'])->name('admin');

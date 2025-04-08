@@ -27,4 +27,11 @@ class UserRepository
         ]);
     }
 
+    public function update($data, $id)
+    {
+        return $this->model->where('id', $id)->update([
+            "email" => $data["email"],
+        ]);
+    }
+
 }

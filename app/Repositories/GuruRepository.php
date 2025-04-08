@@ -13,6 +13,11 @@ class GuruRepository
         $this->model = $guru;
     }
 
+    public function find($id)
+    {
+        return $this->model->with('user')->find($id);
+    }
+
     public function getData($search, $limit = 10)
     {
         $search = strtolower($search);
@@ -32,6 +37,15 @@ class GuruRepository
     {
         return $this->model->create([
             "user_id" => $data["user_id"],
+            "nip" => $data["nip"],
+            "nama" => $data["nama"],
+            "jk" => $data["jk"],
+        ]);
+    }
+
+    public function update($data, $id)
+    {
+        return $this->model->where('id', $id)->update([
             "nip" => $data["nip"],
             "nama" => $data["nama"],
             "jk" => $data["jk"],

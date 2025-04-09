@@ -40,6 +40,7 @@ Route::middleware(["auth", "web"])->group(function () {
     Route::get('admin/create', [AdminController::class, 'create'])->name('admin.create');
     Route::post('admin/store', [AdminController::class, 'store'])->name('admin.store');
     Route::get('admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+    Route::put('admin/update/{id}', [AdminController::class, 'update'])->name('admin.update');
 
     // kelas
     Route::get('kelas', [KelasContoller::class, 'index'])->name('kelas');

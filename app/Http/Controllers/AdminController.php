@@ -86,7 +86,8 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        return view("pages.admin.edit", compact("id"));
+        $admin = $this->param->find($id);
+        return view("pages.admin.edit", compact("admin"));
     }
 
     /**
@@ -94,7 +95,28 @@ class AdminController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $dataUser = $request->validate([
+                'email' => 'required',
+            ]);
+
+            $data = $request->validate([
+                'nip' => 'required|string|size:18',
+                'nama' => 'required|string',
+                'jk' => 'required',
+            ]);
+
+            $this->paramUser->update($dataUser, $request->user_id);
+            $this->param->update($data, $id);
+            Alert::success("Berhasil", "Data Berhasil di ubah.");
+            return redirect()->route("admin");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

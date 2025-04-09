@@ -73,7 +73,7 @@
                                             <x-icon name="edit" class="w-3 h-3 text-white" />
                                         </span>
                                     </a>
-                                    <button type="button" id="openModalBtn" class="button small red "
+                                    <button type="button" class="button small red openModalBtn"
                                         data-form_id="{{ $item->id }}" data-form_user_id="{{ $item->user_id }}"
                                         data-form_name="{{ $item->nama }}">
                                         <span class="icon">
@@ -105,7 +105,7 @@
         $('#form').submit();
     });
 
-    $('#openModalBtn').click(function () {
+    $('.openModalBtn').click(function () {
         var formId = $(this).data('form_id');
         var formUserId = $(this).data('form_user_id');
         var formName = $(this).data('form_name');

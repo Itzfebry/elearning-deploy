@@ -12,28 +12,33 @@
             </p>
         </header>
         <div class="card-content">
-            <form method="get">
+            <form method="post" action="{{ route('admin.update', $admin->id) }}">
+                @csrf
+                @method('PUT')
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
                     <div class="field">
                         <label class="label">NIP</label>
                         <input class="input" type="text" name="nip" placeholder="contoh.1298787288" required
-                            maxlength="18">
+                            maxlength="18" value="{{ $admin->nip }}">
                     </div>
                     <div class="field">
                         <label class="label">Email</label>
-                        <input class="input" type="email" name="email" placeholder="contoh@gmail.com" required>
+                        <input class="input" type="email" name="email" placeholder="contoh@gmail.com" required
+                            value="{{ $admin->user->email }}">
                     </div>
                     <div class="field">
                         <label class="label">Nama</label>
-                        <input class="input" type="text" name="nama" placeholder="masukkan nama" required>
+                        <input class="input" type="text" name="nama" placeholder="masukkan nama" required
+                            value="{{ $admin->nama }}">
                     </div>
+                    <input class="input" type="text" name="user_id" required value="{{ $admin->user_id }}" hidden>
                     <div class="field">
                         <label class="label">Jenis Kelamain</label>
                         <div class="control">
                             <div class="select">
                                 <select name="jk">
-                                    <option value="L">Laki-laki</option>
-                                    <option value="P">Perempuan</option>
+                                    <option value="L" {{ $admin->jk == "L" ? "selected" : "" }}>Laki-laki</option>
+                                    <option value="P" {{ $admin->jk == "P" ? "selected" : "" }}>Perempuan</option>
                                 </select>
                             </div>
                         </div>

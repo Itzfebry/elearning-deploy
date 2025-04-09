@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Guru;
+use App\Models\Kelas;
 use App\Repositories\KelasRepository;
-use App\Repositories\UserRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -13,15 +13,17 @@ class KelasContoller extends Controller
     protected $param;
     protected $paramUser;
 
-    public function __construct(KelasRepository $kelas, UserRepository $user)
+    public function __construct(KelasRepository $kelas)
     {
         $this->param = $kelas;
-        $this->paramUser = $user;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view("pages.kelas.index");
+        $limit = $request->has('page_length') ? $request->get('page_length') : 5;
+        $search = $request->has('search') ? $request->get('search') : null;
+        $kelas = $this->param->getData($search, $limit);
+        return view("pages.kelas.index", compact("kelas"));
     }
 
     /**
@@ -29,8 +31,7 @@ class KelasContoller extends Controller
      */
     public function create()
     {
-        $guru = Guru::all();
-        return view("pages.kelas.create", compact("guru"));
+        return view("pages.kelas.create");
     }
 
     /**
@@ -39,29 +40,19 @@ class KelasContoller extends Controller
     public function store(Request $request)
     {
         try {
-            $dataUser = $request->validate([
-                'email' => 'required',
-                'role' => 'required',
-            ]);
 
             $data = $request->validate([
-                'nip' => 'required|string|size:18|unique:guru,nip',
                 'nama' => 'required|string',
-                'jk' => 'required',
             ]);
 
-            if (Guru::where('nip', $data['nip'])->exists()) {
-                Alert::error("Terjadi Kesalahan", "NIP sudah terdaftar.");
+            if (Kelas::where('nama', $data['nama'])->exists()) {
+                Alert::error("Terjadi Kesalahan", "Kelas sudah terdaftar.");
                 return back()->withInput();
             }
 
-            $dataUser['nip'] = $request->nip;
-            $user = $this->param2->store($dataUser);
-
-            $data["user_id"] = $user->id;
             $this->param->store($data);
             Alert::success("Berhasil", "Data Berhasil di simpan.");
-            return redirect()->route("guru");
+            return redirect()->route("kelas");
         } catch (\Exception $e) {
             Alert::error("Terjadi Kesalahan", $e->getMessage());
             return back()->withInput();
@@ -84,7 +75,8 @@ class KelasContoller extends Controller
      */
     public function edit(string $id)
     {
-        return view("pages.kelas.edit", compact("id"));
+        $kelas = Kelas::find($id);
+        return view("pages.kelas.edit", compact("kelas"));
     }
 
     /**
@@ -92,7 +84,22 @@ class KelasContoller extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+
+            $data = $request->validate([
+                'nama' => 'required|string',
+            ]);
+
+            $this->param->update($data, $id);
+            Alert::success("Berhasil", "Data Berhasil di ubah.");
+            return redirect()->route("kelas");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

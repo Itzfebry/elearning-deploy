@@ -13,20 +13,12 @@ class KelasRepository
         $this->model = $kelas;
     }
 
-    public function find($id)
-    {
-        return $this->model->with('user')->find($id);
-    }
-
     public function getData($search, $limit = 10)
     {
         $search = strtolower($search);
         $query = $this->model
             ->where(function ($query) use ($search) {
                 $query->where("nama", "like", "%" . $search . "%");
-            })
-            ->orWhereHas("user", function ($query) use ($search) {
-                $query->where("email", "like", "%" . $search . "%");
             })
             ->paginate($limit);
 
@@ -37,16 +29,13 @@ class KelasRepository
     {
         return $this->model->create([
             "nama" => $data["nama"],
-            "nip_wali" => $data["nip_wali"],
         ]);
     }
 
     public function update($data, $id)
     {
         return $this->model->where('id', $id)->update([
-            "nip" => $data["nip"],
             "nama" => $data["nama"],
-            "jk" => $data["jk"],
         ]);
     }
 

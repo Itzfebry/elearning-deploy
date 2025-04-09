@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('riwayat_kelas', function (Blueprint $table) {
             $table->id();
             $table->String("siswa_nisn", 12);
-            $table->unsignedBigInteger("kelas_id");
+            $table->String("kelas", 10);
             $table->string("tahun_ajaran", 9);
             $table->String("wali_nip", 18);
             $table->timestamps();
@@ -24,8 +24,8 @@ return new class extends Migration {
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('kelas_id')
-                ->references('id')
+            $table->foreign('kelas')
+                ->references('nama')
                 ->on('kelas')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

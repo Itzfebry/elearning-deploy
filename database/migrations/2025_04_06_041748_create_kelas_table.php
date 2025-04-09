@@ -11,8 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('kelas', function (Blueprint $table) {
-            $table->id();
-            $table->String("nama", 100);
+            $table->String("nama", 10)->unique();
             $table->String("nip_wali", 18);
             $table->timestamps();
 

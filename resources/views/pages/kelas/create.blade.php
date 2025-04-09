@@ -4,33 +4,20 @@
 
 @section('content')
 <section class="section main-section">
-    <div class="card mb-6">
-        <header class="card-header">
-            <p class="card-header-title">
-                <span class="icon"><i class="mdi mdi-ballot"></i></span>
-                Forms
-            </p>
-        </header>
-        <div class="card-content">
-            <form method="get">
+    <form action="{{ route('kelas.store') }}" method="post">
+        @csrf
+        <div class="card mb-6">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon"><i class="mdi mdi-ballot"></i></span>
+                    Forms
+                </p>
+            </header>
+            <div class="card-content">
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
                     <div class="field">
                         <label class="label">Nama Kelas</label>
                         <input class="input" type="text" name="nama" placeholder="contoh.6A" required>
-                    </div>
-                    <div class="field">
-                        <label class="label">Wali Kelas</label>
-                        <div class="control">
-                            <div class="select">
-                                <select name="nip_wali">
-                                    <option value="">-- Pilih Wali Kelas --</option>
-                                    @foreach ($guru as $item)
-                                    <option value="{{ $item->nip }}" {{ old('nip_wali')==$item->nip ? "selected" : ""
-                                        }}>{{ $item->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <hr>
@@ -42,8 +29,8 @@
                         </button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
 </section>
 @endsection

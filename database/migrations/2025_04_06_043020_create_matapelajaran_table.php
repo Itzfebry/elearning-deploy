@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->String("nama", 100);
             $table->String("guru_nip", 18);
-            $table->unsignedBigInteger("kelas_id");
+            $table->String("kelas", 10);
             $table->timestamps();
 
             $table->foreign('guru_nip')
@@ -23,8 +23,8 @@ return new class extends Migration {
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('kelas_id')
-                ->references('id')
+            $table->foreign('kelas')
+                ->references('nama')
                 ->on('kelas')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

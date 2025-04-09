@@ -22,7 +22,9 @@ Route::middleware(["auth", "web"])->group(function () {
     // Siswa
     Route::get('siswa', [SiswaController::class, 'index'])->name('siswa');
     Route::get('siswa/create', [SiswaController::class, 'create'])->name('siswa.create');
+    Route::post('siswa/store', [SiswaController::class, 'store'])->name('siswa.store');
     Route::get('siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edit');
+    Route::put('siswa/update/{id}', [SiswaController::class, 'update'])->name('siswa.update');
 
     // guru
     Route::get('guru', [GuruController::class, 'index'])->name('guru');

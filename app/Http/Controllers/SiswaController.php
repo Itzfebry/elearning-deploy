@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
+use App\Models\Siswa;
+use App\Repositories\SiswaRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class SiswaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $param;
+    protected $paramUser;
+
+    public function __construct(SiswaRepository $siswa, UserRepository $user)
+    {
+        $this->param = $siswa;
+        $this->paramUser = $user;
+    }
     public function index()
     {
         return view("pages.siswa.index");
@@ -19,7 +30,8 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        return view("pages.siswa.create");
+        $kelas = Kelas::get();
+        return view("pages.siswa.create", compact("kelas"));
     }
 
     /**
@@ -27,7 +39,38 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $dataUser = $request->validate([
+                'email' => 'required',
+                'role' => 'required',
+            ]);
+
+            $data = $request->validate([
+                'nisn' => 'required|string|size:10|unique:siswa,nisn',
+                'nama' => 'required|string',
+                'jk' => 'required',
+                'kelas' => 'required',
+            ]);
+
+            if (Siswa::where('nisn', $data['nisn'])->exists()) {
+                Alert::error("Terjadi Kesalahan", "NISN sudah terdaftar.");
+                return back()->withInput();
+            }
+
+            $dataUser['pass'] = $request->nisn;
+            $user = $this->paramUser->store($dataUser);
+
+            $data["user_id"] = $user->id;
+            $this->param->store($data);
+            Alert::success("Berhasil", "Data Berhasil di simpan.");
+            return redirect()->route("guru");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

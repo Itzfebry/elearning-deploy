@@ -22,7 +22,7 @@ class UserRepository
     {
         return $this->model->create([
             "email" => $data["email"],
-            "password" => $data["nip"],
+            "password" => $data["pass"],
             "role" => $data["role"],
         ]);
     }

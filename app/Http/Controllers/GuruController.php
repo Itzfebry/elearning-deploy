@@ -58,7 +58,7 @@ class GuruController extends Controller
                 return back()->withInput();
             }
 
-            $dataUser['nip'] = $request->nip;
+            $dataUser['pass'] = $request->nip;
             $user = $this->param2->store($dataUser);
 
             $data["user_id"] = $user->id;

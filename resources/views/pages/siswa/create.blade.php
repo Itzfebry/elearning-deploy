@@ -21,21 +21,25 @@
             </p>
         </header>
         <div class="card-content">
-            <form method="get">
+            <form method="POST" action="{{ route('siswa.store') }}">
+                @csrf
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
                     <div class="field">
                         <label class="label">NISN</label>
                         <input class="input" type="text" name="nisn" placeholder="contoh.1298787288" required
-                            maxlength="10">
+                            maxlength="10" value="{{ old('nisn') }}">
                     </div>
                     <div class="field">
                         <label class="label">Email</label>
-                        <input class="input" type="email" name="email" placeholder="contoh@gmail.com" required>
+                        <input class="input" type="email" name="email" placeholder="contoh@gmail.com" required
+                            value="{{ old('email') }}">
                     </div>
                     <div class="field">
                         <label class="label">Nama</label>
-                        <input class="input" type="text" name="nama" placeholder="contoh.1298787288" required>
+                        <input class="input" type="text" name="nama" placeholder="Masukkan Nama" required
+                            value="{{ old('nama') }}">
                     </div>
+                    <input type="text" name="role" hidden value="siswa">
                     <div class="field">
                         <label class="label">Jenis Kelamain</label>
                         <div class="control">
@@ -52,9 +56,12 @@
                         <div class="control">
                             <div class="select">
                                 <select name="kelas">
-                                    <option value="6A">6A</option>
-                                    <option value="6B">6B</option>
-                                    <option value="6C">6C</option>
+                                    <option value="">-- Pilih Kelas --</option>
+                                    @foreach ($kelas as $item)
+                                    <option value="{{ $item->nama }}" {{ old('kelas')==$item->nama ? " selected" : ""}}>
+                                        {{ $item->nama}}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

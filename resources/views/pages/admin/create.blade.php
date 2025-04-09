@@ -21,21 +21,25 @@
             </p>
         </header>
         <div class="card-content">
-            <form method="get">
+            <form method="post" action="{{ route('admin.store') }}">
+                @csrf
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
                     <div class="field">
                         <label class="label">NIP</label>
                         <input class="input" type="text" name="nip" placeholder="contoh.1298787288" required
-                            maxlength="18">
+                            maxlength="18" value="{{ old('nip') }}">
                     </div>
                     <div class="field">
                         <label class="label">Email</label>
-                        <input class="input" type="email" name="email" placeholder="contoh@gmail.com" required>
+                        <input class="input" type="email" name="email" placeholder="contoh@gmail.com" required
+                            value="{{ old('email') }}">
                     </div>
                     <div class="field">
                         <label class="label">Nama</label>
-                        <input class="input" type="text" name="nama" placeholder="masukkan nama" required>
+                        <input class="input" type="text" name="nama" placeholder="masukkan nama" required
+                            value="{{ old('nama') }}">
                     </div>
+                    <input class="input" type="text" name="role" required value="admin" hidden>
                     <div class="field">
                         <label class="label">Jenis Kelamain</label>
                         <div class="control">

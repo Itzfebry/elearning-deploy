@@ -38,6 +38,7 @@ Route::middleware(["auth", "web"])->group(function () {
     // admin
     Route::get('admin', [AdminController::class, 'index'])->name('admin');
     Route::get('admin/create', [AdminController::class, 'create'])->name('admin.create');
+    Route::post('admin/store', [AdminController::class, 'store'])->name('admin.store');
     Route::get('admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
 
     // kelas

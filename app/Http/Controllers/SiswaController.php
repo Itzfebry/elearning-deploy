@@ -20,9 +20,12 @@ class SiswaController extends Controller
         $this->param = $siswa;
         $this->paramUser = $user;
     }
-    public function index()
+    public function index(Request $request)
     {
-        return view("pages.siswa.index");
+        $limit = $request->has('page_length') ? $request->get('page_length') : 5;
+        $search = $request->has('search') ? $request->get('search') : null;
+        $siswa = $this->param->getData($search, $limit);
+        return view("pages.siswa.index", compact("siswa"));
     }
 
     /**
@@ -63,7 +66,7 @@ class SiswaController extends Controller
             $data["user_id"] = $user->id;
             $this->param->store($data);
             Alert::success("Berhasil", "Data Berhasil di simpan.");
-            return redirect()->route("guru");
+            return redirect()->route("siswa");
         } catch (\Exception $e) {
             Alert::error("Terjadi Kesalahan", $e->getMessage());
             return back()->withInput();
@@ -86,7 +89,9 @@ class SiswaController extends Controller
      */
     public function edit(string $id)
     {
-        return view("pages.siswa.edit", compact("id"));
+        $kelas = Kelas::get();
+        $siswa = Siswa::find($id);
+        return view("pages.siswa.edit", compact(["kelas", "siswa"]));
     }
 
     /**
@@ -94,14 +99,44 @@ class SiswaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $dataUser = $request->validate([
+                'email' => 'required',
+            ]);
+
+            $data = $request->validate([
+                'nisn' => 'required|string|size:10',
+                'nama' => 'required|string',
+                'jk' => 'required',
+                'kelas' => 'required',
+            ]);
+
+            $this->paramUser->update($dataUser, $request->user_id);
+            $this->param->update($data, $id);
+            Alert::success("Berhasil", "Data Berhasil di ubah.");
+            return redirect()->route("siswa");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $this->param->destroy($request->formid);
+            $this->paramUser->destroy($request->user_id);
+            Alert::success("Berhasil", "Data Berhasil di Hapus.");
+            return redirect()->route("siswa");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 }

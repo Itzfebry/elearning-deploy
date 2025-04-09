@@ -23,7 +23,8 @@ class SiswaRepository
         $search = strtolower($search);
         $query = $this->model
             ->where(function ($query) use ($search) {
-                $query->where("nama", "like", "%" . $search . "%");
+                $query->where("nama", "like", "%" . $search . "%")
+                    ->orWhere("nisn", "like", "%" . $search . "%");
             })
             ->orWhereHas("user", function ($query) use ($search) {
                 $query->where("email", "like", "%" . $search . "%");
@@ -47,9 +48,10 @@ class SiswaRepository
     public function update($data, $id)
     {
         return $this->model->where('id', $id)->update([
-            "nip" => $data["nip"],
+            "nisn" => $data["nisn"],
             "nama" => $data["nama"],
             "jk" => $data["jk"],
+            "kelas" => $data["kelas"],
         ]);
     }
 

@@ -9,77 +9,131 @@
 
 @section('content')
 <section class="section main-section">
-    <div class="card has-table">
-        <header class="card-header">
-            <p class="card-header-title">
-                <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-                Siswa
-            </p>
-        </header>
-        <div class="card-content">
-            <table>
-                <thead>
-                    <tr>
-                        <th>NISN</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Jenis Kelamin</th>
-                        <th>Kelas</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td data-label="NISN">1278312763</td>
-                        <td data-label="Name">Jaka Rian</td>
-                        <td data-label="Email">JakaRian@gmail.com</td>
-                        <td data-label="Jk">Laki-laki</td>
-                        <td data-label="Kelas">6B</td>
-                        <td class="actions-cell">
-                            <div class="buttons right nowrap">
-                                <a href="{{ route('siswa.edit', '1') }}" class="button small blue --jb-modal"
-                                    data-target="sample-modal-2" type="button">
-                                    <span class="icon">
-                                        <x-icon name="edit" class="w-2 h-2 text-white" />
-                                    </span>
-                                </a>
-                                <button class="button small red --jb-modal" data-target="sample-modal" type="button">
-                                    <span class="icon">
-                                        <x-icon name="delete" class="w-2 h-2 text-white" />
-                                    </span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="table-pagination">
-                <div class="flex items-center justify-between">
-                    <div class="buttons">
-                        <button type="button" class="button active">1</button>
-                        <button type="button" class="button">2</button>
-                        <button type="button" class="button">3</button>
+    <form id="form" method="get">
+        <div class="card has-table">
+            <header class="card-header flex justify-between">
+                <div class="px-4 py-3">
+                    <div class="gap-2">
+                        <label for="page_length" class="text-sm text-gray-700 mb-0">Show</label>
+                        <select name="page_length" id="page_length"
+                            class="w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                            <option value="10" @isset($_GET['page_length']) {{ $_GET['page_length']==10 ? 'selected'
+                                : '' }} @endisset>10</option>
+                            <option value="20" @isset($_GET['page_length']) {{ $_GET['page_length']==20 ? 'selected'
+                                : '' }} @endisset>20</option>
+                            <option value="50" @isset($_GET['page_length']) {{ $_GET['page_length']==50 ? 'selected'
+                                : '' }} @endisset>50</option>
+                        </select>
+                        <label for="page_length" class="text-sm text-gray-700 mb-0">entries</label>
                     </div>
-                    <small>Page 1 of 3</small>
+                </div>
+                <div class="px-4 py-3">
+                    <div class="relative w-60">
+                        <input type="text" name="search" placeholder="Search..."
+                            value="{{ isset($_GET['search']) ? $_GET['search'] : '' }}"
+                            class="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm" />
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </header>
+            <div class="card-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NISN</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Kelas</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+                        $page_length = isset($_GET['page_length']) ? $_GET['page_length'] : 5;
+                        $i = $page == 1 ? 1 : $page * $page_length - $page_length + 1;
+                        @endphp
+                        @forelse ($siswa as $item)
+                        <tr>
+                            <td data-label="No">{{ $i++ }}</td>
+                            <td data-label="NISN">{{ $item->nisn }}</td>
+                            <td data-label="Name">{{ $item->nama }}</td>
+                            <td data-label="Email">{{ $item->user->email }}</td>
+                            <td data-label="Jk">{{ $item->jk == "L" ? "Laki-laki" : "Perempuan" }}</td>
+                            <td data-label="Kelas">{{ $item->kelas }}</td>
+                            <td class="actions-cell">
+                                <div class="buttons right nowrap">
+                                    <a href="{{ route('siswa.edit', $item->id) }}" class="button small blue --jb-modal"
+                                        data-target="sample-modal-2" type="button">
+                                        <span class="icon">
+                                            <x-icon name="edit" class="w-3 h-3 text-white" />
+                                        </span>
+                                    </a>
+                                    <button type="button" id="openModalBtn" class="button small red "
+                                        data-form_id="{{ $item->id }}" data-form_user_id="{{ $item->user_id }}"
+                                        data-form_name="{{ $item->nama }}">
+                                        <span class="icon">
+                                            <x-icon name="delete" class="w-3 h-3 text-white" />
+                                        </span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+
+                        @endforelse
+                    </tbody>
+                </table>
+                <div class="mt-4">
+                    {{ $siswa->links() }}
                 </div>
             </div>
         </div>
-    </div>
+    </form>
+    <div id="modalDelete"></div>
 </section>
-
-<div id="sample-modal" class="modal">
-    <div class="modal-background --jb-modal-close"></div>
-    <div class="modal-card">
-        <header class="modal-card-head">
-            <p class="modal-card-title">Warning!</p>
-        </header>
-        <section class="modal-card-body">
-            <p>Apakah anda ingin menghapus siswa <b>Jaka Rian</b>?</p>
-        </section>
-        <footer class="modal-card-foot">
-            <button class="button --jb-modal-close">Cancel</button>
-            <button class="button red --jb-modal-close">Confirm</button>
-        </footer>
-    </div>
-</div>
 @endsection
+@push('extraScript')
+<script>
+    $('#page_length').on('change', function() {
+        $('#form').submit();
+    });
+
+    $('#openModalBtn').click(function () {
+        var formId = $(this).data('form_id');
+        var formUserId = $(this).data('form_user_id');
+        var formName = $(this).data('form_name');
+        
+        $('#modalDelete').html(`
+            <div id="myModal-${formId}" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
+                    <h2 class="text-xl font-semibold mb-4 text-orange-400">Warning!</h2>
+                    <p class="mb-4">Apakah anda ingin menhapus data Siswa <b>${formName}</b>?</p>
+                    <form action="{{ route('siswa.delete') }}" method="POST">
+                        @csrf
+                        <input type="text" name="user_id" value="${formUserId}" hidden>
+                        <input type="text" name="formid" value="${formId}" hidden>
+                        <div class="flex justify-end space-x-2 mt-4">
+                            <button id="submitModalBtn" type="submit" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2">
+                                Submit
+                            </button>
+                            <button id="closeModalBtn" type="button" class="text-gray-700 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm px-4 py-2">
+                                Close
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        `);
+
+        $(document).on('click', '#closeModalBtn', function () {
+            $(`#myModal-${formId}`).remove();
+        });
+    });
+</script>
+@endpush

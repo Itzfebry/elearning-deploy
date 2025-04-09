@@ -8,13 +8,16 @@ class Kelas extends Model
 {
     protected $table = "kelas";
     protected $fillable = [
-        "id",
         "nama",
-        "nip_wali",
     ];
 
-    public function guru()
+    public function siswa()
     {
-        return $this->belongsTo(Guru::class, 'nip_wali', 'nip');
+        return $this->hasOne(Siswa::class, 'kelas', 'nama');
     }
+
+    // public function guru()
+    // {
+    //     return $this->belongsTo(Guru::class, 'nip_wali', 'nip');
+    // }
 }

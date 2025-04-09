@@ -126,7 +126,6 @@ class GuruController extends Controller
     public function destroy(Request $request)
     {
         try {
-            dd($request);
             $this->param->destroy($request->formid);
             $this->param2->destroy($request->user_id);
             Alert::success("Berhasil", "Data Berhasil di hapus data.");

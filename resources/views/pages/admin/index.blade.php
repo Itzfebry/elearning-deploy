@@ -113,7 +113,7 @@
                 <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
                     <h2 class="text-xl font-semibold mb-4 text-orange-400">Warning!</h2>
                     <p class="mb-4">Apakah anda ingin menhapus data Siswa <b>${formName}</b>?</p>
-                    <form action="{{ route('siswa.delete') }}" method="POST">
+                    <form action="{{ route('admin.delete') }}" method="POST">
                         @csrf
                         <input type="text" name="user_id" value="${formUserId}" hidden>
                         <input type="text" name="formid" value="${formId}" hidden>

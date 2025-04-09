@@ -122,8 +122,16 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $this->param->destroy($request->formid);
+            $this->paramUser->destroy($request->user_id);
+            Alert::success("Berhasil", "Data Berhasil di Hapus.");
+            return redirect()->route("admin");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back();
+        }
     }
 }

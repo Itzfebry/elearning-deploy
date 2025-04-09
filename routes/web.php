@@ -41,6 +41,7 @@ Route::middleware(["auth", "web"])->group(function () {
     Route::post('admin/store', [AdminController::class, 'store'])->name('admin.store');
     Route::get('admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
     Route::put('admin/update/{id}', [AdminController::class, 'update'])->name('admin.update');
+    Route::post('admin/delete', [AdminController::class, 'destroy'])->name('admin.delete');
 
     // kelas
     Route::get('kelas', [KelasContoller::class, 'index'])->name('kelas');

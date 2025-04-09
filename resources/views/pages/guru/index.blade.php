@@ -100,6 +100,7 @@
             </div>
         </div>
     </form>
+    <div id="modalDelete"></div>
 </section>
 @endsection
 @push('extraScript')
@@ -113,7 +114,7 @@
         var formUserId = $(this).data('form_user_id');
         var formName = $(this).data('form_name');
         
-        $('.content-delete').append(`
+        $('#modalDelete').html(`
             <div id="myModal-${formId}" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
                 <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
                     <h2 class="text-xl font-semibold mb-4 text-orange-400">Warning!</h2>
@@ -129,7 +130,7 @@
                             <button id="closeModalBtn" type="button" class="text-gray-700 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm px-4 py-2">
                                 Close
                             </button>
-                        </div> dd
+                        </div>
                     </form>
                 </div>
             </div>

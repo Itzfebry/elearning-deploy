@@ -127,9 +127,8 @@ class GuruController extends Controller
     {
         try {
             $this->param->destroy($request->formid);
-            $this->param2->destroy($request->user_id);
             Alert::success("Berhasil", "Data Berhasil di hapus data.");
-            return redirect()->route("guru");
+            return redirect()->route("kelas");
         } catch (\Exception $e) {
             Alert::error("Terjadi Kesalahan", $e->getMessage());
             return back();

@@ -45,11 +45,6 @@ class KelasContoller extends Controller
                 'nama' => 'required|string',
             ]);
 
-            if (Kelas::where('nama', $data['nama'])->exists()) {
-                Alert::error("Terjadi Kesalahan", "Kelas sudah terdaftar.");
-                return back()->withInput();
-            }
-
             $this->param->store($data);
             Alert::success("Berhasil", "Data Berhasil di simpan.");
             return redirect()->route("kelas");
@@ -75,8 +70,8 @@ class KelasContoller extends Controller
      */
     public function edit(string $id)
     {
-        $kelas = Kelas::find($id);
-        return view("pages.kelas.edit", compact("kelas"));
+        // $kelas = Kelas::find($id);
+        // return view("pages.kelas.edit", compact("kelas"));
     }
 
     /**
@@ -84,29 +79,36 @@ class KelasContoller extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try {
+        // try {
 
-            $data = $request->validate([
-                'nama' => 'required|string',
-            ]);
+        //     $data = $request->validate([
+        //         'nama' => 'required|string',
+        //     ]);
 
-            $this->param->update($data, $id);
-            Alert::success("Berhasil", "Data Berhasil di ubah.");
-            return redirect()->route("kelas");
-        } catch (\Exception $e) {
-            Alert::error("Terjadi Kesalahan", $e->getMessage());
-            return back()->withInput();
-        } catch (QueryException $e) {
-            Alert::error("Terjadi Kesalahan", $e->getMessage());
-            return back()->withInput();
-        }
+        //     $this->param->update($data, $id);
+        //     Alert::success("Berhasil", "Data Berhasil di ubah.");
+        //     return redirect()->route("kelas");
+        // } catch (\Exception $e) {
+        //     Alert::error("Terjadi Kesalahan", $e->getMessage());
+        //     return back()->withInput();
+        // } catch (QueryException $e) {
+        //     Alert::error("Terjadi Kesalahan", $e->getMessage());
+        //     return back()->withInput();
+        // }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $this->param->destroy($request->formkelas);
+            Alert::success("Berhasil", "Data Berhasil di Hapus.");
+            return redirect()->route("kelas");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back();
+        }
     }
 }

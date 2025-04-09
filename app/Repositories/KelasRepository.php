@@ -34,14 +34,14 @@ class KelasRepository
 
     public function update($data, $id)
     {
-        return $this->model->where('id', $id)->update([
-            "nama" => $data["nama"],
-        ]);
+        // return $this->model->where('id', $id)->update([
+        //     "nama" => $data["nama"],
+        // ]);
     }
 
-    public function destroy($id)
+    public function destroy($kelas)
     {
-        return $this->model->where('id', $id)->delete();
+        return $this->model->where('nama', $kelas)->delete();
     }
 
 }

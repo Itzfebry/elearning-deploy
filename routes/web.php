@@ -40,6 +40,9 @@ Route::middleware(["auth", "web"])->group(function () {
     // kelas
     Route::get('kelas', [KelasContoller::class, 'index'])->name('kelas');
     Route::get('kelas/create', [KelasContoller::class, 'create'])->name('kelas.create');
+    Route::post('kelas/store', [KelasContoller::class, 'store'])->name('kelas.store');
     Route::get('kelas/edit/{id}', [KelasContoller::class, 'edit'])->name('kelas.edit');
+    Route::put('kelas/update/{id}', [KelasContoller::class, 'update'])->name('kelas.update');
+    Route::post('kelas/delete', [KelasContoller::class, 'destroy'])->name('kelas.delete');
 });
 

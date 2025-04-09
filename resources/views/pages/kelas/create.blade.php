@@ -23,8 +23,11 @@
                         <div class="control">
                             <div class="select">
                                 <select name="nip_wali">
-                                    <option value="">Ayu Dewi</option>
-                                    <option value="">Putri Lestari</option>
+                                    <option value="">-- Pilih Wali Kelas --</option>
+                                    @foreach ($guru as $item)
+                                    <option value="{{ $item->nip }}" {{ old('nip_wali')==$item->nip ? "selected" : ""
+                                        }}>{{ $item->nama }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

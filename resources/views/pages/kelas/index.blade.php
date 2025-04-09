@@ -36,12 +36,12 @@
                                 <a href="{{ route('kelas.edit', '1') }}" class="button small blue --jb-modal"
                                     data-target="sample-modal-2" type="button">
                                     <span class="icon">
-                                        <x-icon name="edit" class="w-2 h-2 text-white" />
+                                        <x-icon name="edit" class="w-3 h-3 text-white" />
                                     </span>
                                 </a>
                                 <button class="button small red --jb-modal" data-target="sample-modal" type="button">
                                     <span class="icon">
-                                        <x-icon name="delete" class="w-2 h-2 text-white" />
+                                        <x-icon name="delete" class="w-3 h-3 text-white" />
                                     </span>
                                 </button>
                             </div>

@@ -77,11 +77,12 @@
                                             <x-icon name="edit" class="w-4 h-4 text-white" />
                                         </span>
                                     </a>
-                                    <button type="button" id="openModalBtn"
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                    <button type="button" id="openModalBtn" class="button small red "
                                         data-form_id="{{ $item->id }}" data-form_user_id="{{ $item->user_id }}"
                                         data-form_name="{{ $item->nama }}">
-                                        Buka Modal
+                                        <span class="icon">
+                                            <x-icon name="delete" class="w-3 h-3 text-white" />
+                                        </span>
                                     </button>
                                 </div>
                             </td>
@@ -128,7 +129,7 @@
                             <button id="closeModalBtn" type="button" class="text-gray-700 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm px-4 py-2">
                                 Close
                             </button>
-                        </div>
+                        </div> dd
                     </form>
                 </div>
             </div>

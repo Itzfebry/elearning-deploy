@@ -19,9 +19,12 @@ class AdminController extends Controller
         $this->param = $admin;
         $this->paramUser = $user;
     }
-    public function index()
+    public function index(Request $request)
     {
-        return view("pages.admin.index");
+        $limit = $request->has('page_length') ? $request->get('page_length') : 5;
+        $search = $request->has('search') ? $request->get('search') : null;
+        $admin = $this->param->getData($search, $limit);
+        return view("pages.admin.index", compact("admin"));
     }
 
     /**

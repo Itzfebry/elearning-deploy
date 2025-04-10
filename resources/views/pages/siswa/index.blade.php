@@ -48,6 +48,7 @@
                             <th>Email</th>
                             <th>Jenis Kelamin</th>
                             <th>Kelas</th>
+                            <th>Tahun Ajaran</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -65,6 +66,7 @@
                             <td data-label="Email">{{ $item->user->email }}</td>
                             <td data-label="Jk">{{ $item->jk == "L" ? "Laki-laki" : "Perempuan" }}</td>
                             <td data-label="Kelas">{{ $item->kelas }}</td>
+                            <td data-label="TahunAjaran">{{ $item->tahun_ajaran }}</td>
                             <td class="actions-cell">
                                 <div class="buttons right nowrap">
                                     <a href="{{ route('siswa.edit', $item->id) }}" class="button small blue --jb-modal"

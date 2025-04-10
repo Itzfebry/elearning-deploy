@@ -66,6 +66,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class="field">
+                        <label class="label">Tahun Ajaran</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="tahun_ajaran">
+                                    <option value="">-- Pilih Tahun Ajaran --</option>
+                                    @foreach ($tahunAjaran as $item)
+                                    <option value="{{ $item->tahun }}" {{ old('tahun_ajaran')==$item->tahun ? "
+                                        selected" :
+                                        ""}}>
+                                        {{ $item->tahun}}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <hr>
 

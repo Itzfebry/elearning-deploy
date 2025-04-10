@@ -12,17 +12,10 @@ return new class extends Migration {
     {
         Schema::create('riwayat_kelas', function (Blueprint $table) {
             $table->id();
-            $table->String("siswa_nisn", 12);
             $table->String("kelas", 10);
             $table->string("tahun_ajaran", 9);
             $table->String("wali_nip", 18);
             $table->timestamps();
-
-            $table->foreign('siswa_nisn')
-                ->references('nisn')
-                ->on('siswa')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
 
             $table->foreign('kelas')
                 ->references('nama')
@@ -33,6 +26,12 @@ return new class extends Migration {
             $table->foreign('wali_nip')
                 ->references('nip')
                 ->on('guru')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('tahun_ajaran')
+                ->references('tahun')
+                ->on('tahun_ajaran')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

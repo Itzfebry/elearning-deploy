@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->String("nama", 100);
             $table->String("guru_nip", 18);
             $table->String("kelas", 10);
+            $table->String("tahun_ajaran", 9);
             $table->timestamps();
 
             $table->foreign('guru_nip')
@@ -26,6 +27,12 @@ return new class extends Migration {
             $table->foreign('kelas')
                 ->references('nama')
                 ->on('kelas')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('tahun_ajaran')
+                ->references('tahun')
+                ->on('tahun_ajaran')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

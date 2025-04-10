@@ -52,6 +52,7 @@ Route::middleware(["auth", "web"])->group(function () {
     // Route::put('kelas/update/{id}', [KelasContoller::class, 'update'])->name('kelas.update');
     Route::post('kelas/delete', [KelasContoller::class, 'destroy'])->name('kelas.delete');
 
+    // Wali Kelas
     Route::get('wali-kelas', [WaliKelasController::class, 'index'])->name('wali-kelas');
     Route::get('wali-kelas/create', [WaliKelasController::class, 'create'])->name('wali-kelas.create');
     Route::post('wali-kelas/store', [WaliKelasController::class, 'store'])->name('wali-kelas.store');

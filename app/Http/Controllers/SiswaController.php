@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kelas;
 use App\Models\Siswa;
+use App\Models\TahunAjaran;
 use App\Repositories\SiswaRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Database\QueryException;
@@ -34,7 +35,8 @@ class SiswaController extends Controller
     public function create()
     {
         $kelas = Kelas::get();
-        return view("pages.siswa.create", compact("kelas"));
+        $tahunAjaran = TahunAjaran::get();
+        return view("pages.siswa.create", compact("kelas", 'tahunAjaran'));
     }
 
     /**
@@ -53,6 +55,7 @@ class SiswaController extends Controller
                 'nama' => 'required|string',
                 'jk' => 'required',
                 'kelas' => 'required',
+                'tahun_ajaran' => 'required',
             ]);
 
             if (Siswa::where('nisn', $data['nisn'])->exists()) {
@@ -90,8 +93,9 @@ class SiswaController extends Controller
     public function edit(string $id)
     {
         $kelas = Kelas::get();
+        $tahunAjaran = TahunAjaran::get();
         $siswa = Siswa::find($id);
-        return view("pages.siswa.edit", compact(["kelas", "siswa"]));
+        return view("pages.siswa.edit", compact(["kelas", "siswa", "tahunAjaran"]));
     }
 
     /**
@@ -109,6 +113,7 @@ class SiswaController extends Controller
                 'nama' => 'required|string',
                 'jk' => 'required',
                 'kelas' => 'required',
+                'tahun_ajaran' => 'required',
             ]);
 
             $this->paramUser->update($dataUser, $request->user_id);

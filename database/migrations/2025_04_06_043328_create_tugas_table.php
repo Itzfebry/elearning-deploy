@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->text("nama");
             $table->unsignedBigInteger("matapelajaran_id");
             $table->String("kelas", 10);
+            $table->String("tahun_ajaran", 9);
             $table->timestamps();
 
             $table->foreign('matapelajaran_id')
@@ -28,6 +29,12 @@ return new class extends Migration {
             $table->foreign('kelas')
                 ->references('nama')
                 ->on('kelas')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('tahun_ajaran')
+                ->references('tahun')
+                ->on('tahun_ajaran')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

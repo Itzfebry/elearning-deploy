@@ -14,6 +14,7 @@ class Siswa extends Model
         "nama",
         "jk",
         "kelas",
+        "tahun_ajaran",
     ];
 
     public function user()
@@ -24,5 +25,10 @@ class Siswa extends Model
     public function kelas()
     {
         return $this->belongsTo(Kelas::class, "kelas", "nama");
+    }
+
+    public function tahunAjaran()
+    {
+        return $this->belongsTo(TahunAjaran::class, "tahun_ajaran", "tahun");
     }
 }

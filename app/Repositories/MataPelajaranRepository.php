@@ -2,15 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Models\Siswa;
+use App\Models\Admin;
 
-class SiswaRepository
+class MataPelajaranRepository
 {
     protected $model;
 
-    public function __construct(Siswa $siswa)
+    public function __construct(Admin $guru)
     {
-        $this->model = $siswa;
+        $this->model = $guru;
     }
 
     public function find($id)
@@ -24,7 +24,7 @@ class SiswaRepository
         $query = $this->model
             ->where(function ($query) use ($search) {
                 $query->where("nama", "like", "%" . $search . "%")
-                    ->orWhere("nisn", "like", "%" . $search . "%");
+                    ->orWhere("nip", "like", "%" . $search . "%");
             })
             ->orWhereHas("user", function ($query) use ($search) {
                 $query->where("email", "like", "%" . $search . "%");
@@ -38,22 +38,18 @@ class SiswaRepository
     {
         return $this->model->create([
             "user_id" => $data["user_id"],
-            "nisn" => $data["nisn"],
+            "nip" => $data["nip"],
             "nama" => $data["nama"],
             "jk" => $data["jk"],
-            "kelas" => $data["kelas"],
-            "tahun_ajaran" => $data["tahun_ajaran"],
         ]);
     }
 
     public function update($data, $id)
     {
         return $this->model->where('id', $id)->update([
-            "nisn" => $data["nisn"],
+            "nip" => $data["nip"],
             "nama" => $data["nama"],
             "jk" => $data["jk"],
-            "kelas" => $data["kelas"],
-            "tahun_ajaran" => $data["tahun_ajaran"],
         ]);
     }
 

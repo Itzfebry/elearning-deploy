@@ -19,11 +19,18 @@ return new class extends Migration {
             $table->string("judul_materi");
             $table->text("deskripsi");
             $table->String("path");
+            $table->String("tahun_ajaran", 9);
             $table->timestamps();
 
             $table->foreign('matapelajaran_id')
                 ->references('id')
                 ->on('matapelajaran')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('tahun_ajaran')
+                ->references('tahun')
+                ->on('tahun_ajaran')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

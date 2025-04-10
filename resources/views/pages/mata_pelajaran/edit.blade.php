@@ -12,10 +12,29 @@
             </p>
         </header>
         <div class="card-content">
-            <form method="POST" action="{{ route('wali-kelas.update', $waliKelas->id) }}">
+            <form method="POST" action="{{ route('mata-pelajaran.update', $mataPelajaran->id) }}">
                 @csrf
                 @method('PUT')
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
+                    <div class="field">
+                        <label class="label">Nama Mata Pelajaran</label>
+                        <input class="input" type="text" name="nama" placeholder="contoh.Matematika" required
+                            value="{{ $mataPelajaran->nama }}">
+                    </div>
+                    <div class="field">
+                        <label class="label">Wali Kelas</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="guru_nip" required>
+                                    <option value="">-- Pilih Guru --</option>
+                                    @foreach ($guru as $item)
+                                    <option value="{{ $item->nip }}" {{ $mataPelajaran->guru_nip == $item->nip ?
+                                        "selected" : "" }}>{{ $item->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="field">
                         <label class="label">Kelas</label>
                         <div class="control">
@@ -23,8 +42,8 @@
                                 <select name="kelas">
                                     <option value="">-- Pilih Kelas --</option>
                                     @foreach ($kelas as $item)
-                                    <option value="{{ $item->nama }}" {{ $item->nama == $waliKelas->kelas ? "selected"
-                                        :"" }}>
+                                    <option value="{{ $item->nama }}" {{ $mataPelajaran->kelas == $item->nama ?
+                                        "selected" : "" }}>
                                         {{ $item->nama }}
                                     </option>
                                     @endforeach
@@ -39,23 +58,8 @@
                                 <select name="tahun_ajaran">
                                     <option value="">-- Pilih Tahun Ajaran --</option>
                                     @foreach ($tahunAjaran as $item)
-                                    <option value="{{ $item->tahun }}" {{ $waliKelas->tahun_ajaran==$item->tahun ?
-                                        "selected"
-                                        : "" }}>{{ $item->tahun }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label class="label">Wali Kelas</label>
-                        <div class="control">
-                            <div class="select">
-                                <select name="wali_nip" required>
-                                    <option value="">-- Pilih Guru --</option>
-                                    @foreach ($guru as $item)
-                                    <option value="{{ $item->nip }}" {{ $item->nip == $waliKelas->wali_nip ? "selected"
-                                        :"" }}>{{ $item->nama }}</option>
+                                    <option value="{{ $item->tahun }}" {{ $mataPelajaran->tahun_ajaran == $item->tahun ?
+                                        "selected" : "" }}>{{ $item->tahun }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -75,22 +79,3 @@
     </div>
 </section>
 @endsection
-@push('extraScript')
-{{-- <script>
-    $( document ).ready(function() {
-        var tahunAjaran = $('.tahun-ajaran').data('tahun_ajaran');
-        const tahunSekarang = new Date().getFullYear();
-        const jumlahPilihan = 5;
-
-        for (let i = jumlahPilihan - 1; i >= 0; i--) {
-            const tahunAwal = tahunSekarang - i;
-            const tahunAkhir = tahunAwal + 1;
-            var value = `${tahunAwal}/${tahunAkhir}`;
-            var textContent = `${tahunAwal}/${tahunAkhir}`;
-            $('.tahun-ajaran').append(`
-                <option value="${value}" ${tahunAjaran == value ? "selected" : ""}>${textContent}</option>
-            `);
-        }
-    });
-</script> --}}
-@endpush

@@ -76,7 +76,10 @@ class MataPelajaranController extends Controller
     public function edit(string $id)
     {
         $mataPelajaran = $this->param->find($id);
-        return view("pages.mata_pelajaran.edit", compact("mataPelajaran"));
+        $guru = Guru::all();
+        $kelas = Kelas::all();
+        $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
+        return view("pages.mata_pelajaran.edit", compact(["mataPelajaran", "guru", "kelas", "tahunAjaran"]));
     }
 
     /**
@@ -84,7 +87,24 @@ class MataPelajaranController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $data = $request->validate([
+                'nama' => 'required',
+                'guru_nip' => 'required',
+                'kelas' => 'required',
+                'tahun_ajaran' => 'required',
+            ]);
+
+            $this->param->update($data, $id);
+            Alert::success("Berhasil", "Data Berhasil di Ubah.");
+            return redirect()->route("mata-pelajaran");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

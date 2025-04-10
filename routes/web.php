@@ -73,7 +73,7 @@ Route::middleware(["auth", "web"])->group(function () {
     Route::get('mata-pelajaran', [MataPelajaranController::class, 'index'])->name('mata-pelajaran');
     Route::get('mata-pelajaran/create', [MataPelajaranController::class, 'create'])->name('mata-pelajaran.create');
     Route::post('mata-pelajaran/store', [MataPelajaranController::class, 'store'])->name('mata-pelajaran.store');
-    Route::get('/mata-pelajaran/edit', [MataPelajaranController::class, 'edit'])->name('mata-pelajaran.edit');
-    Route::put('/mata-pelajaran/update', [MataPelajaranController::class, 'update'])->name('mata-pelajaran.update');
+    Route::get('mata-pelajaran/edit/{id}', [MataPelajaranController::class, 'edit'])->name('mata-pelajaran.edit');
+    Route::put('mata-pelajaran/update/{id}', [MataPelajaranController::class, 'update'])->name('mata-pelajaran.update');
 });
 

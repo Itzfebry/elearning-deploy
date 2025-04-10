@@ -75,7 +75,7 @@
                             </td>
                             <td class="actions-cell content-delete">
                                 <div class="buttons right nowrap">
-                                    <a href="{{ route('tahun-ajaran.edit', $item->tahun) }}"
+                                    <a href="{{ url('/tahun-ajaran/edit?tahun_ajaran='. urlencode($item->tahun)) }}"
                                         class="button small blue --jb-modal" data-target="sample-modal-2" type="button">
                                         <span class="icon">
                                             <x-icon name="edit" class="w-4 h-4 text-white" />

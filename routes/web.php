@@ -65,8 +65,8 @@ Route::middleware(["auth", "web"])->group(function () {
     Route::get('tahun-ajaran', [TahunAjaranController::class, 'index'])->name('tahun-ajaran');
     Route::get('tahun-ajaran/create', [TahunAjaranController::class, 'create'])->name('tahun-ajaran.create');
     Route::post('tahun-ajaran/store', [TahunAjaranController::class, 'store'])->name('tahun-ajaran.store');
-    Route::get('tahun-ajaran/edit/{id}', [TahunAjaranController::class, 'edit'])->name('tahun-ajaran.edit');
-    Route::put('tahun-ajaran/update/{id}', [TahunAjaranController::class, 'update'])->name('tahun-ajaran.update');
-    Route::post('tahun-ajaran/delete', [TahunAjaranController::class, 'destroy'])->name('tahun-ajaran.delete');
+    Route::get('/tahun-ajaran/edit', [TahunAjaranController::class, 'edit'])->name('tahun-ajaran.edit');
+    Route::put('/tahun-ajaran/update', [TahunAjaranController::class, 'update'])->name('tahun-ajaran.update');
+    // Route::post('tahun-ajaran/delete', [TahunAjaranController::class, 'destroy'])->name('tahun-ajaran.delete');
 });
 

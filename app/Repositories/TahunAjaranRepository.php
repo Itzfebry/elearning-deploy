@@ -39,9 +39,9 @@ class TahunAjaranRepository
         ]);
     }
 
-    public function update($data, $id)
+    public function update($data, $tahun)
     {
-        return $this->model->where('tahun', $id)->update([
+        return $this->model->where('tahun', $tahun)->update([
             "status" => $data["status"],
         ]);
     }

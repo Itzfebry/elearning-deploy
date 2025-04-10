@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TahunAjaran;
 use App\Repositories\TahunAjaranRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -65,18 +66,35 @@ class TahunAjaranController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request)
     {
-        $tahunAjaran = $this->param->find($id);
-        return view("pages.tahun_ajaran.edit", compact("tahunAjaran"));
+        $tahun = urldecode($request->tahun_ajaran);
+        $tahunAjaran = TahunAjaran::where('tahun', $tahun)->firstOrFail();
+        return view('pages.tahun_ajaran.edit', compact('tahunAjaran'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        try {
+            $tahun = urldecode($request->tahun_ajaran);
+
+            $data = $request->validate([
+                'status' => 'required',
+            ]);
+
+            $this->param->update($data, $tahun);
+            Alert::success("Berhasil", "Data Berhasil di Ubah.");
+            return redirect()->route("tahun-ajaran");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

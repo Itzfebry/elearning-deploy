@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title', "Guru")
-@section('titleHeader', "Tambah Guru")
+@section('title', "Wali Kelas")
+@section('titleHeader', "Tambah Wali Kelas")
 
 @section('content')
 <section class="section main-section">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\TahunAjaran;
 use App\Repositories\WaliKelasRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class WaliKelasController extends Controller
 
     public function index(Request $request)
     {
-        $limit = $request->has('page_length') ? $request->get('page_length') : 5;
+        $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $waliKelas = $this->param->getData($search, $limit);
         return view('pages.wali_kelas.index', compact('waliKelas'));
@@ -33,7 +34,8 @@ class WaliKelasController extends Controller
     {
         $kelas = Kelas::get();
         $guru = Guru::get();
-        return view('pages.wali_kelas.create', compact('kelas', 'guru'));
+        $tahunAjaran = TahunAjaran::get();
+        return view('pages.wali_kelas.create', compact(['kelas', 'guru', 'tahunAjaran']));
     }
 
     /**

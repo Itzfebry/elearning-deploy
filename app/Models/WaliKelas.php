@@ -23,4 +23,9 @@ class WaliKelas extends Model
     {
         return $this->belongsTo(Guru::class, 'wali_nip', 'nip');
     }
+
+    public function tahunAjaran()
+    {
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran', 'tahun');
+    }
 }

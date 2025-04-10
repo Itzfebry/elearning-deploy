@@ -21,7 +21,7 @@ class AdminController extends Controller
     }
     public function index(Request $request)
     {
-        $limit = $request->has('page_length') ? $request->get('page_length') : 5;
+        $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $admin = $this->param->getData($search, $limit);
         return view("pages.admin.index", compact("admin"));

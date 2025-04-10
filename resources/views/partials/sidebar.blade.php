@@ -16,6 +16,12 @@
         </ul>
         <p class="menu-label">Master</p>
         <ul class="menu-list">
+            <li class="{{ Request::is('tahun-ajaran') || Request::is('tahun-ajaran/*') ? 'active' : '' }}">
+                <a href="{{ route('tahun-ajaran') }}">
+                    <span class="icon"><i class="mdi mdi-lock"></i></span>
+                    <span class="menu-item-label">Tahun Ajaran</span>
+                </a>
+            </li>
             <li class="{{ Request::is('guru') || Request::is('guru/*') ? 'active' : '' }}">
                 <a href="{{ route('guru') }}">
                     <span class="icon"><i class="mdi mdi-lock"></i></span>

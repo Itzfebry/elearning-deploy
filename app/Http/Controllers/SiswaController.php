@@ -23,7 +23,7 @@ class SiswaController extends Controller
     }
     public function index(Request $request)
     {
-        $limit = $request->has('page_length') ? $request->get('page_length') : 5;
+        $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $siswa = $this->param->getData($search, $limit);
         return view("pages.siswa.index", compact("siswa"));

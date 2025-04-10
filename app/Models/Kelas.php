@@ -13,12 +13,7 @@ class Kelas extends Model
 
     public function siswa()
     {
-        return $this->hasOne(Siswa::class, 'kelas', 'nama');
-    }
-
-    public function waliKelas()
-    {
-        return $this->hasOne(WaliKelas::class, "kelas", "nama");
+        return $this->hasMany(Siswa::class, 'kelas', 'nama');
     }
 
     // public function guru()

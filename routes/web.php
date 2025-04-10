@@ -67,6 +67,12 @@ Route::middleware(["auth", "web"])->group(function () {
     Route::post('tahun-ajaran/store', [TahunAjaranController::class, 'store'])->name('tahun-ajaran.store');
     Route::get('/tahun-ajaran/edit', [TahunAjaranController::class, 'edit'])->name('tahun-ajaran.edit');
     Route::put('/tahun-ajaran/update', [TahunAjaranController::class, 'update'])->name('tahun-ajaran.update');
-    // Route::post('tahun-ajaran/delete', [TahunAjaranController::class, 'destroy'])->name('tahun-ajaran.delete');
+
+    // Mata Pelajaran
+    Route::get('mata-pelajaran', [TahunAjaranController::class, 'index'])->name('mata-pelajaran');
+    Route::get('mata-pelajaran/create', [TahunAjaranController::class, 'create'])->name('mata-pelajaran.create');
+    Route::post('mata-pelajaran/store', [TahunAjaranController::class, 'store'])->name('mata-pelajaran.store');
+    Route::get('/mata-pelajaran/edit', [TahunAjaranController::class, 'edit'])->name('mata-pelajaran.edit');
+    Route::put('/mata-pelajaran/update', [TahunAjaranController::class, 'update'])->name('mata-pelajaran.update');
 });
 

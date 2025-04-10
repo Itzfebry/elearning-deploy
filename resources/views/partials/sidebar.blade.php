@@ -22,16 +22,16 @@
                     <span class="menu-item-label">Tahun Ajaran</span>
                 </a>
             </li>
-            <li class="{{ Request::is('guru') || Request::is('guru/*') ? 'active' : '' }}">
-                <a href="{{ route('guru') }}">
-                    <span class="icon"><i class="mdi mdi-lock"></i></span>
-                    <span class="menu-item-label">Guru</span>
-                </a>
-            </li>
             <li class="{{ Request::is('kelas') || Request::is('kelas/*') ? 'active' : '' }}">
                 <a href="{{ route('kelas') }}">
                     <span class="icon"><i class="mdi mdi-lock"></i></span>
                     <span class="menu-item-label">Kelas</span>
+                </a>
+            </li>
+            <li class="{{ Request::is('guru') || Request::is('guru/*') ? 'active' : '' }}">
+                <a href="{{ route('guru') }}">
+                    <span class="icon"><i class="mdi mdi-lock"></i></span>
+                    <span class="menu-item-label">Guru</span>
                 </a>
             </li>
             <li class="{{ Request::is('siswa') || Request::is('siswa/*') ? 'active' : '' }}">
@@ -52,7 +52,13 @@
                     <span class="menu-item-label">Admin</span>
                 </a>
             </li>
-            <li>
+            <li class="{{ Request::is('mata-pelajaran') || Request::is('mata-pelajaran/*') ? 'active' : '' }}">
+                <a href="{{ route('mata-pelajaran') }}">
+                    <span class="icon"><i class="mdi mdi-lock"></i></span>
+                    <span class="menu-item-label">Mata Pelajaran</span>
+                </a>
+            </li>
+            {{-- <li>
                 <a class="dropdown">
                     <span class="icon"><i class="mdi mdi-view-list"></i></span>
                     <span class="menu-item-label">Submenus</span>
@@ -65,7 +71,7 @@
                         </a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
         </ul>
     </div>
 </aside>

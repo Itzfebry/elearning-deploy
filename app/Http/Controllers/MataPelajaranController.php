@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\MataPelajaranRepository;
 use Illuminate\Http\Request;
 
 class MataPelajaranController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $param;
+
+    public function __construct(MataPelajaranRepository $mataPelajaran)
     {
-        //
+        $this->param = $mataPelajaran;
+    }
+    public function index(Request $request)
+    {
+        $limit = $request->has('page_length') ? $request->get('page_length') : 10;
+        $search = $request->has('search') ? $request->get('search') : null;
+        $mataPelajaran = $this->param->getData($search, $limit);
+        return view("pages.mata_pelajaran.index", compact("mataPelajaran"));
     }
 
     /**
@@ -19,7 +26,7 @@ class MataPelajaranController extends Controller
      */
     public function create()
     {
-        //
+        return view("pages.mata_pelajaran.create");
     }
 
     /**
@@ -43,7 +50,8 @@ class MataPelajaranController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $mataPelajaran = $this->param->find($id);
+        return view("pages.mata_pelajaran.edit", compact("mataPelajaran"));
     }
 
     /**

@@ -78,8 +78,6 @@
         const tahunSekarang = new Date().getFullYear();
         const jumlahPilihan = 5;
 
-        console.log(tahunAjaran);
-
         for (let i = jumlahPilihan - 1; i >= 0; i--) {
             const tahunAwal = tahunSekarang - i;
             const tahunAkhir = tahunAwal + 1;

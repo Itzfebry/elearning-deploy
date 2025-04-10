@@ -37,19 +37,18 @@ class WaliKelasRepository
     public function store($data)
     {
         return $this->model->create([
-            "user_id" => $data["user_id"],
-            "nip" => $data["nip"],
-            "nama" => $data["nama"],
-            "jk" => $data["jk"],
+            "kelas" => $data["kelas"],
+            "tahun_ajaran" => $data["tahun_ajaran"],
+            "wali_nip" => $data["wali_nip"],
         ]);
     }
 
     public function update($data, $id)
     {
         return $this->model->where('id', $id)->update([
-            "nip" => $data["nip"],
-            "nama" => $data["nama"],
-            "jk" => $data["jk"],
+            "kelas" => $data["kelas"],
+            "tahun_ajaran" => $data["tahun_ajaran"],
+            "wali_nip" => $data["wali_nip"],
         ]);
     }
 

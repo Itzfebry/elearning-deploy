@@ -4,15 +4,6 @@
 
 @section('content')
 <section class="section main-section">
-    <div class="notification blue">
-        <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0">
-            <div>
-                <span class="icon"><i class="mdi mdi-buffer"></i></span>
-                <b>Password Guru otomatis menggunakan NIP</b>
-            </div>
-            <button type="button" class="button small textual --jb-notification-dismiss">x</button>
-        </div>
-    </div>
     <div class="card mb-6">
         <header class="card-header">
             <p class="card-header-title">
@@ -21,39 +12,49 @@
             </p>
         </header>
         <div class="card-content">
-            <form method="POST" action="{{ route('guru.store') }}">
+            <form method="POST" action="{{ route('wali-kelas.store') }}">
                 @csrf
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
                     <div class="field">
-                        <label class="label">NIP</label>
-                        <input class="input" type="text" name="nip" placeholder="contoh.1298787288" required
-                            maxlength="18" value="{{ old('nip') }}">
-                    </div>
-                    <div class="field">
-                        <label class="label">Email</label>
-                        <input class="input" type="email" name="email" placeholder="contoh@gmail.com" required
-                            value="{{ old('email') }}">
-                    </div>
-                    <div class="field">
-                        <label class="label">Nama</label>
-                        <input class="input" type="text" name="nama" placeholder="masukkan nama" required
-                            value="{{ old('nama') }}">
-                        <input type="text" name="role" hidden value="guru">
-                    </div>
-                    <div class="field">
-                        <label class="label">Jenis Kelamain</label>
+                        <label class="label">Kelas</label>
                         <div class="control">
                             <div class="select">
-                                <select name="jk">
-                                    <option value="L" {{ old('jk')=="L" ? "selected" : "" }}>Laki-laki</option>
-                                    <option value="P" {{ old('jk')=="P" ? "selected" : "" }}>Perempuan</option>
+                                <select name="kelas">
+                                    <option value="">-- Pilih Kelas --</option>
+                                    @foreach ($kelas as $item)
+                                    <option value="{{ $item->nama }}">
+                                        {{ $item->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Tahun Ajaran</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="tahun_ajaran" class="tahun-ajaran">
+                                    <option value="">-- Pilih Tahun Ajaran --</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Wali Kelas</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="wali_nip" required>
+                                    <option value="">-- Pilih Guru --</option>
+                                    @foreach ($guru as $item)
+                                    <option value="{{ $item->nip }}">{{ $item->nama }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
                 <hr>
-
                 <div class="field grouped">
                     <div class="control">
                         <button type="submit" class="button green">
@@ -66,3 +67,21 @@
     </div>
 </section>
 @endsection
+@push('extraScript')
+<script>
+    $( document ).ready(function() {
+        const tahunSekarang = new Date().getFullYear();
+        const jumlahPilihan = 5;
+
+        for (let i = jumlahPilihan - 1; i >= 0; i--) {
+            const tahunAwal = tahunSekarang - i;
+            const tahunAkhir = tahunAwal + 1;
+            var value = `${tahunAwal}/${tahunAkhir}`;
+            var textContent = `${tahunAwal}/${tahunAkhir}`;
+            $('.tahun-ajaran').append(`
+                <option value="${value}">${textContent}</option>
+            `);
+        }
+    });
+</script>
+@endpush

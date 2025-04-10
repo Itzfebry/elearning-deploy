@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Repositories\WaliKelasRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class WaliKelasController extends Controller
 {
@@ -29,7 +31,9 @@ class WaliKelasController extends Controller
      */
     public function create()
     {
-        //
+        $kelas = Kelas::get();
+        $guru = Guru::get();
+        return view('pages.wali_kelas.create', compact('kelas', 'guru'));
     }
 
     /**
@@ -37,7 +41,23 @@ class WaliKelasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->validate([
+                'kelas' => 'required',
+                'tahun_ajaran' => 'required',
+                'wali_nip' => 'required',
+            ]);
+
+            $this->param->store($data);
+            Alert::success("Berhasil", "Data Berhasil di Tambahkan.");
+            return redirect()->route("wali-kelas");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**
@@ -64,7 +84,23 @@ class WaliKelasController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $data = $request->validate([
+                'kelas' => 'required',
+                'tahun_ajaran' => 'required',
+                'wali_nip' => 'required',
+            ]);
+
+            $this->param->update($data, $id);
+            Alert::success("Berhasil", "Data Berhasil di ubah.");
+            return redirect()->route("wali-kelas");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

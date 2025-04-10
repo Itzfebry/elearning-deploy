@@ -36,9 +36,13 @@
                         <label class="label">Tahun Ajaran</label>
                         <div class="control">
                             <div class="select">
-                                <select name="tahun_ajaran" class="tahun-ajaran"
-                                    data-tahun_ajaran="{{ $waliKelas->tahun_ajaran }}">
+                                <select name="tahun_ajaran">
                                     <option value="">-- Pilih Tahun Ajaran --</option>
+                                    @foreach ($tahunAjaran as $item)
+                                    <option value="{{ $item->tahun }}" {{ $waliKelas->tahun_ajaran==$item->tahun ?
+                                        "selected"
+                                        : "" }}>{{ $item->tahun }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -72,7 +76,7 @@
 </section>
 @endsection
 @push('extraScript')
-<script>
+{{-- <script>
     $( document ).ready(function() {
         var tahunAjaran = $('.tahun-ajaran').data('tahun_ajaran');
         const tahunSekarang = new Date().getFullYear();
@@ -88,5 +92,5 @@
             `);
         }
     });
-</script>
+</script> --}}
 @endpush

@@ -34,7 +34,7 @@ class WaliKelasController extends Controller
     {
         $kelas = Kelas::get();
         $guru = Guru::get();
-        $tahunAjaran = TahunAjaran::get();
+        $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
         return view('pages.wali_kelas.create', compact(['kelas', 'guru', 'tahunAjaran']));
     }
 
@@ -78,7 +78,8 @@ class WaliKelasController extends Controller
         $waliKelas = $this->param->find($id);
         $kelas = Kelas::get();
         $guru = Guru::get();
-        return view('pages.wali_kelas.edit', compact(['waliKelas', 'kelas', 'guru']));
+        $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
+        return view('pages.wali_kelas.edit', compact(['waliKelas', 'kelas', 'guru', 'tahunAjaran']));
     }
 
     /**

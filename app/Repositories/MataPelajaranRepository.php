@@ -3,14 +3,15 @@
 namespace App\Repositories;
 
 use App\Models\Admin;
+use App\Models\MataPelajaran;
 
 class MataPelajaranRepository
 {
     protected $model;
 
-    public function __construct(Admin $guru)
+    public function __construct(MataPelajaran $mataPelajaran)
     {
-        $this->model = $guru;
+        $this->model = $mataPelajaran;
     }
 
     public function find($id)

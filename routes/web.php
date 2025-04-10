@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasContoller;
+use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\WaliKelasController;
@@ -69,10 +70,10 @@ Route::middleware(["auth", "web"])->group(function () {
     Route::put('/tahun-ajaran/update', [TahunAjaranController::class, 'update'])->name('tahun-ajaran.update');
 
     // Mata Pelajaran
-    Route::get('mata-pelajaran', [TahunAjaranController::class, 'index'])->name('mata-pelajaran');
-    Route::get('mata-pelajaran/create', [TahunAjaranController::class, 'create'])->name('mata-pelajaran.create');
-    Route::post('mata-pelajaran/store', [TahunAjaranController::class, 'store'])->name('mata-pelajaran.store');
-    Route::get('/mata-pelajaran/edit', [TahunAjaranController::class, 'edit'])->name('mata-pelajaran.edit');
-    Route::put('/mata-pelajaran/update', [TahunAjaranController::class, 'update'])->name('mata-pelajaran.update');
+    Route::get('mata-pelajaran', [MataPelajaranController::class, 'index'])->name('mata-pelajaran');
+    Route::get('mata-pelajaran/create', [MataPelajaranController::class, 'create'])->name('mata-pelajaran.create');
+    Route::post('mata-pelajaran/store', [MataPelajaranController::class, 'store'])->name('mata-pelajaran.store');
+    Route::get('/mata-pelajaran/edit', [MataPelajaranController::class, 'edit'])->name('mata-pelajaran.edit');
+    Route::put('/mata-pelajaran/update', [MataPelajaranController::class, 'update'])->name('mata-pelajaran.update');
 });
 

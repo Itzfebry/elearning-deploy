@@ -21,9 +21,9 @@ class Guru extends Model
     //     return $this->hasOne(Kelas::class, 'nip_wali', 'nip');
     // }
 
-    public function guru()
+    public function mataPelajaran()
     {
-        return $this->hasOne(Guru::class, 'wali_nip', 'nip');
+        return $this->hasOne(MataPelajaran::class, 'guru_nip', 'nip');
     }
 
     public function user()

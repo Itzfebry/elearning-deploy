@@ -2,7 +2,7 @@
 @section('title', "Mata Pelajaran")
 @section('titleHeader', "Data Mata Pelajaran")
 @section('addBtn')
-<a href="{{ route('wali-kelas.create') }}" class="button blue">
+<a href="{{ route('mata-pelajaran.create') }}" class="button blue">
     <span>Tambah</span>
 </a>
 @endsection
@@ -50,12 +50,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
+                        {{-- @php
                         $page = isset($_GET['page']) ? $_GET['page'] : 1;
                         $page_length = isset($_GET['page_length']) ? $_GET['page_length'] : 5;
                         $i = $page == 1 ? 1 : $page * $page_length - $page_length + 1;
                         @endphp
-                        @forelse ($waliKelas as $item)
+                        @forelse ($mataPelajaran as $item)
                         <tr>
                             <td data-label="No">{{ $i++ }}</td>
                             <td data-label="Kelas">{{ $item->kelas }}</td>
@@ -82,11 +82,11 @@
                         <tr>
                             <td colspan="6" class="text-center py-4 text-gray-500">Data Kosong</td>
                         </tr>
-                        @endforelse
+                        @endforelse --}}
                     </tbody>
                 </table>
                 <div class="mt-4">
-                    {{ $waliKelas->links() }}
+                    {{ $mataPelajaran->links() }}
                 </div>
             </div>
         </div>

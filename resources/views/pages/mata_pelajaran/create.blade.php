@@ -12,9 +12,27 @@
             </p>
         </header>
         <div class="card-content">
-            <form method="POST" action="{{ route('wali-kelas.store') }}">
+            <form method="POST" action="{{ route('mata-pelajaran.store') }}">
                 @csrf
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
+                    <div class="field">
+                        <label class="label">Nama Mata Pelajaran</label>
+                        <input class="input" type="text" name="nama" placeholder="contoh.Matematika" required
+                            value="{{ old('nama') }}">
+                    </div>
+                    <div class="field">
+                        <label class="label">Wali Kelas</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="guru_nip" required>
+                                    <option value="">-- Pilih Guru --</option>
+                                    @foreach ($guru as $item)
+                                    <option value="{{ $item->nip }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="field">
                         <label class="label">Kelas</label>
                         <div class="control">
@@ -39,19 +57,6 @@
                                     @foreach ($tahunAjaran as $item)
                                     <option value="{{ $item->tahun }}" {{ old('tahun_ajaran')==$item->tahun ? "selected"
                                         : "" }}>{{ $item->tahun }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label class="label">Wali Kelas</label>
-                        <div class="control">
-                            <div class="select">
-                                <select name="wali_nip" required>
-                                    <option value="">-- Pilih Guru --</option>
-                                    @foreach ($guru as $item)
-                                    <option value="{{ $item->nip }}">{{ $item->nama }}</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -21,10 +21,10 @@ class MataPelajaran extends Model
     }
     public function kelas()
     {
-        return $this->belongsTo(Guru::class, "kelas", "nama");
+        return $this->belongsTo(Kelas::class, "kelas", "nama");
     }
     public function tahunAjaran()
     {
-        return $this->belongsTo(Guru::class, "tahun_ajaran", "tahun");
+        return $this->belongsTo(TahunAjaran::class, "tahun_ajaran", "tahun");
     }
 }

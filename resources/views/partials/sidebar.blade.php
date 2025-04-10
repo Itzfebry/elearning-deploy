@@ -34,6 +34,12 @@
                     <span class="menu-item-label">Siswa</span>
                 </a>
             </li>
+            <li class="{{ Request::is('wali-kelas') || Request::is('wali-kelas/*') ? 'active' : '' }}">
+                <a href="{{ route('wali-kelas') }}">
+                    <span class="icon"><i class="mdi mdi-lock"></i></span>
+                    <span class="menu-item-label">Wali Kelas</span>
+                </a>
+            </li>
             <li class="{{ Request::is('admin') || Request::is('admin/*') ? 'active' : '' }}">
                 <a href="{{ route('admin') }}">
                     <span class="icon"><i class="mdi mdi-lock"></i></span>

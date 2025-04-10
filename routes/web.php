@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasContoller;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\WaliKelasController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -50,5 +51,10 @@ Route::middleware(["auth", "web"])->group(function () {
     // Route::get('kelas/edit/{id}', [KelasContoller::class, 'edit'])->name('kelas.edit');
     // Route::put('kelas/update/{id}', [KelasContoller::class, 'update'])->name('kelas.update');
     Route::post('kelas/delete', [KelasContoller::class, 'destroy'])->name('kelas.delete');
+
+    Route::get('wali-kelas', [WaliKelasController::class, 'index'])->name('wali-kelas');
+    Route::get('wali-kelas/create', [WaliKelasController::class, 'create'])->name('wali-kelas.create');
+    Route::get('wali-kelas/edit/{id}', [WaliKelasController::class, 'edit'])->name('wali-kelas.edit');
+    Route::put('wali-kelas/update/{id}', [WaliKelasController::class, 'update'])->name('wali-kelas.update');
 });
 

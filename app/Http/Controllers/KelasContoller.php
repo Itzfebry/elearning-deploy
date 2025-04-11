@@ -40,7 +40,6 @@ class KelasContoller extends Controller
     public function store(Request $request)
     {
         try {
-
             $data = $request->validate([
                 'nama' => 'required|string',
             ]);

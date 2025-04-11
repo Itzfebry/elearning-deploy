@@ -24,7 +24,6 @@
         </ul>
 
         @if (Auth::user()->role == "admin")
-
         <p class="menu-label">Master</p>
         <ul class="menu-list">
             <li class="{{ Request::is('tahun-ajaran') || Request::is('tahun-ajaran/*') ? 'active' : '' }}">
@@ -72,6 +71,12 @@
             @else
             <p class="menu-label">OPERASIONAL</p>
             <ul class="menu-list">
+                <li class="{{ Request::is('materi') || Request::is('materi/*') ? 'active' : '' }}">
+                    <a href="{{ route('materi') }}">
+                        <span class="icon"><i class="mdi mdi-lock"></i></span>
+                        <span class="menu-item-label">Materi</span>
+                    </a>
+                </li>
             </ul>
             </p>
             @endif

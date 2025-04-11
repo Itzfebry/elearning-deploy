@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasContoller;
 use App\Http\Controllers\MataPelajaranController;
+use App\Http\Controllers\RoleGuru\MateriController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\WaliKelasController;
@@ -81,4 +82,11 @@ Route::middleware(["auth", "role:admin"])->group(function () {
 
 Route::middleware(["auth", "role:guru"])->group(function () {
     Route::get('dashboard-guru', [DashboardController::class, 'index'])->name('dashboard.guru');
+
+    // Mata Pelajaran
+    Route::get('materi', [MateriController::class, 'index'])->name('materi');
+    Route::get('materi/create', [MateriController::class, 'create'])->name('materi.create');
+    Route::post('materi/store', [MateriController::class, 'store'])->name('materi.store');
+    Route::get('materi/edit/{id}', [MateriController::class, 'edit'])->name('materi.edit');
+    Route::put('materi/update/{id}', [MateriController::class, 'update'])->name('materi.update');
 });

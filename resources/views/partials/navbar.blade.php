@@ -16,7 +16,11 @@
                     <div class="user-avatar">
                         <img src="{{ asset('template/img/user.jpg') }}" class="rounded-full">
                     </div>
-                    <div class="is-user-name"><span class="text-white">{{ Auth::user()->admin->nama }}</span></div>
+                    @if (Auth::user()->role == "admin")
+                    <div class="is-user-name"><span class="text-white">{{ Auth::user()->admin->nama}}</span></div>
+                    @else
+                    <div class="is-user-name"><span class="text-white">{{ Auth::user()->guru->nama}}</span></div>
+                    @endif
                     <span class="icon text-white"><i class="mdi mdi-chevron-down"></i></span>
                 </a>
                 <form action="{{ route('logout') }}" method="POST">

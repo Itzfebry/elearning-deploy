@@ -19,7 +19,9 @@ Route::middleware(["guest", "web"])->group(function () {
 
 Route::middleware(["auth", "web"])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
+Route::middleware(["auth", "role:admin"])->group(function () {
     Route::get('/', [DashboardController::class, 'index']);
 
     // Siswa
@@ -77,3 +79,6 @@ Route::middleware(["auth", "web"])->group(function () {
     Route::put('mata-pelajaran/update/{id}', [MataPelajaranController::class, 'update'])->name('mata-pelajaran.update');
 });
 
+Route::middleware(["auth", "role:guru"])->group(function () {
+    Route::get('dashboard-guru', [DashboardController::class, 'index'])->name('dashboard.guru');
+});

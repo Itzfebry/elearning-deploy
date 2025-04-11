@@ -8,12 +8,23 @@
         <p class="menu-label">General</p>
         <ul class="menu-list">
             <li class="--set-active-index-html">
+                @if (Auth::user()->role == "admin")
                 <a href="{{ url('/') }}">
                     <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
                     <span class="menu-item-label">Dashboard</span>
                 </a>
+                @else
+                <a href="{{ route('dashboard.guru') }}">
+                    <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+                    <span class="menu-item-label">Dashboard</span>
+                </a>
+                @endif
+
             </li>
         </ul>
+
+        @if (Auth::user()->role == "admin")
+
         <p class="menu-label">Master</p>
         <ul class="menu-list">
             <li class="{{ Request::is('tahun-ajaran') || Request::is('tahun-ajaran/*') ? 'active' : '' }}">
@@ -58,6 +69,12 @@
                     <span class="menu-item-label">Mata Pelajaran</span>
                 </a>
             </li>
+            @else
+            <p class="menu-label">OPERASIONAL</p>
+            <ul class="menu-list">
+            </ul>
+            </p>
+            @endif
             {{-- <li>
                 <a class="dropdown">
                     <span class="icon"><i class="mdi mdi-view-list"></i></span>

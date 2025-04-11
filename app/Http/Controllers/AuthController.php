@@ -18,7 +18,7 @@ class AuthController extends Controller
      */
     public function index()
     {
-        return view("pages.role_admin.auth.index");
+        return view("pages.auth.index");
     }
 
     public function login(Request $request)
@@ -53,7 +53,7 @@ class AuthController extends Controller
                 if ($user->role == 'admin') {
                     return redirect()->route('/');
                 } elseif ($user->role == 'guru') {
-                    return redirect()->route('/');
+                    return redirect()->route('dashboard.guru');
                 }
             }
 

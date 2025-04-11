@@ -1,28 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\RoleGuru;
 
-use App\Repositories\DashboardRepository;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class TugasController extends Controller
 {
-    protected $param;
-
-    public function __construct(DashboardRepository $dashboard)
-    {
-        $this->param = $dashboard;
-    }
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $dashboard = $this->param->getData();
-        return view("pages.role_admin.dashboard.index", compact("dashboard"));
-    }
-
-    public function indexAdmin()
-    {
-        $dashboard = $this->param->getData();
-        return view("pages.role_guru.dashboard.index", compact("dashboard"));
+        //
     }
 
     /**

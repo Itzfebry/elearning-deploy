@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function index()
     {
         $dashboard = $this->param->getData();
-        return view("pages.dashboard.index", compact("dashboard"));
+        return view("pages.role_admin.dashboard.index", compact("dashboard"));
     }
 
     /**

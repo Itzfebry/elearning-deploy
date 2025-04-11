@@ -24,7 +24,7 @@ class WaliKelasController extends Controller
         $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $waliKelas = $this->param->getData($search, $limit);
-        return view('pages.wali_kelas.index', compact('waliKelas'));
+        return view('pages.role_admin.wali_kelas.index', compact('waliKelas'));
     }
 
     /**
@@ -35,7 +35,7 @@ class WaliKelasController extends Controller
         $kelas = Kelas::get();
         $guru = Guru::get();
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
-        return view('pages.wali_kelas.create', compact(['kelas', 'guru', 'tahunAjaran']));
+        return view('pages.role_admin.wali_kelas.create', compact(['kelas', 'guru', 'tahunAjaran']));
     }
 
     /**
@@ -79,7 +79,7 @@ class WaliKelasController extends Controller
         $kelas = Kelas::get();
         $guru = Guru::get();
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
-        return view('pages.wali_kelas.edit', compact(['waliKelas', 'kelas', 'guru', 'tahunAjaran']));
+        return view('pages.role_admin.wali_kelas.edit', compact(['waliKelas', 'kelas', 'guru', 'tahunAjaran']));
     }
 
     /**

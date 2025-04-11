@@ -23,7 +23,7 @@ class MataPelajaranController extends Controller
         $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $mataPelajaran = $this->param->getData($search, $limit);
-        return view("pages.mata_pelajaran.index", compact("mataPelajaran"));
+        return view("pages.role_admin.mata_pelajaran.index", compact("mataPelajaran"));
     }
 
     /**
@@ -34,7 +34,7 @@ class MataPelajaranController extends Controller
         $guru = Guru::all();
         $kelas = Kelas::all();
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
-        return view("pages.mata_pelajaran.create", compact("guru", "kelas", "tahunAjaran"));
+        return view("pages.role_admin.mata_pelajaran.create", compact("guru", "kelas", "tahunAjaran"));
     }
 
     /**
@@ -79,7 +79,7 @@ class MataPelajaranController extends Controller
         $guru = Guru::all();
         $kelas = Kelas::all();
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
-        return view("pages.mata_pelajaran.edit", compact(["mataPelajaran", "guru", "kelas", "tahunAjaran"]));
+        return view("pages.role_admin.mata_pelajaran.edit", compact(["mataPelajaran", "guru", "kelas", "tahunAjaran"]));
     }
 
     /**

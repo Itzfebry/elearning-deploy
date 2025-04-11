@@ -22,7 +22,7 @@ class TahunAjaranController extends Controller
         $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $tahunAjaran = $this->param->getData($search, $limit);
-        return view("pages.tahun_ajaran.index", compact("tahunAjaran"));
+        return view("pages.role_admin.tahun_ajaran.index", compact("tahunAjaran"));
     }
 
     /**
@@ -30,7 +30,7 @@ class TahunAjaranController extends Controller
      */
     public function create()
     {
-        return view("pages.tahun_ajaran.create");
+        return view("pages.role_admin.tahun_ajaran.create");
     }
 
     /**
@@ -70,7 +70,7 @@ class TahunAjaranController extends Controller
     {
         $tahun = urldecode($request->tahun_ajaran);
         $tahunAjaran = TahunAjaran::where('tahun', $tahun)->firstOrFail();
-        return view('pages.tahun_ajaran.edit', compact('tahunAjaran'));
+        return view('pages.role_admin.tahun_ajaran.edit', compact('tahunAjaran'));
     }
 
     /**

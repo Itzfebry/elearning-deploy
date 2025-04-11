@@ -26,7 +26,7 @@ class SiswaController extends Controller
         $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $siswa = $this->param->getData($search, $limit);
-        return view("pages.siswa.index", compact("siswa"));
+        return view("pages.role_admin.siswa.index", compact("siswa"));
     }
 
     /**
@@ -36,7 +36,7 @@ class SiswaController extends Controller
     {
         $kelas = Kelas::get();
         $tahunAjaran = TahunAjaran::get();
-        return view("pages.siswa.create", compact("kelas", 'tahunAjaran'));
+        return view("pages.role_admin.siswa.create", compact("kelas", 'tahunAjaran'));
     }
 
     /**
@@ -95,7 +95,7 @@ class SiswaController extends Controller
         $kelas = Kelas::get();
         $tahunAjaran = TahunAjaran::get();
         $siswa = Siswa::find($id);
-        return view("pages.siswa.edit", compact(["kelas", "siswa", "tahunAjaran"]));
+        return view("pages.role_admin.siswa.edit", compact(["kelas", "siswa", "tahunAjaran"]));
     }
 
     /**

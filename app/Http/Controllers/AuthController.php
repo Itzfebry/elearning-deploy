@@ -18,7 +18,7 @@ class AuthController extends Controller
      */
     public function index()
     {
-        return view("pages.auth.index");
+        return view("pages.role_admin.auth.index");
     }
 
     public function login(Request $request)

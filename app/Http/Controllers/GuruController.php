@@ -25,7 +25,7 @@ class GuruController extends Controller
         $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $guru = $this->param->getData($search, $limit);
-        return view("pages.guru.index", compact("guru"));
+        return view("pages.role_admin.guru.index", compact("guru"));
     }
 
     /**
@@ -33,7 +33,7 @@ class GuruController extends Controller
      */
     public function create()
     {
-        return view("pages.guru.create");
+        return view("pages.role_admin.guru.create");
     }
 
     /**
@@ -88,7 +88,7 @@ class GuruController extends Controller
     public function edit(string $id)
     {
         $guru = $this->param->find($id);
-        return view("pages.guru.edit", compact("guru"));
+        return view("pages.role_admin.guru.edit", compact("guru"));
     }
 
     /**

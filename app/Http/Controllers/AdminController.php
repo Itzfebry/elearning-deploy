@@ -24,7 +24,7 @@ class AdminController extends Controller
         $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $admin = $this->param->getData($search, $limit);
-        return view("pages.admin.index", compact("admin"));
+        return view("pages.role_admin.admin.index", compact("admin"));
     }
 
     /**
@@ -32,7 +32,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        return view("pages.admin.create");
+        return view("pages.role_admin.admin.create");
     }
 
     /**
@@ -87,7 +87,7 @@ class AdminController extends Controller
     public function edit(string $id)
     {
         $admin = $this->param->find($id);
-        return view("pages.admin.edit", compact("admin"));
+        return view("pages.role_admin.admin.edit", compact("admin"));
     }
 
     /**

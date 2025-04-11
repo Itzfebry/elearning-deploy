@@ -23,7 +23,7 @@ class KelasContoller extends Controller
         $limit = $request->has('page_length') ? $request->get('page_length') : 10;
         $search = $request->has('search') ? $request->get('search') : null;
         $kelas = $this->param->getData($search, $limit);
-        return view("pages.kelas.index", compact("kelas"));
+        return view("pages.role_admin.kelas.index", compact("kelas"));
     }
 
     /**
@@ -31,7 +31,7 @@ class KelasContoller extends Controller
      */
     public function create()
     {
-        return view("pages.kelas.create");
+        return view("pages.role_admin.kelas.create");
     }
 
     /**
@@ -71,7 +71,7 @@ class KelasContoller extends Controller
     public function edit(string $id)
     {
         // $kelas = Kelas::find($id);
-        // return view("pages.kelas.edit", compact("kelas"));
+        // return view("pages.role_admin.kelas.edit", compact("kelas"));
     }
 
     /**

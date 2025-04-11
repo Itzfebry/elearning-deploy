@@ -4,6 +4,7 @@ namespace App\Http\Controllers\RoleGuru;
 
 use App\Http\Controllers\Controller;
 use App\Models\MataPelajaran;
+use App\Models\Materi;
 use App\Models\TahunAjaran;
 use App\Repositories\MateriRepository;
 use Illuminate\Database\QueryException;
@@ -26,6 +27,12 @@ class MateriController extends Controller
         $search = $request->has('search') ? $request->get('search') : null;
         $materi = $this->param->getData($search, $limit);
         return view("pages.role_guru.materi.index", compact("materi"));
+    }
+
+    public function detail($id)
+    {
+        $materiDetail = Materi::find($id);
+        return view("pages.role_guru.materi.detail", compact("materiDetail"));
     }
 
     /**

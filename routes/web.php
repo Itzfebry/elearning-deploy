@@ -87,6 +87,7 @@ Route::middleware(["auth", "role:guru"])->group(function () {
     Route::get('materi', [MateriController::class, 'index'])->name('materi');
     Route::get('materi/create', [MateriController::class, 'create'])->name('materi.create');
     Route::post('materi/store', [MateriController::class, 'store'])->name('materi.store');
+    Route::get('materi/detail/{id}', [MateriController::class, 'detail'])->name('materi.detail');
     Route::get('materi/edit/{id}', [MateriController::class, 'edit'])->name('materi.edit');
     Route::put('materi/update/{id}', [MateriController::class, 'update'])->name('materi.update');
 });

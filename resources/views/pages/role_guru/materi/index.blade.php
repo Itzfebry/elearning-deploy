@@ -67,10 +67,10 @@
                             <td data-label="Tahun Ajaran">{{ $item->tahun_ajaran }}</td>
                             <td class="actions-cell content-delete">
                                 <div class="buttons right nowrap">
-                                    <a href="{{ route('materi.edit', $item->id) }}" class="button small blue --jb-modal"
-                                        data-target="sample-modal-2" type="button">
+                                    <a href="{{ route('materi.detail', $item->id) }}"
+                                        class="button small blue --jb-modal" data-target="sample-modal-2" type="button">
                                         <span class="icon">
-                                            <i name="edit" class="mdi mdi-eye"></i>
+                                            <i name="detail" class="mdi mdi-eye"></i>
                                         </span>
                                     </a>
                                     <a href="{{ route('materi.edit', $item->id) }}" class="button small blue --jb-modal"

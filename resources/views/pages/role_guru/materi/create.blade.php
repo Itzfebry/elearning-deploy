@@ -65,7 +65,7 @@
                             required value="{{ old('judul_materi') }}">
                     </div>
                     <div class="field">
-                        <label class="label">Question</label>
+                        <label class="label">Desktipsi</label>
                         <div class="control">
                             <textarea class="textarea" name="deskripsi" required
                                 placeholder="Masukkkan Deskripsi Materi">{{ old('deskripsi') }}</textarea>

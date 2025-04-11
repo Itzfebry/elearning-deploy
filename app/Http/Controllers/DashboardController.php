@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\DashboardRepository;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $param;
+
+    public function __construct(DashboardRepository $dashboard)
+    {
+        $this->param = $dashboard;
+    }
     public function index()
     {
-        return view("pages.dashboard.index");
+        $dashboard = $this->param->getData();
+        return view("pages.dashboard.index", compact("dashboard"));
     }
 
     /**

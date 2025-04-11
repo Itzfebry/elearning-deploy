@@ -9,10 +9,10 @@
             <div class="flex items-center justify-between">
                 <div class="widget-label">
                     <h3>
-                        Clients
+                        Admin
                     </h3>
                     <h1>
-                        512
+                        {{ $dashboard['admin'] }}
                     </h1>
                 </div>
                 <span class="icon widget-icon text-green-500"><i class="mdi mdi-account-multiple mdi-48px"></i></span>
@@ -24,13 +24,13 @@
             <div class="flex items-center justify-between">
                 <div class="widget-label">
                     <h3>
-                        Sales
+                        Guru
                     </h3>
                     <h1>
-                        $7,770
+                        {{ $dashboard['guru'] }}
                     </h1>
                 </div>
-                <span class="icon widget-icon text-blue-500"><i class="mdi mdi-cart-outline mdi-48px"></i></span>
+                <span class="icon widget-icon text-red-500"><i class="mdi mdi-account-multiple mdi-48px"></i></span>
             </div>
         </div>
     </div>
@@ -40,13 +40,13 @@
             <div class="flex items-center justify-between">
                 <div class="widget-label">
                     <h3>
-                        Performance
+                        Siswa
                     </h3>
                     <h1>
-                        256%
+                        {{ $dashboard['siswa'] }}
                     </h1>
                 </div>
-                <span class="icon widget-icon text-red-500"><i class="mdi mdi-finance mdi-48px"></i></span>
+                <span class="icon widget-icon text-blue-500"><i class="mdi mdi-account-multiple mdi-48px"></i></span>
             </div>
         </div>
     </div>

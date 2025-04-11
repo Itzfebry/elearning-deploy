@@ -76,21 +76,3 @@
     </div>
 </section>
 @endsection
-@push('extraScript')
-{{-- <script>
-    $( document ).ready(function() {
-        const tahunSekarang = new Date().getFullYear();
-        const jumlahPilihan = 5;
-
-        for (let i = jumlahPilihan - 1; i >= 0; i--) {
-            const tahunAwal = tahunSekarang - i;
-            const tahunAkhir = tahunAwal + 1;
-            var value = `${tahunAwal}/${tahunAkhir}`;
-            var textContent = `${tahunAwal}/${tahunAkhir}`;
-            $('.tahun-ajaran').append(`
-                <option value="${value}">${textContent}</option>
-            `);
-        }
-    });
-</script> --}}
-@endpush

@@ -53,7 +53,6 @@ class MateriRepository
     public function update($data, $id)
     {
         return $this->model->where('id', $id)->update([
-            "tanggal" => $data["tanggal"],
             "matapelajaran_id" => $data["matapelajaran_id"],
             "semester" => $data["semester"],
             "type" => $data["type"],

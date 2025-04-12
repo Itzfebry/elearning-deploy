@@ -47,6 +47,7 @@
                             <th>Mata Pelajaran</th>
                             <th>Semester</th>
                             <th>Judul</th>
+                            <th>Tipe</th>
                             <th>Tahun Ajaran</th>
                             <th></th>
                         </tr>
@@ -64,6 +65,7 @@
                             <td data-label="Name">{{ $item->mataPelajaran->nama }}</td>
                             <td data-label="Email">{{ $item->semester }}</td>
                             <td data-label="Judul">{{ $item->judul_materi }}</td>
+                            <td data-label="Judul">{{ $item->type }}</td>
                             <td data-label="Tahun Ajaran">{{ $item->tahun_ajaran }}</td>
                             <td class="actions-cell content-delete">
                                 <div class="buttons right nowrap">

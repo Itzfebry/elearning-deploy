@@ -208,8 +208,23 @@ class MateriController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $materi = $this->param->find($request->formid);
+
+            if ($materi->type === 'buku' && $materi->path) {
+                // Hapus file PDF dari storage/public/materi
+                Storage::disk('public')->delete($materi->path);
+            }
+
+            $this->param->destroy($materi->id);
+            Alert::success("Berhasil", "Data berhasil dihapus.");
+            return redirect()->route("materi"); // sesuaikan dengan route kamu
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back();
+        }
     }
+
 }

@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Auth;
 class TugasRepository
 {
     protected $model;
+    protected $nipUser;
 
     public function __construct(Tugas $tugas)
     {
         $this->model = $tugas;
+        $this->nipUser = Auth::user()->guru->nip;
     }
 
     public function find($id)
@@ -42,7 +44,7 @@ class TugasRepository
         return $this->model->create([
             "tanggal" => $data["tanggal"],
             "tenggat" => $data["tenggat"],
-            "guru_nip" => $data["guru_nip"],
+            "guru_nip" => $this->nipUser,
             "nama" => $data["nama"],
             "matapelajaran_id" => $data["matapelajaran_id"],
             "kelas" => $data["kelas"],
@@ -55,7 +57,7 @@ class TugasRepository
         return $this->model->where('id', $id)->update([
             "tanggal" => $data["tanggal"],
             "tenggat" => $data["tenggat"],
-            "guru_nip" => $data["guru_nip"],
+            "guru_nip" => $this->nipUser,
             "nama" => $data["nama"],
             "matapelajaran_id" => $data["matapelajaran_id"],
             "kelas" => $data["kelas"],

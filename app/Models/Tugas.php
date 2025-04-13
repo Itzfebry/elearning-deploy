@@ -18,6 +18,10 @@ class Tugas extends Model
         "tahun_ajaran",
     ];
 
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, "guru_nip", "nip");
+    }
     public function mataPelajaran()
     {
         return $this->belongsTo(MataPelajaran::class, "matapelajaran_id", "id");

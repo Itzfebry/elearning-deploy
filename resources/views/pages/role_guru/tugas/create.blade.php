@@ -19,45 +19,73 @@
                     <div id="date-range-picker" date-rangepicker class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <div class="field">
                             <label class="label">Tanggal</label>
-                            <input id="datepicker-range-start" name="tanggal" type="text" class="input"
-                                placeholder="Select date start">
+                            <input id="datepicker-range-start" name="tanggal" type="text" class="input" required
+                                placeholder="Pilih tanggal" value="{{ old('tanggal') }}">
                         </div>
                         <div class="field">
                             <label class="label">Tenggat</label>
-                            <input id="datepicker-range-end" name="tanggal" type="text" class="input"
-                                placeholder="Select date start">
+                            <input id="datepicker-range-end" name="tenggat" type="text" class="input" required
+                                placeholder="Pilih batas tanggal" value="{{ old('tenggat') }}">
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">NIP</label>
-                        <input class="input" type="text" name="nip" placeholder="contoh.1298787288" required
-                            maxlength="18" value="{{ old('nip') }}">
-                    </div>
-                    <div class="field">
-                        <label class="label">Email</label>
-                        <input class="input" type="email" name="email" placeholder="contoh@gmail.com" required
-                            value="{{ old('email') }}">
-                    </div>
-                    <div class="field">
-                        <label class="label">Nama</label>
-                        <input class="input" type="text" name="nama" placeholder="masukkan nama" required
-                            value="{{ old('nama') }}">
-                        <input type="text" name="role" hidden value="guru">
-                    </div>
-                    <div class="field">
-                        <label class="label">Jenis Kelamain</label>
+                        <label class="label">Mata Pelajaran</label>
                         <div class="control">
                             <div class="select">
-                                <select name="jk">
-                                    <option value="L" {{ old('jk')=="L" ? "selected" : "" }}>Laki-laki</option>
-                                    <option value="P" {{ old('jk')=="P" ? "selected" : "" }}>Perempuan</option>
+                                <select name="matapelajaran_id" required>
+                                    <option value="">-- Pilih Mata Pelajaran --</option>
+                                    @foreach ($mataPelajaran as $item)
+                                    <option value="{{ $item->id }}" {{ old('matapelajaran_id')==$item->id }}>
+                                        {{ $item->nama }}
+                                    </option>
+                                    @endforeach
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Kelas</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="kelas" required>
+                                    <option value="">-- Pilih Kelas --</option>
+                                    @foreach ($kelas as $item)
+                                    <option value="{{ $item->nama }}" {{ old('kelas')==$item->nama }}>
+                                        {{ $item->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Tahun Ajaran</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="tahun_ajaran" required>
+                                    <option value="">-- Pilih Tahun Ajaran --</option>
+                                    @foreach ($tahunAjaran as $item)
+                                    <option value="{{ $item->tahun }}" {{ old('tahun_ajaran')==$item->tahun }}>
+                                        {{ $item->tahun }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Tugas</label>
+                        <div
+                            class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                            <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
+                                <textarea rows="8"
+                                    class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
+                                    placeholder="Masukkkan Tugas..." name="nama" required>{{ old('nama') }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 <hr>
-
                 <div class="field grouped">
                     <div class="control">
                         <button type="submit" class="button green">
@@ -70,27 +98,3 @@
     </div>
 </section>
 @endsection
-@push('extraSctipt')
-<script>
-    $(document).ready(function() {
-        const startDatepicker = document.getElementById('datepicker-range-start');
-        const endDatepicker = document.getElementById('datepicker-range-end');
-
-        $('#datepicker-range-start').on('change', function(){
-            // var nilai = $(this).val();
-            console.log("TESSSSS");
-            
-        });
-    
-        new Datepicker(startDatepicker, {
-            format: 'dd/mm/yyyy',
-            autohide: true
-        });
-    
-        new Datepicker(endDatepicker, {
-            format: 'dd/mm/yyyy',
-            autohide: true
-        });
-    });
-</script>
-@endpush

@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\RoleGuru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kelas;
+use App\Models\MataPelajaran;
+use App\Models\TahunAjaran;
 use App\Models\Tugas;
 use App\Repositories\TugasRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class TugasController extends Controller
 {
@@ -15,6 +20,11 @@ class TugasController extends Controller
     public function __construct(TugasRepository $tugas)
     {
         $this->param = $tugas;
+    }
+
+    public function dateFormat($date)
+    {
+        return date('Y-m-d', strtotime($date));
     }
 
     public function index(Request $request)
@@ -30,7 +40,10 @@ class TugasController extends Controller
      */
     public function create()
     {
-        return view("pages.role_guru.tugas.create");
+        $mataPelajaran = MataPelajaran::where('guru_nip', Auth::user()->guru->nip)->get();
+        $kelas = Kelas::all();
+        $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
+        return view("pages.role_guru.tugas.create", compact(["mataPelajaran", "kelas", "tahunAjaran"]));
     }
 
     /**
@@ -38,7 +51,29 @@ class TugasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request['tanggal'] = $this->dateFormat($request->input('tanggal'));
+            $request['tenggat'] = $this->dateFormat($request->input('tenggat'));
+
+            $data = $request->validate([
+                'tanggal' => 'required',
+                'tenggat' => 'required',
+                'nama' => 'required',
+                'matapelajaran_id' => 'required',
+                'kelas' => 'required',
+                'tahun_ajaran' => 'required',
+            ]);
+
+            $this->param->store($data);
+            Alert::success("Berhasil", "Data Berhasil di simpan.");
+            return redirect()->route("tugas");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

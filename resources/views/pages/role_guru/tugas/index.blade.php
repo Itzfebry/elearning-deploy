@@ -43,10 +43,13 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>NIP</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Jenis Kelamin</th>
+                            <th>Tanggal</th>
+                            <th>Tenggat</th>
+                            <th>Guru</th>
+                            <th>Matpel</th>
+                            <th>Tugas</th>
+                            <th>Kelas</th>
+                            <th>Tahu Ajaran</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -59,16 +62,13 @@
                         @forelse ($tugas as $item)
                         <tr>
                             <td data-label="No">{{ $i++ }}</td>
-                            <td data-label="NIP">{{ $item->nip }}</td>
-                            <td data-label="Name">{{ $item->nama }}</td>
-                            <td data-label="Email">{{ $item->user->email }}</td>
-                            <td data-label="Jk">
-                                @if ($item->jk == "L")
-                                Laki-laki
-                                @else
-                                Perempuan
-                                @endif
-                            </td>
+                            <td data-label="Tanggal">{{ $item->tanggal }}</td>
+                            <td data-label="tenggat">{{ $item->tenggat }}</td>
+                            <td data-label="Guru">{{ $item->guru->nama }}</td>
+                            <td data-label="Tugas">{{ $item->nama }}</td>
+                            <td data-label="Matpel">{{ $item->mataPelajaran->nama }}</td>
+                            <td data-label="Kelas">{{ $item->kelas }}</td>
+                            <td data-label="TahunAjaran">{{ $item->tahun_ajaran }}</td>
                             <td class="actions-cell content-delete">
                                 <div class="buttons right nowrap">
                                     <a href="{{ route('tugas.edit', $item->id) }}" class="button small blue --jb-modal"
@@ -89,7 +89,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-gray-500">Data Kosong</td>
+                            <td colspan="9" class="text-center py-4 text-gray-500">Data Kosong</td>
                         </tr>
                         @endforelse
                     </tbody>

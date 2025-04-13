@@ -48,13 +48,21 @@ class AuthController extends Controller
         // Jika user ditemukan dan password cocok
         if ($user && Hash::check($request->password, $user->password)) {
             $token = $user->createToken('Mobile')->plainTextToken;
+            $user = $user->role == "siswa" ? $siswa : $guru;
 
             return $this->okApiResponse([
                 'token' => $token,
                 'user' => $user,
+
             ]);
         }
 
         return $this->errorApiResponse('Login gagal. Cek kembali kredensial Anda.');
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return $this->okApiResponse([], 'Berhsasil Logout.');
     }
 }

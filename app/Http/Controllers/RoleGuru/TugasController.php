@@ -27,6 +27,15 @@ class TugasController extends Controller
         return date('Y-m-d', strtotime($date));
     }
 
+    public function dataRequirement()
+    {
+        $mataPelajaran = MataPelajaran::where('guru_nip', Auth::user()->guru->nip)->get();
+        $kelas = Kelas::all();
+        $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
+
+        return [$mataPelajaran, $kelas, $tahunAjaran];
+    }
+
     public function index(Request $request)
     {
         $limit = $request->has('page_length') ? $request->get('page_length') : 10;
@@ -89,7 +98,11 @@ class TugasController extends Controller
      */
     public function edit(string $id)
     {
-        return view("pages.role_guru.tugas.edit");
+        $tugas = $this->param->find($id);
+        $mataPelajaran = MataPelajaran::where('guru_nip', Auth::user()->guru->nip)->get();
+        $kelas = Kelas::all();
+        $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
+        return view("pages.role_guru.tugas.edit", compact(["tugas", "mataPelajaran", "kelas", "tahunAjaran"]));
     }
 
     /**
@@ -97,7 +110,29 @@ class TugasController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $request['tanggal'] = $this->dateFormat($request->input('tanggal'));
+            $request['tenggat'] = $this->dateFormat($request->input('tenggat'));
+
+            $data = $request->validate([
+                'tanggal' => 'required',
+                'tenggat' => 'required',
+                'nama' => 'required',
+                'matapelajaran_id' => 'required',
+                'kelas' => 'required',
+                'tahun_ajaran' => 'required',
+            ]);
+
+            $this->param->update($data, $id);
+            Alert::success("Berhasil", "Data Berhasil di ubah.");
+            return redirect()->route("tugas");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        } catch (QueryException $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

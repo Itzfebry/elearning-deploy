@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MateriController;
+use App\Http\Controllers\Api\TugasController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
@@ -16,4 +17,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Materi 
     Route::get('/get-materi', [MateriController::class, 'getMateri'])->name('get.materi');
+
+    // Tugas 
+    Route::get('/get-tugas', [TugasController::class, 'getTugas'])->name('get.tugas');
 });

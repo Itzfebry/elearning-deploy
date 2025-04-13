@@ -100,7 +100,7 @@
         var formName = $(this).data('form_name');
         
         $('#modalDelete').html(`
-            <div id="myModal-${formName}" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+            <div id="myModal-${formName}" style="background-color: rgba(0,0,0,0.5);" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
                 <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
                     <h2 class="text-xl font-semibold mb-4 text-orange-400">Warning!</h2>
                     <p class="mb-4">Apakah anda ingin menhapus data kelas <b>${formName}</b>?</p>

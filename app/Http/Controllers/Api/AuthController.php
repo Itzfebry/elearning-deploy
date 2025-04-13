@@ -65,4 +65,21 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
         return $this->okApiResponse([], 'Berhsasil Logout.');
     }
+
+
+    public function user(Request $request)
+    {
+        $data = [];
+        $user = $request->user();
+        if ($user->role == 'siswa') {
+            $data = Siswa::where('user_id', $user->id)->first();
+        } else {
+            $data = Guru::where('user_id', $user->id)->first();
+        }
+        return $this->okApiResponse([
+            'user' => $user,
+            'detail' => $data,
+        ]);
+
+    }
 }

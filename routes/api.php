@@ -9,4 +9,7 @@ Route::middleware(['guest'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+
+    // User
+    Route::get('/get-me', [AuthController::class, 'user'])->name('get.me');
 });

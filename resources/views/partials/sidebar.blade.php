@@ -77,6 +77,12 @@
                         <span class="menu-item-label">Materi</span>
                     </a>
                 </li>
+                <li class="{{ Request::is('tugas') || Request::is('tugas/*') ? 'active' : '' }}">
+                    <a href="{{ route('tugas') }}">
+                        <span class="icon"><i class="mdi mdi-lock"></i></span>
+                        <span class="menu-item-label">Tugas</span>
+                    </a>
+                </li>
             </ul>
             </p>
             @endif

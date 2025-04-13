@@ -2,20 +2,21 @@
 
 namespace App\Repositories;
 
-use App\Models\Guru;
+use App\Models\Tugas;
+use Illuminate\Support\Facades\Auth;
 
 class TugasRepository
 {
     protected $model;
 
-    public function __construct(Guru $guru)
+    public function __construct(Tugas $tugas)
     {
-        $this->model = $guru;
+        $this->model = $tugas;
     }
 
     public function find($id)
     {
-        return $this->model->with('user')->find($id);
+        return $this->model->with('mataPelajaran')->find($id);
     }
 
     public function getData($search, $limit = 10)
@@ -23,11 +24,14 @@ class TugasRepository
         $search = strtolower($search);
         $query = $this->model
             ->where(function ($query) use ($search) {
+                $query->where("nama", "like", "%" . $search . "%")
+                    ->orWhere("kelas", "like", "%" . $search . "%")
+                    ->orWhere("tahun_ajaran", "like", "%" . $search . "%");
+            })
+            ->orWhereHas("mataPelajaran", function ($query) use ($search) {
                 $query->where("nama", "like", "%" . $search . "%");
             })
-            ->orWhereHas("user", function ($query) use ($search) {
-                $query->where("email", "like", "%" . $search . "%");
-            })
+            ->where('guru_nip', Auth::user()->guru->nip)
             ->paginate($limit);
 
         return $query;
@@ -36,19 +40,25 @@ class TugasRepository
     public function store($data)
     {
         return $this->model->create([
-            "user_id" => $data["user_id"],
-            "nip" => $data["nip"],
+            "tanggal" => $data["tanggal"],
+            "tenggat" => $data["tenggat"],
+            "guru_nip" => $data["guru_nip"],
             "nama" => $data["nama"],
-            "jk" => $data["jk"],
+            "matapelajaran_id" => $data["matapelajaran_id"],
+            "kelas" => $data["kelas"],
+            "tahun_ajaran" => $data["tahun_ajaran"],
         ]);
     }
 
     public function update($data, $id)
     {
         return $this->model->where('id', $id)->update([
-            "nip" => $data["nip"],
+            "tanggal" => $data["tanggal"],
+            "tenggat" => $data["tenggat"],
+            "guru_nip" => $data["guru_nip"],
             "nama" => $data["nama"],
-            "jk" => $data["jk"],
+            "matapelajaran_id" => $data["matapelajaran_id"],
+            "kelas" => $data["kelas"],
         ]);
     }
 

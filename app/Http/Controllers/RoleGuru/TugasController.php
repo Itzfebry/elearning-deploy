@@ -3,16 +3,26 @@
 namespace App\Http\Controllers\RoleGuru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tugas;
+use App\Repositories\TugasRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TugasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $param;
+
+    public function __construct(TugasRepository $tugas)
     {
-        //
+        $this->param = $tugas;
+    }
+
+    public function index(Request $request)
+    {
+        $limit = $request->has('page_length') ? $request->get('page_length') : 10;
+        $search = $request->has('search') ? $request->get('search') : null;
+        $tugas = $this->param->getData($search, $limit);
+        return view("pages.role_guru.tugas.index", compact("tugas"));
     }
 
     /**
@@ -20,7 +30,7 @@ class TugasController extends Controller
      */
     public function create()
     {
-        //
+        return view("pages.role_guru.tugas.create");
     }
 
     /**
@@ -44,7 +54,7 @@ class TugasController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view("pages.role_guru.tugas.edit");
     }
 
     /**

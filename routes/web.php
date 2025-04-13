@@ -7,6 +7,7 @@ use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasContoller;
 use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\RoleGuru\MateriController;
+use App\Http\Controllers\RoleGuru\TugasController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\WaliKelasController;
@@ -91,4 +92,12 @@ Route::middleware(["auth", "role:guru"])->group(function () {
     Route::get('materi/edit/{id}', [MateriController::class, 'edit'])->name('materi.edit');
     Route::put('materi/update/{id}', [MateriController::class, 'update'])->name('materi.update');
     Route::post('materi/delete', [MateriController::class, 'destroy'])->name('materi.delete');
+
+    // Tugas
+    Route::get('tugas', [TugasController::class, 'index'])->name('tugas');
+    Route::get('tugas/create', [TugasController::class, 'create'])->name('tugas.create');
+    Route::post('tugas/store', [TugasController::class, 'store'])->name('tugas.store');
+    Route::get('tugas/edit/{id}', [TugasController::class, 'edit'])->name('tugas.edit');
+    Route::put('tugas/update/{id}', [TugasController::class, 'update'])->name('tugas.update');
+    Route::post('tugas/delete', [TugasController::class, 'destroy'])->name('tugas.delete');
 });

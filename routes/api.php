@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\MateriController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
@@ -12,4 +13,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // User
     Route::get('/get-me', [AuthController::class, 'user'])->name('get.me');
+
+    // Materi 
+    Route::get('/get-materi', [MateriController::class, 'getMateri'])->name('get.materi');
 });

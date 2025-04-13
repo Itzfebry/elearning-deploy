@@ -72,13 +72,15 @@ class AuthController extends Controller
         $data = [];
         $user = $request->user();
         if ($user->role == 'siswa') {
-            $data = Siswa::where('user_id', $user->id)->first();
+            $data = Siswa::where('user_id', $user->id);
         } else {
-            $data = Guru::where('user_id', $user->id)->first();
+            $data = Guru::where('user_id', $user->id);
         }
+
+        $data = $data->with('user')->first();
+
         return $this->okApiResponse([
-            'user' => $user,
-            'detail' => $data,
+            'user' => $data,
         ]);
 
     }

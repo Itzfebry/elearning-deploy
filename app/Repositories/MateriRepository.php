@@ -18,6 +18,30 @@ class MateriRepository
         return $this->model->with('mataPelajaran')->find($id);
     }
 
+    public function getDataApi($semester = 1, $type = "buku", $request)
+    {
+        $query = $this->model
+            ->where(function ($query) use ($semester, $type) {
+                $query->where("semester", $semester)
+                    ->where("type", $type);
+            })
+            ->with("mataPelajaran");
+
+        if ($request->user->role == "siswa") {
+            $query->where(function ($query) use ($request) {
+                $query->where("tahun_ajaran", $request->tahun_ajaran);
+            });
+        } else {
+            $query->whereHas("mataPelajaran", function ($query) use ($request) {
+                $query->where("guru_nip", $request->nip);
+            });
+        }
+
+        $query = $query->get();
+
+        return $query;
+    }
+
     public function getData($search, $limit = 10)
     {
         $search = strtolower($search);

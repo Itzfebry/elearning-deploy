@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ApiResponse;
 use App\Models\Guru;
 use App\Models\MataPelajaran;
+use App\Models\Materi;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 
@@ -35,8 +36,24 @@ class MataPelajaranController extends Controller
                 $query->where('guru_nip', $data->guru_nip);
             });
         }
-        $query = $query->with('guru')->get();
+        $query = $query->with(['guru', 'materi'])->get();
 
-        return $this->okApiResponse($query);
+        $result = $query->map(function ($item) {
+            $materi = $item->materi ?? collect();
+
+            $jumlahBuku = $materi->where('type', 'buku')->count();
+            $jumlahVideo = $materi->where('type', 'video')->count();
+
+            return array_merge(
+                $item->toArray(),
+                [
+                    'jumlah_buku' => $jumlahBuku,
+                    'jumlah_video' => $jumlahVideo,
+                ]
+            );
+        });
+
+        return $this->okApiResponse($result);
+
     }
 }

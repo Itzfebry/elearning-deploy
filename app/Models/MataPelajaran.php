@@ -15,6 +15,10 @@ class MataPelajaran extends Model
         "tahun_ajaran",
     ];
 
+    public function materi()
+    {
+        return $this->hasMany(Materi::class, "matapelajaran_id", "id");
+    }
     public function guru()
     {
         return $this->belongsTo(Guru::class, "guru_nip", "nip");

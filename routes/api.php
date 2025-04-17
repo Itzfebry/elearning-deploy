@@ -23,5 +23,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/get-tugas', [TugasController::class, 'getTugas'])->name('get.tugas');
 
     // mata Pelajaran 
-    Route::get('/get-mata-pelajaran', [MataPelajaranController::class, 'getMatpel'])->name('get.tugas');
+    Route::get('/get-mata-pelajaran', [MataPelajaranController::class, 'getMatpel'])->name('get.mataMataPelajaran');
+    Route::get('/get-mata-pelajaran-simple', [MataPelajaranController::class, 'getMatpelSimple'])->name('get.mataMataPelajaranSimple');
 });

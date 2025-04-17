@@ -33,7 +33,7 @@ class MateriController extends Controller
 
             $data = $data->with('user')->first();
 
-            $result = $this->param->getDataApi($request->semester, $request->type, $data);
+            $result = $this->param->getDataApi($request->id_matpel, $request->semester, $request->type, $data);
             return $this->okApiResponse($result);
         } catch (Exception $e) {
             return $this->errorApiResponse("Terjadi Kesalahan " . $e->getMessage());

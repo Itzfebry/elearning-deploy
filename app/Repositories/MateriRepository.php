@@ -18,11 +18,12 @@ class MateriRepository
         return $this->model->with('mataPelajaran')->find($id);
     }
 
-    public function getDataApi($semester = 1, $type = "buku", $request)
+    public function getDataApi($matapelajaranId, $semester = 1, $type = "buku", $request)
     {
         $query = $this->model
-            ->where(function ($query) use ($semester, $type) {
-                $query->where("semester", $semester)
+            ->where(function ($query) use ($matapelajaranId, $semester, $type) {
+                $query->where("matapelajaran_id", $matapelajaranId)
+                    ->where("semester", $semester)
                     ->where("type", $type);
             })
             ->with("mataPelajaran");

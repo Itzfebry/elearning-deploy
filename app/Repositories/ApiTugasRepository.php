@@ -15,7 +15,7 @@ class ApiTugasRepository
         $this->model = $tugas;
     }
 
-    public function getDataApi($request)
+    public function getDataApi($request, $idMatpel)
     {
         $query = $this->model->with('mataPelajaran');
 
@@ -31,7 +31,7 @@ class ApiTugasRepository
                     ->orWhere('kelas', $request->tahun_ajaran);
             });
         }
-        $query = $query->get();
+        $query = $query->where("matapelajaran_id", $idMatpel)->get();
 
         return $query;
     }

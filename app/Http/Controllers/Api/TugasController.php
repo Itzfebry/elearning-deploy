@@ -32,7 +32,7 @@ class TugasController extends Controller
 
             $data = $data->with('user')->first();
 
-            $result = $this->param->getDataApi($data);
+            $result = $this->param->getDataApi($data, $request->id_matpel);
             return $this->okApiResponse($result);
         } catch (\Exception $e) {
             return $this->errorApiResponse("Error : " . $e->getMessage());

@@ -80,7 +80,7 @@ class MataPelajaranController extends Controller
                 $query->where('guru_nip', $data->guru_nip);
             });
         }
-        $query = $query->get();
+        $query = $query->with('guru')->get();
 
         return $this->okApiResponse($query);
 

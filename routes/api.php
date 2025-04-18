@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MataPelajaranController;
 use App\Http\Controllers\Api\MateriController;
+use App\Http\Controllers\Api\SubmitTugasController;
 use App\Http\Controllers\Api\TugasController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // mata Pelajaran 
     Route::get('/get-mata-pelajaran', [MataPelajaranController::class, 'getMatpel'])->name('get.mataMataPelajaran');
     Route::get('/get-mata-pelajaran-simple', [MataPelajaranController::class, 'getMatpelSimple'])->name('get.mataMataPelajaranSimple');
+
+    // submit tugas
+    Route::post('/submit-tugas', [SubmitTugasController::class, 'store']);
 });

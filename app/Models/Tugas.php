@@ -18,6 +18,10 @@ class Tugas extends Model
         "tahun_ajaran",
     ];
 
+    public function submitTugas()
+    {
+        return $this->hasOne(SubmitTugas::class, "tugas_id", "id");
+    }
     public function guru()
     {
         return $this->belongsTo(Guru::class, "guru_nip", "nip");

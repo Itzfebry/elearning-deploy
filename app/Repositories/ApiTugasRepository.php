@@ -17,7 +17,13 @@ class ApiTugasRepository
 
     public function getDataApi($request, $idMatpel)
     {
-        $query = $this->model->with('mataPelajaran');
+        $query = $this->model->with([
+            'mataPelajaran',
+            'submitTugas' => function ($query) use ($request) {
+                $query->where('nisn', $request->nisn);
+            }
+        ])
+            ->where('matapelajaran_id', $idMatpel);
 
         if ($request->user->role == "siswa") {
             $query->where(function ($query) use ($request) {
@@ -31,7 +37,8 @@ class ApiTugasRepository
                     ->orWhere('kelas', $request->tahun_ajaran);
             });
         }
-        $query = $query->where("matapelajaran_id", $idMatpel)->get();
+
+        $query = $query->get();
 
         return $query;
     }

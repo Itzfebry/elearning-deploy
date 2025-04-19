@@ -83,6 +83,12 @@
                         <span class="menu-item-label">Tugas</span>
                     </a>
                 </li>
+                <li class="{{ Request::is('quiz') || Request::is('quiz/*') ? 'active' : '' }}">
+                    <a href="{{ route('quiz') }}">
+                        <span class="icon"><i class="mdi mdi-lock"></i></span>
+                        <span class="menu-item-label">Quiz</span>
+                    </a>
+                </li>
             </ul>
             </p>
             @endif

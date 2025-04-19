@@ -28,4 +28,10 @@ class SubmitTugasController extends Controller
         $data = $this->param->detail($request);
         return $this->okApiResponse($data, "Berhasil get submit tugas");
     }
+
+    public function update(Request $request)
+    {
+        $data = $this->param->update($request);
+        return $this->okApiResponse($data, "update Tugas Berhasil");
+    }
 }

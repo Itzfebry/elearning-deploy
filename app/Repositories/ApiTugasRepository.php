@@ -15,16 +15,22 @@ class ApiTugasRepository
         $this->model = $tugas;
     }
 
-    public function getDataApi($request, $idMatpel)
+    public function getDataApi($request, $param)
     {
         $query = $this->model->with(['mataPelajaran']);
 
         if ($request->user->role == "siswa") {
-            $query->with([
-                'submitTugas' => function ($q) use ($request) {
+            if ($param->type_tugas == "selesai") {
+                $query->withWhereHas("submitTugas", function ($q) use ($request) {
                     $q->where('nisn', $request->nisn);
-                }
-            ]);
+                });
+            } else {
+                $query->with('submitTugas')
+                    ->whereDoesntHave("submitTugas", function ($q) use ($request) {
+                        $q->where('nisn', $request->nisn);
+                    });
+            }
+
 
             $query->where(function ($q) use ($request) {
                 $q->where("kelas", $request->kelas)
@@ -40,7 +46,7 @@ class ApiTugasRepository
             });
         }
 
-        $query->where('matapelajaran_id', $idMatpel);
+        $query->where('matapelajaran_id', $param->id_matpel);
 
         $data = $query->get();
 

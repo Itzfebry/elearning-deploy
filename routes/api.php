@@ -29,4 +29,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // submit tugas
     Route::post('/submit-tugas', [SubmitTugasController::class, 'store']);
+    Route::get('/get-detail-submit-tugas', [SubmitTugasController::class, 'detail']);
+    Route::post('/update-tugas', [SubmitTugasController::class, 'update']);
 });

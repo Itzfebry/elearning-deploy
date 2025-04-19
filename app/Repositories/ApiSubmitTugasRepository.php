@@ -42,4 +42,14 @@ class ApiSubmitTugasRepository
 
         return $submit;
     }
+
+    public function detail($request)
+    {
+        $query = $this->model->where(function ($q) use ($request) {
+            $q->where('nisn', $request->nisn)
+                ->where('tugas_id', $request->tugas_id);
+        })->first();
+
+        return $query;
+    }
 }

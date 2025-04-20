@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\KelasContoller;
 use App\Http\Controllers\Api\MataPelajaranController;
 use App\Http\Controllers\Api\MateriController;
 use App\Http\Controllers\Api\SubmitTugasController;
+use App\Http\Controllers\Api\TahunAjaranController;
 use App\Http\Controllers\Api\TugasController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Kelas
     Route::get('/kelas', [KelasContoller::class, 'index']);
+    // Tahun Ajaran
+    Route::get('/tahun-ajaran', [TahunAjaranController::class, 'getTahunAjaran']);
+
 });

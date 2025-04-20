@@ -34,7 +34,8 @@ class MataPelajaranController extends Controller
         } else {
             $query = MataPelajaran::where(function ($query) use ($data, $request) {
                 $query->where('guru_nip', $data->nip)
-                    ->where("kelas", $request->kelas);
+                    ->where("kelas", $request->kelas)
+                    ->where("tahun_ajaran", $request->tahun_ajaran);
             });
         }
         $query = $query->with(['guru', 'materi'])->get();

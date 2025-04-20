@@ -32,8 +32,9 @@ class MataPelajaranController extends Controller
                     ->where('tahun_ajaran', $data->tahun_ajaran);
             });
         } else {
-            $query = MataPelajaran::where(function ($query) use ($data) {
-                $query->where('guru_nip', $data->guru_nip);
+            $query = MataPelajaran::where(function ($query) use ($data, $request) {
+                $query->where('guru_nip', $data->nip)
+                    ->where("kelas", $request->kelas);
             });
         }
         $query = $query->with(['guru', 'materi'])->get();
@@ -77,7 +78,7 @@ class MataPelajaranController extends Controller
             });
         } else {
             $query = MataPelajaran::where(function ($query) use ($data) {
-                $query->where('guru_nip', $data->guru_nip);
+                $query->where('guru_nip', $data->nip);
             });
         }
         $query = $query->with('guru')->get();

@@ -31,18 +31,22 @@ class ApiTugasRepository
                     });
             }
 
-
             $query->where(function ($q) use ($request) {
                 $q->where("kelas", $request->kelas)
                     ->where("tahun_ajaran", $request->tahun_ajaran);
             });
         } else {
-            $query->with('submitTugas');
+            if ($param->type_tugas == "selesai") {
+                $query->withWhereHas('submitTugas');
+            } else {
+                $query->with('submitTugas')
+                    ->whereDoesntHave('submitTugas');
+            }
 
-            $query->where(function ($q) use ($request) {
+            $query->where(function ($q) use ($request, $param) {
                 $q->where("guru_nip", $request->nip)
-                    ->orWhere('kelas', $request->kelas)
-                    ->orWhere('kelas', $request->tahun_ajaran);
+                    ->where('kelas', $param->kelas)
+                    ->where('tahun_ajaran', $param->tahun_ajaran);
             });
         }
 
@@ -51,6 +55,5 @@ class ApiTugasRepository
         $data = $query->get();
 
         return $data;
-
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\KelasContoller;
 use App\Http\Controllers\Api\MataPelajaranController;
 use App\Http\Controllers\Api\MateriController;
 use App\Http\Controllers\Api\SubmitTugasController;
@@ -31,4 +32,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/submit-tugas', [SubmitTugasController::class, 'store']);
     Route::get('/get-detail-submit-tugas', [SubmitTugasController::class, 'detail']);
     Route::post('/update-tugas', [SubmitTugasController::class, 'update']);
+
+    // Kelas
+    Route::get('/kelas', [KelasContoller::class, 'index']);
 });

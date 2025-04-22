@@ -38,4 +38,10 @@ class TugasController extends Controller
             return $this->errorApiResponse("Error : " . $e->getMessage());
         }
     }
+
+    public function getSubmitTugasSiswa(Request $request)
+    {
+        $result = $this->param->getSubmitTugasSiswa($request);
+        return $this->okApiResponse($result);
+    }
 }

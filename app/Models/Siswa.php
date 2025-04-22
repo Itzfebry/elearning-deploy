@@ -17,6 +17,10 @@ class Siswa extends Model
         "tahun_ajaran",
     ];
 
+    public function submitTugas()
+    {
+        return $this->hasOne(SubmitTugas::class, "nisn", "nisn");
+    }
     public function user()
     {
         return $this->belongsTo(User::class, "user_id", "id");

@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Models\Siswa;
+use App\Models\SubmitTugas;
 use App\Models\Tugas;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,12 +38,14 @@ class ApiTugasRepository
                     ->where("tahun_ajaran", $request->tahun_ajaran);
             });
         } else {
-            if ($param->type_tugas == "selesai") {
-                $query->withWhereHas('submitTugas');
-            } else {
-                $query->with('submitTugas')
-                    ->whereDoesntHave('submitTugas');
-            }
+            // if ($param->type_tugas == "selesai") {
+            //     $query->withWhereHas('submitTugas');
+            // } else {
+            //     $query->with('submitTugas')
+            //         ->whereDoesntHave('submitTugas');
+            // }
+
+            $query->with('submitTugas');
 
             $query->where(function ($q) use ($request, $param) {
                 $q->where("guru_nip", $request->nip)
@@ -52,6 +56,33 @@ class ApiTugasRepository
 
         $query->where('matapelajaran_id', $param->id_matpel);
 
+        $data = $query->get();
+
+        return $data;
+    }
+
+    public function getSubmitTugasSiswa($request)
+    {
+        $query = Siswa::where(function ($q) use ($request) {
+            $q->where("kelas", $request->kelas)
+                ->where("tahun_ajaran", $request->tahun_ajaran);
+        });
+
+        if ($request->type_tugas == "selesai") {
+            $query->withWhereHas("submitTugas", function ($q) use ($request) {
+                $q->where("tugas_id", $request->tugas_id);
+            })->with([
+                        'submitTugas' => function ($q) use ($request) {
+                            $q->where("tugas_id", $request->tugas_id)
+                                ->with('tugas');
+                        }
+                    ]);
+        } else {
+            $query->with('submitTugas')
+                ->whereDoesntHave("submitTugas", function ($q) use ($request) {
+                    $q->where("tugas_id", $request->tugas_id);
+                });
+        }
         $data = $query->get();
 
         return $data;

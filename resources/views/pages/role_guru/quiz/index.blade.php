@@ -1,8 +1,8 @@
 @extends('layouts.app')
-@section('title', "Guru")
-@section('titleHeader', "Data Guru")
+@section('title', "Quiz")
+@section('titleHeader', "Data Quiz")
 @section('addBtn')
-<a href="{{ route('tugas.create') }}" class="button blue">
+<a href="{{ route('quiz.create') }}" class="button blue">
     <span>Tambah</span>
 </a>
 @endsection
@@ -15,7 +15,7 @@
                 <div class="px-4 py-3">
                     <div class="gap-2">
                         <label for="page_length" class="text-sm text-gray-700 mb-0">Show</label>
-                        <select name="page_length" id="page_length"
+                        {{-- <select name="page_length" id="page_length"
                             class="w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
                             <option value="10" @isset($_GET['page_length']) {{ $_GET['page_length']==10 ? 'selected'
                                 : '' }} @endisset>10</option>
@@ -23,18 +23,18 @@
                                 : '' }} @endisset>20</option>
                             <option value="50" @isset($_GET['page_length']) {{ $_GET['page_length']==50 ? 'selected'
                                 : '' }} @endisset>50</option>
-                        </select>
+                        </select> --}}
                         <label for="page_length" class="text-sm text-gray-700 mb-0">entries</label>
                     </div>
                 </div>
                 <div class="px-4 py-3">
                     <div class="relative w-60">
-                        <input type="text" name="search" placeholder="Search..."
+                        {{-- <input type="text" name="search" placeholder="Search..."
                             value="{{ isset($_GET['search']) ? $_GET['search'] : '' }}"
                             class="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm" />
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                             <i class="fas fa-search"></i>
-                        </span>
+                        </span> --}}
                     </div>
                 </div>
             </header>
@@ -54,7 +54,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
+                        {{-- @php
                         $page = isset($_GET['page']) ? $_GET['page'] : 1;
                         $page_length = isset($_GET['page_length']) ? $_GET['page_length'] : 5;
                         $i = $page == 1 ? 1 : $page * $page_length - $page_length + 1;
@@ -90,11 +90,11 @@
                         <tr>
                             <td colspan="9" class="text-center py-4 text-gray-500">Data Kosong</td>
                         </tr>
-                        @endforelse
+                        @endforelse --}}
                     </tbody>
                 </table>
                 <div class="mt-4">
-                    {{ $tugas->links() }}
+                    {{-- {{ $tugas->links() }} --}}
                 </div>
             </div>
         </div>

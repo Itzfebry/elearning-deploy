@@ -1,0 +1,24 @@
+<table>
+    <thead>
+        <tr>
+            <th>Pertanyaan</th>
+            <th>Jawaban Benar</th>
+            <th>Level</th>
+            <th>opsi_a</th>
+            <th>opsi_b</th>
+            <th>opsi_c</th>
+            <th>opsi_d</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>

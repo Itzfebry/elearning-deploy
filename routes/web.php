@@ -104,4 +104,6 @@ Route::middleware(["auth", "role:guru"])->group(function () {
 
     // Quiz
     Route::get('quiz', [QuizController::class, 'index'])->name('quiz');
+    Route::get('quiz/create', [QuizController::class, 'create'])->name('quiz.create');
+    Route::get('quiz/excel_download', [QuizController::class, 'excelDownload'])->name('quiz.excel.download');
 });

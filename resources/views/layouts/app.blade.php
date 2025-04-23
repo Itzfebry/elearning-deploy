@@ -71,6 +71,7 @@
                 <h1 class="title">
                     @yield('titleHeader', "Dashboard")
                 </h1>
+                @yield('btnNew')
             </div>
         </section>
         <section class="section main-section">

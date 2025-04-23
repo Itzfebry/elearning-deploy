@@ -1084,6 +1084,15 @@ body {
     background-color: rgb(220 38 38 / var(--tw-bg-opacity))
 }
 
+.button.orange {
+    --tw-border-opacity: 1;
+    border-color: #c07702;
+    --tw-bg-opacity: 1;
+    background-color: #ed980f;
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+
 .button.blue {
     --tw-border-opacity: 1;
     border-color: rgb(59 130 246 / var(--tw-border-opacity));

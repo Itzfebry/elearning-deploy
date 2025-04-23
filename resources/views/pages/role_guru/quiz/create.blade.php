@@ -95,7 +95,32 @@
             </p>
         </header>
         <div class="card-content">
-
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Pertanyaan</th>
+                        <th>Level</th>
+                        <th>Jawaban Benar</th>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="No">1</td>
+                        <td data-label="Pertanyaan">Pertanyaan</td>
+                        <td data-label="Level">Level</td>
+                        <td data-label="Jawaban Benar">Jawaban Benar</td>
+                        <td data-label="A">A</td>
+                        <td data-label="B">B</td>
+                        <td data-label="C">C</td>
+                        <td data-label="D">D</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </section>

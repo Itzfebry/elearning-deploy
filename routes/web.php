@@ -105,5 +105,9 @@ Route::middleware(["auth", "role:guru"])->group(function () {
     // Quiz
     Route::get('quiz', [QuizController::class, 'index'])->name('quiz');
     Route::get('quiz/create', [QuizController::class, 'create'])->name('quiz.create');
+    Route::post('quiz/store', [QuizController::class, 'store'])->name('quiz.store');
     Route::get('quiz/excel_download', [QuizController::class, 'excelDownload'])->name('quiz.excel.download');
+    Route::post('quiz/preview', [QuizController::class, 'preview'])->name('quiz.preview');
+    Route::get('/quiz/reset-preview', [QuizController::class, 'resetPreview'])->name('quiz.preview.reset');
+
 });

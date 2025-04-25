@@ -19,7 +19,7 @@ class QuizQuestions extends Model
         "level",
     ];
 
-    public function mataPelajaran()
+    public function quiz()
     {
         return $this->belongsTo(Quizzes::class, "quiz_id", "id");
     }

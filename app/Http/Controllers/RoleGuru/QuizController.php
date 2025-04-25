@@ -4,9 +4,12 @@ namespace App\Http\Controllers\RoleGuru;
 
 use App\Exports\QuizExport;
 use App\Http\Controllers\Controller;
+use App\Models\Kelas;
 use App\Models\MataPelajaran;
 use App\Models\QuizQuestions;
 use App\Models\Quizzes;
+use App\Models\TahunAjaran;
+use App\Repositories\QuizRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -16,12 +19,26 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class QuizController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $param;
+
+    public function __construct(QuizRepository $quiz)
     {
-        return view("pages.role_guru.quiz.index");
+        $this->param = $quiz;
+    }
+
+    public function index(Request $request)
+    {
+        $nip = Auth::user()->guru->nip;
+        $matpel = MataPelajaran::where('guru_nip', $nip)->get();
+        $judulQuiz = Quizzes::with('mataPelajaran')->whereHas('mataPelajaran', function ($q) use ($nip) {
+            $q->where('guru_nip', $nip);
+        })->get();
+        $kelas = Kelas::all();
+        $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
+
+        $quiz = $this->param->getData($request);
+        dump($quiz);
+        return view("pages.role_guru.quiz.index", compact(['matpel', 'judulQuiz', 'kelas', 'tahunAjaran', 'quiz']));
     }
 
     public function excelDownload()

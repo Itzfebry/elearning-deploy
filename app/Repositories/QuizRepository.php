@@ -3,14 +3,23 @@
 namespace App\Repositories;
 
 use App\Models\QuizQuestions;
+use App\Models\Quizzes;
 
 class QuizRepository
 {
     protected $model;
+    protected $modelQuizzes;
 
-    public function __construct(QuizQuestions $quizQuestions)
+    public function __construct(QuizQuestions $quizQuestions, Quizzes $quizzes)
     {
         $this->model = $quizQuestions;
+        $this->modelQuizzes = $quizzes;
+    }
+
+    public function apiGetQuizzes($id)
+    {
+        $query = $this->modelQuizzes->where('matapelajaran_id', $id)->get();
+        return $query;
     }
 
     public function getData($request)

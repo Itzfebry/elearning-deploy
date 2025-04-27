@@ -37,7 +37,6 @@ class QuizController extends Controller
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
 
         $quiz = $this->param->getData($request);
-        dump($quiz);
         return view("pages.role_guru.quiz.index", compact(['matpel', 'judulQuiz', 'kelas', 'tahunAjaran', 'quiz']));
     }
 

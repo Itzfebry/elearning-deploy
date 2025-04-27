@@ -95,22 +95,6 @@
                             <td data-label="B">{{ $item->opsi_b }}</td>
                             <td data-label="C">{{ $item->opsi_c }}</td>
                             <td data-label="D">{{ $item->opsi_d }}</td>
-                            {{-- <td class="actions-cell content-delete">
-                                <div class="buttons right nowrap">
-                                    <a href="{{ route('tugas.edit', $item->id) }}" class="button small blue --jb-modal"
-                                        data-target="sample-modal-2" type="button">
-                                        <span class="icon">
-                                            <x-icon name="edit" class="w-4 h-4 text-white" />
-                                        </span>
-                                    </a>
-                                    <button type="button" class="button small red openModalBtn"
-                                        data-form_id="{{ $item->id }}" data-form_name="{{ $item->nama }}">
-                                        <span class="icon">
-                                            <x-icon name="delete" class="w-3 h-3 text-white" />
-                                        </span>
-                                    </button>
-                                </div>
-                            </td> --}}
                         </tr>
                         @empty
                         <tr>

@@ -73,6 +73,7 @@ class QuizController extends Controller
         Session::put('matapelajaran_id', $request->matapelajaran_id);
         Session::put('preview_soal', $filteredRows);
         Session::put('total_soal', $soalCount);
+        Session::put('total_soal_tampil', $request->total_soal_tampil);
         Session::put('uploaded_filename', $request->file('file')->getClientOriginalName());
 
         return redirect()->back();
@@ -86,6 +87,7 @@ class QuizController extends Controller
         session()->forget('matapelajaran_id');
         session()->forget('preview_soal');
         session()->forget('total_soal');
+        session()->forget('total_soal_tampil');
         session()->forget('uploaded_filename');
 
         return redirect()->back()->with('success', 'Data preview berhasil direset.');
@@ -107,9 +109,11 @@ class QuizController extends Controller
     public function store(Request $request)
     {
         $preview = session('preview_soal');
+        array_shift($preview);
 
         if (!$preview || count($preview) <= 1) {
-            return redirect()->back()->with('error', 'Tidak ada data untuk disimpan.');
+            Alert::error("Terjadi Kesalahan", "Tidak ada data untuk disimpan.");
+            return redirect()->back();
         }
 
         // Simpan quiz dan soalnya ke DB
@@ -118,22 +122,34 @@ class QuizController extends Controller
             'deskripsi' => $request->deskripsi,
             'matapelajaran_id' => $request->matapelajaran_id,
             'total_soal' => $request->total_soal,
+            'total_soal_tampil' => $request->total_soal_tampil,
         ]);
 
-        foreach ($preview as $index => $row) {
-            if ($index === 0)
-                continue; // Skip header
-            QuizQuestions::create([
+        // Menampung data dalam array sebelum disimpan
+        $quizQuestionsData = [];
+
+        foreach ($preview as $row) {
+            $jawabanBenar = strtolower(trim($row[2]));
+            // Menyiapkan data untuk disimpan
+            $quizQuestionsData[] = [
                 'quiz_id' => $quiz->id,
                 'pertanyaan' => $row[1],
-                'level' => $row[3],
-                'jawaban_benar' => $row[2],
                 'opsi_a' => $row[4],
                 'opsi_b' => $row[5],
                 'opsi_c' => $row[6],
                 'opsi_d' => $row[7],
-            ]);
+                'jawaban_benar' => $jawabanBenar,
+                'level' => $row[3],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
+
+        // Simpan semua data sekali gus menggunakan insert
+        if (!empty($quizQuestionsData)) {
+            QuizQuestions::insert($quizQuestionsData);
+        }
+
 
         // Hapus session
         session()->forget('judul');
@@ -141,6 +157,7 @@ class QuizController extends Controller
         session()->forget('matapelajaran_id');
         session()->forget('preview_soal');
         session()->forget('total_soal');
+        session()->forget('total_soal_tampil');
         session()->forget('uploaded_filename');
 
         Alert::success("Berhasil", "Data Berhasil di simpan.");

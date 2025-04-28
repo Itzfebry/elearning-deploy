@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ApiResponse;
+use App\Models\QuizAttemptAnswers;
+use App\Models\QuizAttempts;
+use App\Models\QuizQuestions;
 use App\Repositories\QuizRepository;
 use Illuminate\Http\Request;
 
@@ -21,51 +24,95 @@ class QuizController extends Controller
         return $this->okApiResponse($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function start(Request $request)
     {
-        //
+        $request->validate([
+            'quiz_id' => 'required|exists:quizzes,id',
+            'nisn' => 'required|string',
+        ]);
+
+        $attempt = QuizAttempts::create([
+            'quiz_id' => $request->quiz_id,
+            'nisn' => $request->nisn,
+            'skor' => 0,
+            'level_akhir' => 1,
+        ]);
+
+        return response()->json([
+            'attempt_id' => $attempt->id,
+            'message' => 'Quiz dimulai.',
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function nextQuestion($attempt_id)
     {
-        //
+        try {
+            $data = $this->param->nextQuestion($attempt_id);
+            return $this->okApiResponse($data);
+        } catch (\Exception $e) {
+            return $this->errorApiResponse('error', $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function answer(Request $request, $attempt_id)
     {
-        //
+        $request->validate([
+            'question_id' => 'required|exists:quiz_questions,id',
+            'jawaban_siswa' => 'required|in:a,b,c,d',
+        ]);
+
+        $attempt = QuizAttempts::findOrFail($attempt_id);
+        $question = QuizQuestions::findOrFail($request->question_id);
+
+        $isCorrect = $request->jawaban_siswa === $question->jawaban_benar ? 1 : 0;
+
+        QuizAttemptAnswers::create([
+            'attempt_id' => $attempt->id,
+            'question_id' => $question->id,
+            'jawaban_siswa' => $request->jawaban_siswa,
+            'benar' => $isCorrect,
+        ]);
+
+        // Ambil jawaban terakhir (mulai dari jawaban terbaru)
+        $answers = QuizAttemptAnswers::where('attempt_id', $attempt->id)
+            ->latest()
+            ->get();
+
+        // Hitung streak benar berturut-turut
+        $streak = 0;
+        foreach ($answers as $answer) {
+            if ($answer->benar == 1) {
+                $streak++;
+            } else {
+                break; // Stop ketika menemukan jawaban salah
+            }
+        }
+
+        // Update Level Berdasarkan Hasil Jawaban
+        if ($isCorrect) {
+            // Kalau benar, cek streak
+            if ($streak >= 3 && $attempt->level_akhir < 3) {
+                $attempt->level_akhir += 1; // Naik level
+            }
+        } else {
+            // Kalau salah, langsung turun level
+            if ($attempt->level_akhir == 3) {
+                $attempt->level_akhir = 2;
+            } elseif ($attempt->level_akhir == 2) {
+                $attempt->level_akhir = 1;
+            }
+            // Kalau Level 1 salah, tetap di Level 1
+        }
+
+        // Simpan perubahan attempt
+        $attempt->save();
+
+        // Response ke client
+        return response()->json([
+            'correct' => $isCorrect,
+            'new_level' => $attempt->level_akhir,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

@@ -15,6 +15,11 @@ class QuizAttempts extends Model
         "level_akhir",
     ];
 
+    public function attemptAnswers()
+    {
+        return $this->hasMany(QuizAttemptAnswers::class, 'attempt_id');
+    }
+
     public function quizzes()
     {
         return $this->belongsTo(Quizzes::class, "quiz_id", "id");

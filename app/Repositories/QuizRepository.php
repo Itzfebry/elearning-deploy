@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\QuizAttempts;
 use App\Models\QuizQuestions;
 use App\Models\Quizzes;
 
@@ -35,6 +36,28 @@ class QuizRepository
             })->get();
 
         return $query;
+    }
+
+    public function nextQuestion($attempt_id)
+    {
+        $attempt = QuizAttempts::findOrFail((int) $attempt_id);
+
+        // Ambil 1 soal random di level sekarang (level_akhir) yang belum dijawab
+        $question = QuizQuestions::where('quiz_id', $attempt->quiz_id)
+            ->where('level', $attempt->level_akhir) // level siswa sekarang
+            ->whereDoesntHave('attemptAnswers', function ($q) use ($attempt_id) {
+                $q->where('attempt_id', $attempt_id);
+            })
+            ->inRandomOrder()
+            ->first();
+
+        if (!$question) {
+            return response()->json([
+                'message' => 'Tidak ada soal lagi di level ini.',
+            ], 404);
+        }
+
+        return $question;
     }
 
 }

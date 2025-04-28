@@ -63,6 +63,12 @@
                             </div>
                         </div>
                         <div class="field">
+                            <label class="label">Total Soal Tampil</label>
+                            <input name="total_soal_tampil" type="text" class="input" required
+                                value="{{ session('total_soal_tampil', old('total_soal_tampil')) }}"
+                                placeholder="Total soal yang akan ditampilkan ke Siswa">
+                        </div>
+                        <div class="field">
                             <label class="label">Total Soal</label>
                             <input name="total_soal" type="text" class="input" required
                                 value="{{ session('total_soal', old('total_soal')) }}" readonly>
@@ -108,6 +114,8 @@
                 <input type="hidden" name="matapelajaran_id"
                     value="{{ session('matapelajaran_id', old('matapelajaran_id')) }}">
                 <input type="hidden" name="total_soal" value="{{ session('total_soal', old('total_soal')) }}">
+                <input type="hidden" name="total_soal_tampil"
+                    value="{{ session('total_soal_tampil', old('total_soal_tampil')) }}">
                 <button type="submit" class="button green">
                     Simpan Quiz
                 </button>

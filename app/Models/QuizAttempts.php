@@ -13,11 +13,20 @@ class QuizAttempts extends Model
         "nisn",
         "skor",
         "level_akhir",
+        "jumlah_soal_dijawab",
+        "benar_fase1",
+        "benar_fase2",
+        "fase",
     ];
 
     public function attemptAnswers()
     {
         return $this->hasMany(QuizAttemptAnswers::class, 'attempt_id');
+    }
+
+    public function jumlahJawaban()
+    {
+        return $this->hasMany(QuizAttemptAnswers::class, 'attempt_id')->count();
     }
 
     public function quizzes()

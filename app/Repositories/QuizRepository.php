@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\QuizAttemptAnswers;
 use App\Models\QuizAttempts;
 use App\Models\QuizQuestions;
 use App\Models\Quizzes;
@@ -42,9 +43,19 @@ class QuizRepository
     {
         $attempt = QuizAttempts::findOrFail((int) $attempt_id);
 
-        // Ambil 1 soal random di level sekarang (level_akhir) yang belum dijawab
+        // Ambil total soal tampil dari quiz
+        $quiz = Quizzes::findOrFail((int) $attempt->quiz_id);
+
+        // Kalau sudah mencapai total soal tampil, jangan kasih soal lagi
+        if ($attempt->jumlahJawaban() >= $quiz->total_soal_tampil) {
+            return response()->json([
+                'message' => 'Semua soal sudah dijawab.',
+            ], 200);
+        }
+
+        // Kalau belum, ambil 1 soal random di level sekarang
         $question = QuizQuestions::where('quiz_id', $attempt->quiz_id)
-            ->where('level', $attempt->level_akhir) // level siswa sekarang
+            ->where('level', $attempt->level_akhir)
             ->whereDoesntHave('attemptAnswers', function ($q) use ($attempt_id) {
                 $q->where('attempt_id', $attempt_id);
             })
@@ -58,6 +69,94 @@ class QuizRepository
         }
 
         return $question;
+    }
+
+    public function answer($request, $attempt_id)
+    {
+        $request->validate([
+            'question_id' => 'required|exists:quiz_questions,id',
+            'jawaban_siswa' => 'required|in:a,b,c,d',
+        ]);
+
+        $attempt = QuizAttempts::findOrFail($attempt_id);
+        $question = QuizQuestions::findOrFail($request->question_id);
+
+        $isCorrect = $request->jawaban_siswa === $question->jawaban_benar ? 1 : 0;
+
+        // Hitung skor tambahan
+        $skor_tambahan = 0;
+        if ($isCorrect) {
+            if ($question->level == 1) {
+                $skor_tambahan = 5;
+            } elseif ($question->level == 2) {
+                $skor_tambahan = 10;
+            } elseif ($question->level == 3) {
+                $skor_tambahan = 15;
+            }
+        }
+
+        // Tambahkan skor ke attempt
+        $attempt->skor += $skor_tambahan;
+
+        // Simpan jawaban
+        QuizAttemptAnswers::create([
+            'attempt_id' => $attempt->id,
+            'question_id' => $question->id,
+            'jawaban_siswa' => $request->jawaban_siswa,
+            'benar' => $isCorrect,
+        ]);
+
+        // Update jumlah soal dijawab
+        $attempt->jumlah_soal_dijawab++;
+
+        // Cek di fase berapa
+        if ($attempt->fase == 1) {
+            if ($isCorrect) {
+                $attempt->benar_fase1++;
+            }
+
+            if ($attempt->jumlah_soal_dijawab == 7) {
+                if ($attempt->benar_fase1 >= 4) {
+                    $attempt->level_akhir = 2; // naik ke Sedang
+                } else {
+                    $attempt->level_akhir = 1; // tetap Mudah
+                }
+                $attempt->fase = 2;
+                $attempt->jumlah_soal_dijawab = 0;
+            }
+
+        } elseif ($attempt->fase == 2) {
+            if ($isCorrect) {
+                $attempt->benar_fase2++;
+            }
+
+            if ($attempt->jumlah_soal_dijawab == 7) {
+                if ($attempt->benar_fase2 >= 5) {
+                    $attempt->level_akhir = 3; // naik ke Susah
+                } else {
+                    $attempt->level_akhir = 2; // tetap di Sedang
+                }
+                $attempt->fase = 3;
+                $attempt->jumlah_soal_dijawab = 0;
+            }
+
+        } elseif ($attempt->fase == 3) {
+            // Tidak ada perubahan level
+        }
+
+        $attempt->save();
+
+        $jumlah_jawaban = QuizAttemptAnswers::where('attempt_id', $attempt->id)->count();
+        $total_soal_tampil = $attempt->quizzes->total_soal_tampil ?? 20; // default 20 jika null
+        $selesai = $jumlah_jawaban >= $total_soal_tampil;
+
+        return [
+            'correct' => $isCorrect,
+            'fase' => $attempt->fase,
+            'new_level' => $attempt->level_akhir,
+            'skor_sementara' => $attempt->skor,
+            'selesai' => $selesai,
+        ];
     }
 
 }

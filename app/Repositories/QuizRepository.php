@@ -151,12 +151,19 @@ class QuizRepository
         $selesai = $jumlah_jawaban >= $total_soal_tampil;
 
         return [
+            'quiz_id' => $attempt->quiz_id,
             'correct' => $isCorrect,
             'fase' => $attempt->fase,
             'new_level' => $attempt->level_akhir,
             'skor_sementara' => $attempt->skor,
             'selesai' => $selesai,
         ];
+    }
+
+    public function getFinishQuiz($quizId)
+    {
+        $attempt = QuizAttempts::where('quiz_id', $quizId)->first();
+        return $attempt;
     }
 
 }

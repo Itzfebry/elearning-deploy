@@ -65,4 +65,14 @@ class QuizController extends Controller
         }
     }
 
+    public function getFinishQuiz(Request $request)
+    {
+        try {
+            $data = $this->param->getFinishQuiz($request->quiz_id);
+            return $this->okApiResponse($data);
+        } catch (\Exception $e) {
+            return $this->errorApiResponse('error', $e->getMessage());
+        }
+    }
+
 }

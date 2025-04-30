@@ -24,6 +24,11 @@ class QuizController extends Controller
         $data = $this->param->apiGetQuizzes($request->matapelajaran_id);
         return $this->okApiResponse($data);
     }
+    public function quizGuru(Request $request)
+    {
+        $data = $this->param->apiGetQuizzesGuru($request, $request->matapelajaran_id);
+        return $this->okApiResponse($data);
+    }
 
     public function start(Request $request)
     {
@@ -78,32 +83,34 @@ class QuizController extends Controller
 
     public function getTopFive(Request $request)
     {
-        if (Auth::user()->siswa->nisn) {
-            $query = QuizAttempts::with('siswa')
-                ->where('quiz_id', $request->quiz_id)
-                ->orderByDesc('skor')
-                ->take(5)
-                ->get();
 
-            $skorMe = QuizAttempts::select('skor')
-                ->where('nisn', Auth::user()->siswa->nisn)
-                ->orderByDesc('skor')->first();
+        $query = QuizAttempts::with('siswa')
+            ->where('quiz_id', $request->quiz_id)
+            ->orderByDesc('skor')
+            ->take(5)
+            ->get();
 
-            return response()->json([
-                'skor_me' => $skorMe,
-                'data' => $query,
-            ]);
-        } else {
-            $query = QuizAttempts::with('siswa')
-                ->where('quiz_id', $request->quiz_id)
-                ->orderByDesc('skor')
-                ->take(5)
-                ->get();
+        $skorMe = QuizAttempts::select('skor')
+            ->where('nisn', Auth::user()->siswa->nisn)
+            ->orderByDesc('skor')->first();
 
-            return response()->json([
-                'data' => $query,
-            ]);
-        }
+        return response()->json([
+            'skor_me' => $skorMe,
+            'data' => $query,
+        ]);
+    }
+
+    public function getApiQuizGuru(Request $request)
+    {
+        $query = QuizAttempts::with(['quizzes', 'siswa'])
+            ->where(function ($q) use ($request) {
+                $q->where('quiz_id', $request->quiz_id);
+            })->whereHas('siswa', function ($q) use ($request) {
+                $q->where('kelas', $request->kelas)
+                    ->where('tahun_ajaran', $request->tahun_ajaran);
+            })->get();
+
+        return $this->okApiResponse($query);
     }
 
 }

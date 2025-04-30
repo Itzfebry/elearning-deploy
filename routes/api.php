@@ -43,11 +43,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Quiz
     Route::get('/quiz', [QuizController::class, 'index']);
+    Route::get('/quiz-guru', [QuizController::class, 'quizGuru']);
     Route::post('/quiz-attempts/start', [QuizController::class, 'start']);
     Route::get('/quiz-attempts/{attempt}/next-question', [QuizController::class, 'nextQuestion']);
     Route::post('/quiz-attempts/{attempt}/answer', [QuizController::class, 'answer']);
     Route::get('/quiz-attempts/finish', [QuizController::class, 'getFinishQuiz']);
     Route::get('/quiz-top-five', [QuizController::class, 'getTopFive']);
+    Route::get('/get-quiz-attempt-guru', [QuizController::class, 'getApiQuizGuru']);
 
 
 });

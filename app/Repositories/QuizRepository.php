@@ -22,13 +22,24 @@ class QuizRepository
     public function apiGetQuizzes($id)
     {
         $nisn = Auth::user()->siswa->nisn;
-
         $query = Quizzes::where('matapelajaran_id', $id)
             ->with([
                 'quizAttempt' => function ($q) use ($nisn) {
                     $q->where('nisn', $nisn);
                 }
             ])
+            ->get();
+
+        return $query;
+    }
+
+    public function apiGetQuizzesGuru($request, $id)
+    {
+        $query = Quizzes::where('matapelajaran_id', $id)
+            ->whereHas('mataPelajaran', function ($q) use ($request) {
+                $q->where('kelas', $request->kelas)
+                    ->where('tahun_ajaran', $request->tahun_ajaran);
+            })
             ->get();
 
         return $query;

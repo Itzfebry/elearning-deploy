@@ -6,6 +6,7 @@ use App\Models\QuizAttemptAnswers;
 use App\Models\QuizAttempts;
 use App\Models\QuizQuestions;
 use App\Models\Quizzes;
+use Illuminate\Support\Facades\Auth;
 
 class QuizRepository
 {
@@ -20,7 +21,16 @@ class QuizRepository
 
     public function apiGetQuizzes($id)
     {
-        $query = $this->modelQuizzes->where('matapelajaran_id', $id)->get();
+        $nisn = Auth::user()->siswa->nisn;
+
+        $query = Quizzes::where('matapelajaran_id', $id)
+            ->with([
+                'quizAttempt' => function ($q) use ($nisn) {
+                    $q->where('nisn', $nisn);
+                }
+            ])
+            ->get();
+
         return $query;
     }
 
@@ -54,8 +64,10 @@ class QuizRepository
         }
 
         // Kalau belum, ambil 1 soal random di level sekarang
+        // Find the attempt by given ID
         $question = QuizQuestions::where('quiz_id', $attempt->quiz_id)
             ->where('level', $attempt->level_akhir)
+            // Get the total soal tampil from the quiz
             ->whereDoesntHave('attemptAnswers', function ($q) use ($attempt_id) {
                 $q->where('attempt_id', $attempt_id);
             })
@@ -148,7 +160,7 @@ class QuizRepository
 
         $jumlah_jawaban = QuizAttemptAnswers::where('attempt_id', $attempt->id)->count();
         $total_soal_tampil = $attempt->quizzes->total_soal_tampil ?? 20; // default 20 jika null
-        $selesai = $jumlah_jawaban >= $total_soal_tampil;
+        $selesai = $jumlah_jawaban + 1 >= $total_soal_tampil;
 
         return [
             'quiz_id' => $attempt->quiz_id,

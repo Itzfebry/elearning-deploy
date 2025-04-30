@@ -9,6 +9,7 @@ use App\Models\QuizAttempts;
 use App\Models\QuizQuestions;
 use App\Repositories\QuizRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class QuizController extends Controller
 {
@@ -72,6 +73,36 @@ class QuizController extends Controller
             return $this->okApiResponse($data);
         } catch (\Exception $e) {
             return $this->errorApiResponse('error', $e->getMessage());
+        }
+    }
+
+    public function getTopFive(Request $request)
+    {
+        if (Auth::user()->siswa->nisn) {
+            $query = QuizAttempts::with('siswa')
+                ->where('quiz_id', $request->quiz_id)
+                ->orderByDesc('skor')
+                ->take(5)
+                ->get();
+
+            $skorMe = QuizAttempts::select('skor')
+                ->where('nisn', Auth::user()->siswa->nisn)
+                ->orderByDesc('skor')->first();
+
+            return response()->json([
+                'skor_me' => $skorMe,
+                'data' => $query,
+            ]);
+        } else {
+            $query = QuizAttempts::with('siswa')
+                ->where('quiz_id', $request->quiz_id)
+                ->orderByDesc('skor')
+                ->take(5)
+                ->get();
+
+            return response()->json([
+                'data' => $query,
+            ]);
         }
     }
 

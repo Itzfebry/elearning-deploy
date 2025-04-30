@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string("opsi_b");
             $table->string("opsi_c");
             $table->string("opsi_d");
-            $table->enum("jawaban_benar", ['a', 'b', 'c', 'd']);
+            $table->string("jawaban_benar", 5);
             $table->integer("level")->comment("Level Soal");
             $table->timestamps();
 

@@ -22,6 +22,7 @@ class SiswaNotifikasiController extends Controller
             'notifications' => $siswa->notifications->map(function ($notif) {
                 return [
                     'id' => $notif->id,
+                    'type' => $notif->data['type'],
                     'judul' => $notif->data['judul'] ?? '-',
                     'tenggat' => $notif->data['tenggat'] ?? null,
                     'read_at' => $notif->read_at,

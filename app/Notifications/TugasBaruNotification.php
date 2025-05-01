@@ -27,7 +27,8 @@ class TugasBaruNotification extends Notification
     public function toDatabase($notifiable): array
     {
         return [
-            'judul' => 'Tugas Baru: ' . $this->tugas->nama,
+            'judul' => $this->tugas->nama,
+            'type' => "Tugas",
             'tenggat' => $this->tugas->tenggat,
             'kelas' => $this->tugas->kelas,
             'tahun_ajaran' => $this->tugas->tahun_ajaran,

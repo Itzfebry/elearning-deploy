@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Materi;
+use App\Models\Siswa;
+use App\Notifications\MateriBaruNotification;
 
 class MateriRepository
 {
@@ -63,7 +65,7 @@ class MateriRepository
 
     public function store($data)
     {
-        return $this->model->create([
+        $materi = $this->model->create([
             "tanggal" => $data["tanggal"],
             "matapelajaran_id" => $data["matapelajaran_id"],
             "semester" => $data["semester"],
@@ -73,6 +75,16 @@ class MateriRepository
             "path" => $data["path"],
             "tahun_ajaran" => $data["tahun_ajaran"],
         ]);
+
+        // Cari siswa berdasarkan kelas dan tahun ajaran
+        $siswas = Siswa::where('tahun_ajaran', $data['tahun_ajaran'])->get();
+
+        // Kirim notifikasi ke setiap siswa
+        foreach ($siswas as $siswa) {
+            $siswa->notify(new MateriBaruNotification($materi));
+        }
+
+        return $materi;
     }
 
     public function update($data, $id)

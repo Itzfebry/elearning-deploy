@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\SubmitTugasController;
 use App\Http\Controllers\Api\TahunAjaranController;
 use App\Http\Controllers\Api\TugasController;
+use App\Http\Controllers\SiswaNotifikasiController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
@@ -51,5 +52,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/quiz-top-five', [QuizController::class, 'getTopFive']);
     Route::get('/get-quiz-attempt-guru', [QuizController::class, 'getApiQuizGuru']);
 
-
+    // Notifikasi
+    Route::get('/siswa/notifikasi/count', [SiswaNotifikasiController::class, 'notifCount']);
+    Route::get('/siswa/notifikasi', [SiswaNotifikasiController::class, 'index']);
+    Route::post('/siswa/notifikasi/{id}/baca', [SiswaNotifikasiController::class, 'markAsRead']);
 });

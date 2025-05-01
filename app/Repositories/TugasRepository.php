@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Models\Siswa;
 use App\Models\Tugas;
+use App\Notifications\TugasBaruNotification;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,7 +65,7 @@ class TugasRepository
 
     public function store($data)
     {
-        return $this->model->create([
+        $tugas = $this->model->create([
             "tanggal" => $data["tanggal"],
             "tenggat" => $data["tenggat"],
             "guru_nip" => $this->nipUser,
@@ -72,6 +74,18 @@ class TugasRepository
             "kelas" => $data["kelas"],
             "tahun_ajaran" => $data["tahun_ajaran"],
         ]);
+
+        // Cari siswa berdasarkan kelas dan tahun ajaran
+        $siswas = Siswa::where('kelas', $data['kelas'])
+            ->where('tahun_ajaran', $data['tahun_ajaran'])
+            ->get();
+
+        // Kirim notifikasi ke setiap siswa
+        foreach ($siswas as $siswa) {
+            $siswa->notify(new TugasBaruNotification($tugas));
+        }
+
+        return $tugas;
     }
 
     public function update($data, $id)

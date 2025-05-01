@@ -62,12 +62,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="field">
-                            <label class="label">Total Soal Tampil</label>
-                            <input name="total_soal_tampil" type="text" class="input" required
-                                value="{{ session('total_soal_tampil', old('total_soal_tampil')) }}"
-                                placeholder="Total soal yang akan ditampilkan ke Siswa">
-                        </div>
+                        <input name="total_soal_tampil" type="hidden" class="input" required value="20"
+                            placeholder="Total soal yang akan ditampilkan ke Siswa">
                         <div class="field">
                             <label class="label">Total Soal</label>
                             <input name="total_soal" type="text" class="input" required

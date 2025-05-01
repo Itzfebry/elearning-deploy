@@ -8,7 +8,9 @@ use App\Models\Kelas;
 use App\Models\MataPelajaran;
 use App\Models\QuizQuestions;
 use App\Models\Quizzes;
+use App\Models\Siswa;
 use App\Models\TahunAjaran;
+use App\Notifications\QuizBaruNotification;
 use App\Repositories\QuizRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -159,6 +161,17 @@ class QuizController extends Controller
         session()->forget('total_soal');
         session()->forget('total_soal_tampil');
         session()->forget('uploaded_filename');
+
+        $matpel = MataPelajaran::findOrFail($request->matapelajaran_id);
+        // Cari siswa berdasarkan kelas dan tahun ajaran
+        $siswas = Siswa::where('kelas', $matpel['kelas'])
+            ->where('tahun_ajaran', $matpel['tahun_ajaran'])
+            ->get();
+
+        // Kirim notifikasi ke setiap siswa
+        foreach ($siswas as $siswa) {
+            $siswa->notify(new QuizBaruNotification($quiz));
+        }
 
         Alert::success("Berhasil", "Data Berhasil di simpan.");
         return redirect()->route('quiz');

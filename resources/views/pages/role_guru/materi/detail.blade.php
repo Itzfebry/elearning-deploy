@@ -60,7 +60,7 @@
                 <div class="field">
                     <label class="label">File Materi</label>
                     <div class="control">
-                        <iframe src="{{ asset('storage/'. $materiDetail->path) }}"
+                        <iframe style="height: 1000px" src="{{ asset('storage/'. $materiDetail->path) }}"
                             class="w-full h-[80vh] border rounded shadow-lg" frameborder="0">
                         </iframe>
                     </div>

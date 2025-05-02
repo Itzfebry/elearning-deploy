@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\SubmitTugasController;
 use App\Http\Controllers\Api\TahunAjaranController;
 use App\Http\Controllers\Api\TugasController;
 use App\Http\Controllers\SiswaNotifikasiController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
@@ -56,4 +57,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/siswa/notifikasi/count', [SiswaNotifikasiController::class, 'notifCount']);
     Route::get('/siswa/notifikasi', [SiswaNotifikasiController::class, 'index']);
     Route::post('/siswa/notifikasi/{id}/baca', [SiswaNotifikasiController::class, 'markAsRead']);
+
+    // Change Password
+    Route::post('/change-password', [UserController::class, 'changePasswordApi']);
 });

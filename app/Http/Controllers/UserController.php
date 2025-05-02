@@ -41,4 +41,31 @@ class UserController extends Controller
             return redirect()->back();
         }
     }
+
+    public function changePasswordApi(Request $request)
+    {
+        try {
+            $request->validate([
+                'old_password' => ['required'],
+                'new_password' => ['required', 'min:8', 'confirmed'],
+            ]);
+
+            $user = Auth::user();
+
+            if (!Hash::check($request->old_password, $user->password)) {
+                return response()->json([
+                    'message' => "Password lama salah.",
+                ]);
+            }
+
+            User::where('id', $user->id)->update(['password' => Hash::make($request->new_password)]);
+            return response()->json([
+                'message' => "Password berhasil diubah.",
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+            ]);
+        }
+    }
 }

@@ -27,6 +27,10 @@
                     @csrf
                     <div class="navbar-dropdown">
                         <hr class="navbar-divider">
+                        <a href="{{ route('change-password') }}" class="navbar-item">
+                            <span class="icon"><i class="mdi mdi-lock"></i></span>
+                            <span>Ubah Password</span>
+                        </a>
                         <button type="submit" class="navbar-item">
                             <span class="icon"><i class="mdi mdi-logout"></i></span>
                             <span>Log Out</span>

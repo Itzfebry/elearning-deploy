@@ -85,11 +85,15 @@ class QuizRepository
             ->inRandomOrder()
             ->first();
 
+        $quizAttemptAnswer = QuizAttemptAnswers::where('attempt_id', $attempt->quiz_id)->count();
+
         if (!$question) {
             return response()->json([
                 'message' => 'Tidak ada soal lagi di level ini.',
             ], 404);
         }
+
+        $question['pertanyaan'] = $quizAttemptAnswer + 1 . ". " . $question->pertanyaan;
 
         return $question;
     }

@@ -54,16 +54,19 @@ class UserController extends Controller
 
             if (!Hash::check($request->old_password, $user->password)) {
                 return response()->json([
+                    'status' => false,
                     'message' => "Password lama salah.",
                 ]);
             }
 
             User::where('id', $user->id)->update(['password' => Hash::make($request->new_password)]);
             return response()->json([
+                'status' => true,
                 'message' => "Password berhasil diubah.",
             ]);
         } catch (\Throwable $th) {
             return response()->json([
+                "status" => false,
                 'message' => $th->getMessage(),
             ]);
         }

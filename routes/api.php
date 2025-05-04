@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\KelasContoller;
 use App\Http\Controllers\Api\MataPelajaranController;
 use App\Http\Controllers\Api\MateriController;
+use App\Http\Controllers\Api\QuizAnalysisController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\SubmitTugasController;
 use App\Http\Controllers\Api\TahunAjaranController;
@@ -60,4 +61,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Change Password
     Route::post('/change-password', [UserController::class, 'changePasswordApi']);
+
+    // Analysis Siswa
+    Route::get('/analysis-siswa', [QuizAnalysisController::class, 'analisis']);
 });

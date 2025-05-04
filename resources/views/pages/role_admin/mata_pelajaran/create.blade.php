@@ -21,7 +21,7 @@
                             value="{{ old('nama') }}">
                     </div>
                     <div class="field">
-                        <label class="label">Wali Kelas</label>
+                        <label class="label">Guru Pengampu</label>
                         <div class="control">
                             <div class="select">
                                 <select name="guru_nip" required>

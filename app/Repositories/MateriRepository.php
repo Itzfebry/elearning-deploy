@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Materi;
 use App\Models\Siswa;
 use App\Notifications\MateriBaruNotification;
+use Illuminate\Support\Facades\Auth;
 
 class MateriRepository
 {
@@ -48,15 +49,19 @@ class MateriRepository
     public function getData($search, $limit = 10)
     {
         $search = strtolower($search);
-        $query = $this->model
+        $guru = Auth::user()->guru;
+        $query = $this->model->with('mataPelajaran')
+            ->whereHas('mataPelajaran', function ($query) use ($guru) {
+                $query->where('guru_nip', $guru->nip);
+            })
             ->where(function ($query) use ($search) {
                 $query->where("semester", "like", "%" . $search . "%")
                     ->orWhere("type", "like", "%" . $search . "%")
                     ->orWhere("judul_materi", "like", "%" . $search . "%")
-                    ->orWhere("tahun_ajaran", "like", "%" . $search . "%");
-            })
-            ->orWhereHas("mataPelajaran", function ($query) use ($search) {
-                $query->where("nama", "like", "%" . $search . "%");
+                    ->orWhere("tahun_ajaran", "like", "%" . $search . "%")
+                    ->orWhereHas("mataPelajaran", function ($query) use ($search) {
+                        $query->where("nama", "like", "%" . $search . "%");
+                    });
             })
             ->paginate($limit);
 

@@ -13,42 +13,41 @@ class QuizAnalysisController extends Controller
     {
         $user = Auth::user()->siswa;
 
+        // Ambil semua attempt dengan relasi quizzes dan mata pelajaran
         $attempts = QuizAttempts::where('nisn', $user->nisn)
             ->with(['quizzes.mataPelajaran'])
             ->get();
 
-        // Ambil 2 skor tertinggi
-        $kelebihan = $attempts->sortByDesc('skor')
-            ->take(2);
+        // Kelompokkan berdasarkan mata_pelajaran_id dan hitung rata-rata skor
+        $grouped = $attempts->groupBy(function ($item) {
+            return $item->quizzes->mataPelajaran->id;
+        });
 
-        // Simpan ID quiz yang sudah dipakai di kelebihan
-        $excludedIds = $kelebihan->pluck('id')->toArray();
+        $avgScores = $grouped->map(function ($items) {
+            $first = $items->first(); // untuk ambil info nama mapel
+            $avg = $items->avg('skor');
 
-        // Ambil 2 skor terendah
-        $kekurangan = $attempts->whereNotIn('id', $excludedIds)
-            ->sortBy('skor')
-            ->take(2);
-
-        $kelebihanFormatted = $kelebihan->map(function ($item) {
             return [
-                'mapel' => $item->quizzes->mataPelajaran->nama,
-                'skor' => $item->skor,
-                'persentase' => ((int) $item->skor / 195) * 100,
+                'mapel_id' => $first->quizzes->mataPelajaran->id,
+                'mapel' => $first->quizzes->mataPelajaran->nama,
+                'rata_rata_skor' => $avg,
+                'persentase' => round(($avg / 195) * 100),
             ];
-        })->values();
+        });
 
-        $kekuranganFormatted = $kekurangan->map(function ($item) {
-            return [
-                'mapel' => $item->quizzes->mataPelajaran->nama,
-                'skor' => $item->skor,
-                'persentase' => ((int) $item->skor / 195) * 100,
-            ];
-        })->values();
+        // Urutkan berdasarkan skor rata-rata (desc dan asc)
+        $kelebihan = $avgScores->sortByDesc('rata_rata_skor')->take(2);
+        $kelebihanMapelIds = $kelebihan->pluck('mapel_id')->toArray();
+
+        $kekurangan = $avgScores->whereNotIn('mapel_id', $kelebihanMapelIds)
+            ->sortBy('rata_rata_skor')
+            ->take(2);
 
         return response()->json([
-            'kelebihan' => $kelebihanFormatted,
-            'kekurangan' => $kekuranganFormatted
+            'kelebihan' => array_values($kelebihan->toArray()),
+            'kekurangan' => array_values($kekurangan->toArray())
         ]);
     }
+
 
 }

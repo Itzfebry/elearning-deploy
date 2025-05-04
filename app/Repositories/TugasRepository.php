@@ -48,16 +48,16 @@ class TugasRepository
     public function getData($search, $limit = 10)
     {
         $search = strtolower($search);
-        $query = $this->model
-            ->where(function ($query) use ($search) {
+        $nipGuru = Auth::user()->guru->nip;
+        $query = $this->model->where('guru_nip', $nipGuru)
+            ->where(function ($query) use ($search, $nipGuru) {
                 $query->where("nama", "like", "%" . $search . "%")
                     ->orWhere("kelas", "like", "%" . $search . "%")
-                    ->orWhere("tahun_ajaran", "like", "%" . $search . "%");
+                    ->orWhere("tahun_ajaran", "like", "%" . $search . "%")
+                    ->orWhereHas("mataPelajaran", function ($query) use ($search) {
+                        $query->where("nama", "like", "%" . $search . "%");
+                    });
             })
-            ->orWhereHas("mataPelajaran", function ($query) use ($search) {
-                $query->where("nama", "like", "%" . $search . "%");
-            })
-            ->where('guru_nip', Auth::user()->guru->nip)
             ->paginate($limit);
 
         return $query;

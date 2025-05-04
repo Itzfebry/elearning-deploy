@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title', "Guru")
-@section('titleHeader', "Data Guru")
+@section('title', "Tugas")
+@section('titleHeader', "Data Tugas")
 @section('addBtn')
 <a href="{{ route('tugas.create') }}" class="button blue">
     <span>Tambah</span>

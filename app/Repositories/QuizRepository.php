@@ -85,7 +85,7 @@ class QuizRepository
             ->inRandomOrder()
             ->first();
 
-        $quizAttemptAnswer = QuizAttemptAnswers::where('attempt_id', $attempt->quiz_id)->count();
+        $quizAttemptAnswer = QuizAttemptAnswers::where('attempt_id', $attempt_id)->count();
 
         if (!$question) {
             return response()->json([

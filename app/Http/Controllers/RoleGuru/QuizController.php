@@ -32,9 +32,7 @@ class QuizController extends Controller
     {
         $nip = Auth::user()->guru->nip;
         $matpel = MataPelajaran::where('guru_nip', $nip)->get();
-        $judulQuiz = Quizzes::with('mataPelajaran')->whereHas('mataPelajaran', function ($q) use ($nip) {
-            $q->where('guru_nip', $nip);
-        })->where('matapelajaran_id', $request->matapelajaran_id)->get();
+        $judulQuiz = Quizzes::where('judul', $request->judul)->first();
         $kelas = Kelas::all();
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
 
@@ -218,8 +216,15 @@ class QuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $quiz = Quizzes::findOrFail($request->formid);
+            $quiz->delete();
+            Alert::success("Berhasil", "Data berhasil dihapus.");
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Alert::error($th->getMessage());
+        }
     }
 }

@@ -113,5 +113,6 @@ Route::middleware(["auth", "role:guru"])->group(function () {
     Route::get('quiz/excel_download', [QuizController::class, 'excelDownload'])->name('quiz.excel.download');
     Route::post('quiz/preview', [QuizController::class, 'preview'])->name('quiz.preview');
     Route::get('/quiz/reset-preview', [QuizController::class, 'resetPreview'])->name('quiz.preview.reset');
+    Route::post('quiz/delete', [QuizController::class, 'destroy'])->name('quiz.delete');
 
 });

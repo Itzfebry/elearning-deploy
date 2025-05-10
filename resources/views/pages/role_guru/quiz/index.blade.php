@@ -74,7 +74,16 @@
                             <th>B</th>
                             <th>C</th>
                             <th>D</th>
-                            {{-- <th></th> --}}
+                            @if (count($quiz) > 0)
+                            <th>
+                                <button type="button" class="button small red openModalBtn"
+                                    data-form_id="{{ $judulQuiz->id }}" data-form_name="{{ $judulQuiz->judul }}">
+                                    <span class="icon">
+                                        <x-icon name="delete" class="w-3 h-3 text-white" />
+                                    </span>
+                                </button>
+                            </th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -146,6 +155,37 @@
                 }
             });
         }
+    });
+
+    $('.openModalBtn').click(function () {
+        var formId = $(this).data('form_id');
+        var formName = $(this).data('form_name');
+        
+        $('#modalDelete').html(`
+            <div id="myModal-${formId}" style="background-color: rgba(0,0,0,0.5);" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
+                    <h2 class="text-xl font-semibold mb-4 text-orange-400">Warning!</h2>
+                    <p class="mb-4">Apakah anda ingin menhapus data Quiz : <b>${formName}</b>?</p>
+                    <form action="{{ route('quiz.delete') }}" method="POST">
+                        @csrf
+                        <input type="text" name="formid" value="${formId}" hidden>
+                        <div class="flex justify-end space-x-2 mt-4">
+                            <button id="submitModalBtn" type="submit" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2">
+                                Submit
+                            </button>
+                            <button id="closeModalBtn" type="button" class="text-gray-700 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm px-4 py-2">
+                                Close
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        `);
+
+        $(document).on('click', '#closeModalBtn', function () {
+            $(`#myModal-${formId}`).remove();
+        });
     });
 </script>
 @endpush

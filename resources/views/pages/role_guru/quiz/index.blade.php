@@ -13,9 +13,9 @@
         @csrf
         <div class="card has-table">
             <header class="card-header flex flex-wrap items-end gap-4 mb-6 mt-3 mx-4">
-                <div class="field flex-1 min-w-[150px]">
+                <div class="field flex-1 min-w-[150px]" id="matapelajaran">
                     <label class="block mb-2 text-sm font-medium">Mata Pelajaran</label>
-                    <select name="matapelajaran_id"
+                    <select name="matapelajaran_id" id="matapelajaran_id"
                         class="bg-gray-50 border border-gray-300 text-sm rounded-lg w-full p-2.5" required>
                         <option value="">-- Pilih Mata Pelajaran --</option>
                         @foreach ($matpel as $item)
@@ -25,15 +25,11 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="field flex-1 min-w-[150px]">
+                <div class="field flex-1 min-w-[150px]" id="quiz">
                     <label class="block mb-2 text-sm font-medium">Judul Quiz</label>
                     <select name="judul" class="bg-gray-50 border border-gray-300 text-sm rounded-lg w-full p-2.5"
-                        required>
+                        required id="judul">
                         <option value="">-- Pilih Judul Quiz --</option>
-                        @foreach ($judulQuiz as $item)
-                        <option value="{{ $item->judul }}" {{ request()->judul==$item->judul ? "selected" : "" }}>{{
-                            $item->judul }}</option>
-                        @endforeach
                     </select>
                 </div>
                 <div class="field flex-1 min-w-[150px]">
@@ -113,3 +109,43 @@
     <div id="modalDelete"></div>
 </section>
 @endsection
+@push('extraScript')
+<script>
+    const selectedJudul = "{{ request()->judul }}";
+
+    if (selectedJudul != "") {
+        $('#matapelajaran_id').ready(function() {
+            var id = $('#matapelajaran_id').val();
+            $('#judul').empty().append('<option value="">-- Pilih Judul Quiz --</option>');
+            $.ajax({
+                url: '/get-quiz-by-matpel/' + id,
+                method: 'GET',
+                success: function(data) {
+                    data.forEach(function(quiz) {
+                        const selected = (quiz.judul === selectedJudul) ? 'selected' : '';
+                        $('#judul').append(`<option value="${quiz.judul}" ${selected}>${quiz.judul}</option>`);
+                    });
+                }
+            });
+        });
+    }
+    
+    $('#matapelajaran_id').on('change', function() {
+        var id = $(this).val();
+        $('#judul').empty().append('<option value="">-- Pilih Judul Quiz --</option>');
+
+        if (id) {
+            $.ajax({
+                url: '/get-quiz-by-matpel/' + id,
+                method: 'GET',
+                success: function(data) {
+                    data.forEach(function(quiz) {
+                        const selected = (quiz.judul === selectedJudul) ? 'selected' : '';
+                        $('#judul').append(`<option value="${quiz.judul}" ${selected}>${quiz.judul}</option>`);
+                    });
+                }
+            });
+        }
+    });
+</script>
+@endpush

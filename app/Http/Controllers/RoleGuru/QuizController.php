@@ -34,13 +34,26 @@ class QuizController extends Controller
         $matpel = MataPelajaran::where('guru_nip', $nip)->get();
         $judulQuiz = Quizzes::with('mataPelajaran')->whereHas('mataPelajaran', function ($q) use ($nip) {
             $q->where('guru_nip', $nip);
-        })->get();
+        })->where('matapelajaran_id', $request->matapelajaran_id)->get();
         $kelas = Kelas::all();
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
 
         $quiz = $this->param->getData($request);
         return view("pages.role_guru.quiz.index", compact(['matpel', 'judulQuiz', 'kelas', 'tahunAjaran', 'quiz']));
     }
+
+    public function getQuizByMatpel($id)
+    {
+        $nip = Auth::user()->guru->nip;
+        $quizzes = Quizzes::where('matapelajaran_id', $id)
+            ->whereHas('mataPelajaran', function ($q) use ($nip) {
+                $q->where('guru_nip', $nip);
+            })
+            ->get();
+
+        return response()->json($quizzes);
+    }
+
 
     public function excelDownload()
     {

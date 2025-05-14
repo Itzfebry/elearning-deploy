@@ -17,6 +17,7 @@ class QuizQuestions extends Model
         "opsi_d",
         "jawaban_bener",
         "level",
+        "face",
     ];
 
     public function attemptAnswers()

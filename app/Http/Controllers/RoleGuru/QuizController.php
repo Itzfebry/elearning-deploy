@@ -151,7 +151,8 @@ class QuizController extends Controller
     {
         $nip = Auth::user()->guru->nip;
         $matpel = MataPelajaran::where("guru_nip", $nip)->get();
-        return view("pages.role_guru.quiz.create", compact(['matpel']));
+        $naik_level = json_encode(session('batas_naik_level') ?? []);
+        return view("pages.role_guru.quiz.create", compact(['matpel', 'naik_level']));
     }
 
     /**
@@ -180,7 +181,7 @@ class QuizController extends Controller
             'quiz_id' => $quiz->id,
             'jumlah_soal_per_level' => json_encode(session('jumlah_soal_per_level')),
             'level_awal' => session('level_awal') ?? 1,
-            'batas_naik_level' => json_encode(session('batas_naik_level')),
+            'batas_naik_level' => json_encode($request->batas_naik_level),
             'kkm' => session('kkm') ?? 75,
         ]);
 
@@ -199,6 +200,7 @@ class QuizController extends Controller
                 'opsi_d' => $row[7],
                 'jawaban_benar' => $jawabanBenar,
                 'level' => $row[3],
+                'skor' => $row[8],
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

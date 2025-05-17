@@ -130,7 +130,8 @@
                             @foreach (session('batas_naik_level') as $item => $value)
                             <div>
                                 <label>{{ $item }}</label>
-                                <input type="number" min="1" class="input" required value="{{ $value }}"
+                                <input type="number" min="1" id="batas_naik_level_{{ $item }}" class="input"
+                                    onchange="updateHiddenInput('{{ $item }}')" required value="{{ $value }}"
                                     placeholder="Jumlah soal mudah">
                             </div>
                             @endforeach
@@ -172,6 +173,11 @@
                 <input type="hidden" name="total_soal" value="{{ session('total_soal', old('total_soal')) }}">
                 <input type="hidden" name="total_soal_tampil"
                     value="{{ session('total_soal_tampil', old('total_soal_tampil')) }}">
+                @foreach (session('batas_naik_level') as $item => $value)
+                @continue($loop->last)
+                <input type="hidden" name="batas_naik_level[{{ $item }}]" id="hidden_input_{{ $item }}"
+                    value="{{ $value }}">
+                @endforeach
                 <button type="submit" class="button green">
                     Simpan Quiz
                 </button>
@@ -188,6 +194,7 @@
                         <th>Pertanyaan</th>
                         <th>Level</th>
                         <th>Jawaban Benar</th>
+                        <th>Skor</th>
                         <th>A</th>
                         <th>B</th>
                         <th>C</th>
@@ -206,6 +213,7 @@
                         <td data-label="Pertanyaan">{{ $row[1] ?? '' }}</td>
                         <td data-label="Level">{{ $row[3] ?? '' }}</td>
                         <td data-label="Jawaban Benar">{{ $row[2] ?? '' }}</td>
+                        <td data-label="Skor">{{ $row[8] ?? '' }}</td>
                         <td data-label="A">{{ $row[4] ?? '' }}</td>
                         <td data-label="B">{{ $row[5] ?? '' }}</td>
                         <td data-label="C">{{ $row[6] ?? '' }}</td>
@@ -223,3 +231,11 @@
     </div>
 </section>
 @endsection
+@push('extraScript')
+<script>
+    function updateHiddenInput(item) {
+        const inputValue = document.getElementById(`batas_naik_level_${item}`).value;
+        document.getElementById(`hidden_input_${item}`).value = inputValue;
+    }
+</script>
+@endpush

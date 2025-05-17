@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->dropColumn('benar_fase1');
             $table->dropColumn('benar_fase2');
             $table->dropColumn('fase');
-            $table->json('benar')->default(1)->after('jumlah_soal_dijawab');
+            $table->json('benar')->nullable()->after('jumlah_soal_dijawab');
         });
     }
 

@@ -139,77 +139,36 @@ class QuizRepository
         foreach ($jumlahSoalPerLevel as $key => $value) {
             $lvlNumber = preg_replace('/[^0-9]/', '', $key); // Ambil angka dari key 'level1', 'level2', dst
 
+
             if ($attempt->fase == $lvlNumber) {
+                $benar = json_decode($attempt->benar, true) ?? [];
+                $benar['fase' . $lvlNumber] = ($benar['fase' . $lvlNumber] ?? 0) + ($isCorrect ? 1 : 0);
+                $attempt->benar = json_encode($benar);
 
-                // Inisialisasi nilai benar_fase jika belum ada (opsional jika null)
-                $benarKey = 'benar_fase' . $lvlNumber;
-                if (!isset($attempt->$benarKey)) {
-                    $attempt->$benarKey = 0;
-                }
-
-                // Tambah nilai benar jika jawaban benar
                 if ($isCorrect) {
-                    $attempt->$benarKey++;
+                    $benar['fase' . $lvlNumber]++;
                 }
 
-                $batasKey = 'batas_naik_level_fase' . $lvlNumber;
-                $batasNaik = $quizLevelSettings->$batasKey ?? null;
-
-                if ($batasNaik && $attempt->jumlah_soal_dijawab == $jumlahSoalPerLevel[$key]) {
-                    // Cek apakah bisa naik level
-                    if ($attempt->$benarKey >= $batasNaik) {
-                        $attempt->level_akhir = $lvlNumber + 1;
+                if ($attempt->jumlah_soal_dijawab == $value) {
+                    if ($benar['fase' . $lvlNumber] >= $batasNaikLevel['fase' . $lvlNumber]) {
+                        if ($attempt->level_akhir < $lvlNumber) {
+                            $attempt->level_akhir += 1;
+                        }
                     } else {
                         $attempt->level_akhir = $lvlNumber;
                     }
 
-                    // Pindah ke fase berikutnya
-                    $attempt->fase = $lvlNumber + 1;
+                    $attempt->fase += 1;
                     $attempt->jumlah_soal_dijawab = 0;
                 }
+                break;
             }
         }
-
-
-        // Cek di fase berapa
-        // if ($attempt->fase == 1) {
-        //     if ($isCorrect) {
-        //         $attempt->benar_fase1++;
-        //     }
-
-        //     if ($attempt->jumlah_soal_dijawab == 7) {
-        //         if ($attempt->benar_fase1 >= 4) {
-        //             $attempt->level_akhir = 2; // naik ke Sedang
-        //         } else {
-        //             $attempt->level_akhir = 1; // tetap Mudah
-        //         }
-        //         $attempt->fase = 2;
-        //         $attempt->jumlah_soal_dijawab = 0;
-        //     }
-
-        // } elseif ($attempt->fase == 2) {
-        //     if ($isCorrect) {
-        //         $attempt->benar_fase2++;
-        //     }
-
-        //     if ($attempt->jumlah_soal_dijawab == 7) {
-        //         if ($attempt->benar_fase2 >= 5) {
-        //             $attempt->level_akhir = 3; // naik ke Susah
-        //         } else {
-        //             $attempt->level_akhir = 2; // tetap di Sedang
-        //         }
-        //         $attempt->fase = 3;
-        //         $attempt->jumlah_soal_dijawab = 0;
-        //     }
-
-        // } elseif ($attempt->fase == 3) {
-        //     // Tidak ada perubahan level
-        // }
 
         $attempt->save();
 
         $jumlah_jawaban = QuizAttemptAnswers::where('attempt_id', $attempt->id)->count();
-        $total_soal_tampil = $attempt->quizzes->total_soal_tampil ?? 20; // default 20 jika null
+        $total_soal_tampil = $attempt->quizzes->total_soal_tampil;
         $selesai = $jumlah_jawaban + 1 >= $total_soal_tampil;
 
         return [

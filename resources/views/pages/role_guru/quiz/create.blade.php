@@ -180,7 +180,7 @@
                     value="{{ session('total_soal_tampil', old('total_soal_tampil')) }}">
 
                 @foreach (session('jumlah_soal_per_level') as $item => $value)
-                <input type="text" name="jumlah_soal_per_level[{{ $item }}]" id="hidden_input_per_level{{ $item }}"
+                <input type="hidden" name="jumlah_soal_per_level[{{ $item }}]" id="hidden_input_per_level{{ $item }}"
                     value="{{ $value }}">
                 @endforeach
 
@@ -257,7 +257,7 @@
 
         if (inputValue > jumlahSoalPerLevel) {
             alert(`Nilai Batas naik level ${item} tidak boleh lebih besar dari jumlah soal yang harus dikerjakan pada level${number}`);
-            $(`#batas_naik_level_${item}`).val(inputValue - 1);
+            $(`#batas_naik_level_${item}`).val(jumlahSoalPerLevel);
             return true;
         }
     }

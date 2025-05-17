@@ -97,53 +97,45 @@
                     </div>
 
                     <div class="field">
-                        <label class="label">Batas Naik Level Fase 1</label>
-                        <input name="batas_naik_level_fase1" type="number" min="1" class="input" required
-                            value="{{ session('batas_naik_level_fase1', old('batas_naik_level_fase1', 3)) }}"
-                            placeholder="Misal: 3 jawaban benar">
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Batas Naik Level Fase 2</label>
-                        <input name="batas_naik_level_fase2" type="number" min="1" class="input" required
-                            value="{{ session('batas_naik_level_fase2', old('batas_naik_level_fase2', 5)) }}"
-                            placeholder="Misal: 5 jawaban benar">
-                    </div>
-                    <div class="field">
                         <label class="label">Upload Soal (Excel)</label>
                         <input type="file" name="file" required accept=".xlsx,.xls">
                         @if(session('uploaded_filename'))
                         <p class="help is-success">File terakhir: {{ session('uploaded_filename') }}</p>
                         @endif
                     </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2">
                     @if (session('jumlah_soal_per_level'))
-                    <div class="field mb-6">
+                    <div class="field mb-1">
                         <label class="label">Jumlah Soal per Level</label>
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            @foreach (session('jumlah_soal_per_level') as $item => $value)
                             <div>
-                                <label>Mudah</label>
-                                <input type="number" min="1" class="input" required
-                                    value="{{ session('jumlah_soal_per_level')['level1'] }}"
+                                <label>{{ $item }}</label>
+                                <input type="number" min="1" class="input" required value="{{ $value }}"
                                     placeholder="Jumlah soal mudah" readonly>
                             </div>
-                            <div>
-                                <label>Sedang</label>
-                                <input type="number" min="1" class="input"
-                                    value="{{ session('jumlah_soal_per_level')['level2'] }}"
-                                    placeholder="Jumlah soal sedang" readonly>
-                            </div>
-                            <div>
-                                <label>Sulit</label>
-                                <input type="number" min="1" class="input"
-                                    value="{{ session('jumlah_soal_per_level')['level3'] }}"
-                                    placeholder="Jumlah soal sulit" readonly>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                     @endif
-
                 </div>
-
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    @if (session('batas_naik_level'))
+                    <div class="field mb-1">
+                        <label class="label">Batas Naik Level</label>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            @foreach (session('batas_naik_level') as $item => $value)
+                            <div>
+                                <label>{{ $item }}</label>
+                                <input type="number" min="1" class="input" required value="{{ $value }}"
+                                    placeholder="Jumlah soal mudah">
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
                 <hr>
 
                 {{-- Tombol Aksi --}}
@@ -193,7 +185,6 @@
                         <th>No</th>
                         <th>Pertanyaan</th>
                         <th>Level</th>
-                        <th>Fase</th>
                         <th>Jawaban Benar</th>
                         <th>A</th>
                         <th>B</th>
@@ -212,7 +203,6 @@
                         <td data-label="No">{{ $index }}</td>
                         <td data-label="Pertanyaan">{{ $row[1] ?? '' }}</td>
                         <td data-label="Level">{{ $row[3] ?? '' }}</td>
-                        <td data-label="Fase">{{ $row[8] ?? 1 }}</td>
                         <td data-label="Jawaban Benar">{{ $row[2] ?? '' }}</td>
                         <td data-label="A">{{ $row[4] ?? '' }}</td>
                         <td data-label="B">{{ $row[5] ?? '' }}</td>

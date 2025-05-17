@@ -70,30 +70,35 @@ class QuizController extends Controller
         // Ambil sheet pertama
         $rows = $data[0];
 
-        $filteredRows = []; // baris valid
-        $jumlahSoalPerLevel = [
-            'level1' => 0,
-            'level2' => 0,
-            'level3' => 0,
-        ];
+        $filteredRows = [];
+        $jumlahSoalPerLevel = [];
+        $batasNaikLevel = [];
 
         foreach ($rows as $index => $row) {
             if ($index == 0 || !empty($row[1])) {
-                // Simpan header atau soal dengan kolom Pertanyaan (index 1) tidak kosong
                 $filteredRows[] = $row;
 
                 $level = $row[3];
-                if (!empty($level)) {
-                    if ($level == 1) {
-                        $jumlahSoalPerLevel['level1']++;
-                    } elseif ($level == 2) {
-                        $jumlahSoalPerLevel['level2']++;
-                    } elseif ($level == 3) {
-                        $jumlahSoalPerLevel['level3']++;
+                if (!empty($level) && $index != 0) {
+                    $key = 'level' . $level;
+                    if (!isset($jumlahSoalPerLevel[$key])) {
+                        $jumlahSoalPerLevel[$key] = 0;
                     }
+                    $jumlahSoalPerLevel[$key]++;
                 }
             }
         }
+
+        // Hitung batas naik level = 50% dari jumlah soal di level tersebut
+        foreach ($jumlahSoalPerLevel as $key => $jumlah) {
+            // Ambil level dari key, contoh: 'level2' → 2
+            $level = str_replace('level', '', $key);
+            $keyFase = 'fase' . $level;
+
+            // Hitung 50% lalu dibulatkan ke atas (ceil)
+            $batasNaikLevel[$keyFase] = (int) ceil($jumlah * 0.5);
+        }
+
 
         $soalCount = count($filteredRows) - 1;
 
@@ -109,8 +114,7 @@ class QuizController extends Controller
         // quiz level settings
         Session::put('jumlah_soal_per_level', $jumlahSoalPerLevel);
         Session::put('level_awal', $request->level_awal);
-        Session::put('batas_naik_level_fase1', $request->batas_naik_level_fase1);
-        Session::put('batas_naik_level_fase2', $request->batas_naik_level_fase2);
+        Session::put('batas_naik_level', $batasNaikLevel);
         Session::put('kkm', $request->kkm);
 
         return redirect()->back();
@@ -129,8 +133,7 @@ class QuizController extends Controller
         // quiz level settings
         session()->forget('jumlah_soal_per_level');
         session()->forget('level_awal');
-        session()->forget('batas_naik_level_fase1');
-        session()->forget('batas_naik_level_fase2');
+        session()->forget('batas_naik_level');
         session()->forget('kkm');
     }
 
@@ -177,8 +180,7 @@ class QuizController extends Controller
             'quiz_id' => $quiz->id,
             'jumlah_soal_per_level' => json_encode(session('jumlah_soal_per_level')),
             'level_awal' => session('level_awal') ?? 1,
-            'batas_naik_level_fase1' => session('batas_naik_level_fase1') ?? 4,
-            'batas_naik_level_fase2' => session('batas_naik_level_fase2') ?? 5,
+            'batas_naik_level' => json_encode(session('batas_naik_level')),
             'kkm' => session('kkm') ?? 75,
         ]);
 
@@ -197,7 +199,6 @@ class QuizController extends Controller
                 'opsi_d' => $row[7],
                 'jawaban_benar' => $jawabanBenar,
                 'level' => $row[3],
-                'fase' => $row[8] ?? 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

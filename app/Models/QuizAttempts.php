@@ -14,9 +14,7 @@ class QuizAttempts extends Model
         "skor",
         "level_akhir",
         "jumlah_soal_dijawab",
-        "benar_fase1",
-        "benar_fase2",
-        "fase",
+        "benar",
     ];
 
     public function attemptAnswers()

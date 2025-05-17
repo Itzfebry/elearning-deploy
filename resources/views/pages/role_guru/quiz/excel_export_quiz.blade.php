@@ -25,16 +25,11 @@
             <th
                 style="width: 300px; height: 30px; font-size: medium; text-align: center; color: #FFFFFF; background-color: #158ef1;">
                 opsi_d</th>
-            <th
-                style="width: 300px; height: 30px; font-size: medium; text-align: center; color: #FFFFFF; background-color: #158ef1;">
-                fase
-            </th>
         </tr>
     </thead>
     <tbody>
         @for ($i=0; $i < 60; $i++) <tr>
             <td>{{ $i+1 }}</td>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>

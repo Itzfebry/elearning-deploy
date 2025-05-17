@@ -68,6 +68,7 @@
                             </div>
                         </div>
 
+                        @if (session('total_soal'))
                         <div class="field">
                             <label class="label">Total Soal</label>
                             <input name="total_soal" type="text" class="input" required readonly
@@ -79,6 +80,7 @@
                             <input name="total_soal_tampil" type="number" class="input" required
                                 value="{{ session('total_soal_tampil', old('total_soal_tampil', 20)) }}">
                         </div>
+                        @endif
                     </div>
                 </div>
 

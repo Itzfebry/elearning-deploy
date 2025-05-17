@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ApiResponse;
 use App\Models\QuizAttemptAnswers;
 use App\Models\QuizAttempts;
+use App\Models\QuizLevelSetting;
 use App\Models\QuizQuestions;
 use App\Repositories\QuizRepository;
 use Illuminate\Http\Request;
@@ -37,11 +38,13 @@ class QuizController extends Controller
             'nisn' => 'required|string',
         ]);
 
+        $quizLevelSettings = QuizLevelSetting::where('quiz_id', $request->quiz_id)->first();
+
         $attempt = QuizAttempts::create([
             'quiz_id' => $request->quiz_id,
             'nisn' => $request->nisn,
             'skor' => 0,
-            'level_akhir' => 1,
+            'level_akhir' => $quizLevelSettings->level_awal,
         ]);
 
         return response()->json([

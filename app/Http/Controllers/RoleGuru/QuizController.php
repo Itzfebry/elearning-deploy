@@ -108,7 +108,7 @@ class QuizController extends Controller
         Session::put('matapelajaran_id', $request->matapelajaran_id);
         Session::put('preview_soal', $filteredRows);
         Session::put('total_soal', $soalCount);
-        Session::put('total_soal_tampil', $request->total_soal_tampil);
+        Session::put('total_soal_tampil', $request->total_soal_tampil ?? 20);
         Session::put('uploaded_filename', $request->file('file')->getClientOriginalName());
 
         // quiz level settings

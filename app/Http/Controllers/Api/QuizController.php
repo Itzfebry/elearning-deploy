@@ -39,12 +39,19 @@ class QuizController extends Controller
         ]);
 
         $quizLevelSettings = QuizLevelSetting::where('quiz_id', $request->quiz_id)->first();
+        $level = [];
+        foreach (json_decode($quizLevelSettings->jumlah_soal_per_level) as $key => $value) {
+            $lvlNumber = preg_replace('/[^0-9]/', '', $key);
+            $level['fase' . $lvlNumber] = 0;
+        }
 
         $attempt = QuizAttempts::create([
             'quiz_id' => $request->quiz_id,
             'nisn' => $request->nisn,
             'skor' => 0,
             'level_akhir' => $quizLevelSettings->level_awal,
+            'fase' => $quizLevelSettings->level_awal,
+            'benar' => json_encode($level),
         ]);
 
         return response()->json([

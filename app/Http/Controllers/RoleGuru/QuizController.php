@@ -97,6 +97,8 @@ class QuizController extends Controller
 
             // Hitung 50% lalu dibulatkan ke atas (ceil)
             $batasNaikLevel[$keyFase] = (int) ceil($jumlah * 0.5);
+
+            $jumlahSoalPerLevel[$key] = (int) ceil($jumlah * 0.5);
         }
 
 
@@ -168,6 +170,21 @@ class QuizController extends Controller
             return redirect()->back();
         }
 
+        if ($request->total_soal_tampil < 10) {
+            Alert::error("Terjadi Kesalahan", "Jumlah soal minimal 10.");
+            return redirect()->back();
+        }
+
+        $totalSoalPerLevel = 0;
+        foreach ($request->jumlah_soal_per_level as $key => $value) {
+            $totalSoalPerLevel += (int) $value;
+        }
+
+        if ($totalSoalPerLevel != $request->total_soal_tampil) {
+            Alert::error("Terjadi Kesalahan", "Total jumlah yang harus dikerjakan harus sama dengan jumlah soal tampil.");
+            return redirect()->back();
+        }
+
         // Simpan quiz dan soalnya ke DB
         $quiz = Quizzes::create([
             'judul' => $request->judul,
@@ -179,7 +196,7 @@ class QuizController extends Controller
 
         QuizLevelSetting::create([
             'quiz_id' => $quiz->id,
-            'jumlah_soal_per_level' => json_encode(session('jumlah_soal_per_level')),
+            'jumlah_soal_per_level' => json_encode($request->jumlah_soal_per_level),
             'level_awal' => session('level_awal') ?? 1,
             'batas_naik_level' => json_encode($request->batas_naik_level),
             'kkm' => session('kkm') ?? 75,

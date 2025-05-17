@@ -52,6 +52,13 @@
 
                     <div class="space-y-4">
                         <div class="field">
+                            <label class="label">Upload Soal (Excel)</label>
+                            <input type="file" name="file" required accept=".xlsx,.xls">
+                            @if(session('uploaded_filename'))
+                            <p class="help is-success">File terakhir: {{ session('uploaded_filename') }}</p>
+                            @endif
+                        </div>
+                        <div class="field">
                             <label class="label">Mata Pelajaran</label>
                             <div class="control">
                                 <div class="select">
@@ -67,25 +74,25 @@
                                 </div>
                             </div>
                         </div>
-
-                        @if (session('total_soal'))
-                        <div class="field">
-                            <label class="label">Total Soal</label>
-                            <input name="total_soal" type="text" class="input" required readonly
-                                value="{{ session('total_soal', old('total_soal')) }}">
-                        </div>
-
-                        <div class="field">
-                            <label class="label">Total Soal Tampil (jumlah soal yang akan ditampilkan ke quiz)</label>
-                            <input name="total_soal_tampil" type="number" class="input" required
-                                value="{{ session('total_soal_tampil', old('total_soal_tampil', 20)) }}">
-                        </div>
-                        @endif
                     </div>
                 </div>
 
                 {{-- Pengaturan Level dan KKM --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    @if (session('total_soal'))
+                    <div class="field">
+                        <label class="label">Total Soal</label>
+                        <input name="total_soal" type="text" class="input" required readonly min="1"
+                            value="{{ session('total_soal', old('total_soal')) }}">
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Total Soal Tampil (jumlah soal yang akan ditampilkan ke quiz)</label>
+                        <input name="total_soal_tampil" type="number" class="input" required id="total_soal_tampil"
+                            onchange="validasiTotalSoal(this.value)" min="1"
+                            value="{{ session('total_soal_tampil', old('total_soal_tampil', 0)) }}">
+                    </div>
+                    @endif
                     <div class="field">
                         <label class="label">Level Quiz Awal</label>
                         <input name="level_awal" type="number" min="1" class="input" required
@@ -97,25 +104,18 @@
                         <input name="kkm" type="number" min="0" max="100" class="input" required
                             value="{{ session('kkm', old('kkm', 75)) }}" placeholder="Misal: 70">
                     </div>
-
-                    <div class="field">
-                        <label class="label">Upload Soal (Excel)</label>
-                        <input type="file" name="file" required accept=".xlsx,.xls">
-                        @if(session('uploaded_filename'))
-                        <p class="help is-success">File terakhir: {{ session('uploaded_filename') }}</p>
-                        @endif
-                    </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2">
-                    @if (session('jumlah_soal_per_level'))
+                    @if (session('batas_naik_level'))
                     <div class="field mb-1">
-                        <label class="label">Jumlah Soal per Level</label>
+                        <label class="label">Jumlah yang harus dikerjakan setiap level</label>
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             @foreach (session('jumlah_soal_per_level') as $item => $value)
                             <div>
                                 <label>{{ $item }}</label>
-                                <input type="number" min="1" class="input" required value="{{ $value }}"
-                                    placeholder="Jumlah soal mudah" readonly>
+                                <input type="number" min="1" id="jumlah_soal_per_level_{{ $item }}" class="input"
+                                    onchange="updateHiddenInputPerLevel('{{ $item }}')" required value="{{ $value }}"
+                                    placeholder="Jumlah soal mudah">
                             </div>
                             @endforeach
                         </div>
@@ -144,8 +144,12 @@
                 {{-- Tombol Aksi --}}
                 <div class="flex justify-between items-center">
                     <div class="flex gap-2">
-                        <a href="{{ route('quiz.preview.reset') }}" class="button orange">Reset</a>
+                        @if (session('total_soal'))
+                        <a href="{{ route('quiz.preview.reset') }}" class="button red">Reset</a>
+                        @endif
+                        @if (!session('total_soal'))
                         <button type="submit" class="button blue">Import</button>
+                        @endif
                     </div>
                 </div>
 
@@ -170,11 +174,17 @@
                 <input type="hidden" name="deskripsi" value="{{ session('deskripsi', old('deskripsi')) }}">
                 <input type="hidden" name="matapelajaran_id"
                     value="{{ session('matapelajaran_id', old('matapelajaran_id')) }}">
-                <input type="hidden" name="total_soal" value="{{ session('total_soal', old('total_soal')) }}">
+                <input type="hidden" name="total_soal" id="total_soal"
+                    value="{{ session('total_soal', old('total_soal')) }}">
                 <input type="hidden" name="total_soal_tampil"
                     value="{{ session('total_soal_tampil', old('total_soal_tampil')) }}">
+
+                @foreach (session('jumlah_soal_per_level') as $item => $value)
+                <input type="text" name="jumlah_soal_per_level[{{ $item }}]" id="hidden_input_per_level{{ $item }}"
+                    value="{{ $value }}">
+                @endforeach
+
                 @foreach (session('batas_naik_level') as $item => $value)
-                @continue($loop->last)
                 <input type="hidden" name="batas_naik_level[{{ $item }}]" id="hidden_input_{{ $item }}"
                     value="{{ $value }}">
                 @endforeach
@@ -233,9 +243,39 @@
 @endsection
 @push('extraScript')
 <script>
-    function updateHiddenInput(item) {
-        const inputValue = document.getElementById(`batas_naik_level_${item}`).value;
-        document.getElementById(`hidden_input_${item}`).value = inputValue;
+    function updateHiddenInputPerLevel(item) {
+        const inputValue = document.getElementById(`jumlah_soal_per_level_${item}`).value;
+        document.getElementById(`hidden_input_per_level${item}`).value = inputValue;
     }
+    function updateHiddenInput(item) {
+        let inputValue = parseInt($(`#batas_naik_level_${item}`).val());
+        document.getElementById(`hidden_input_${item}`).value = inputValue;
+
+        const number = parseInt(item.replace(/\D/g, ''));
+        
+        const jumlahSoalPerLevel = document.getElementById(`jumlah_soal_per_level_level${number}`).value;
+
+        if (inputValue > jumlahSoalPerLevel) {
+            alert(`Nilai Batas naik level ${item} tidak boleh lebih besar dari jumlah soal yang harus dikerjakan pada level${number}`);
+            $(`#batas_naik_level_${item}`).val(inputValue - 1);
+            return true;
+        }
+    }
+
+    function validasiTotalSoal(val){
+        const totalSoal = parseInt($('#total_soal').val());
+        const soalTampil = parseInt(val);
+
+        if(soalTampil > totalSoal){
+            alert('Jumlah soal tampil tidak boleh lebih besar dari total soal');
+            $('#total_soal_tampil').val(0);
+            return false;
+        } else if(soalTampil < 10){
+            alert('Jumlah soal tampil terlalu sedikit');
+            $('#total_soal_tampil').val(0);
+            return false;
+        }
+    }
+
 </script>
 @endpush

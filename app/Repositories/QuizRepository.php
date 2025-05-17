@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\QuizAttemptAnswers;
 use App\Models\QuizAttempts;
+use App\Models\QuizLevelSetting;
 use App\Models\QuizQuestions;
 use App\Models\Quizzes;
 use Illuminate\Support\Facades\Auth;
@@ -107,19 +108,17 @@ class QuizRepository
 
         $attempt = QuizAttempts::findOrFail($attempt_id);
         $question = QuizQuestions::findOrFail($request->question_id);
+        $quizLevelSettings = QuizLevelSetting::where('quiz_id', $attempt->quiz_id)->first();
+
+        $jumlahSoalPerLevel = json_decode($quizLevelSettings->jumlah_soal_per_level, true);
+        $batasNaikLevel = json_decode($quizLevelSettings->batas_naik_level, true);
 
         $isCorrect = $request->jawaban_siswa === $question->jawaban_benar ? 1 : 0;
 
         // Hitung skor tambahan
         $skor_tambahan = 0;
         if ($isCorrect) {
-            if ($question->level == 1) {
-                $skor_tambahan = 5;
-            } elseif ($question->level == 2) {
-                $skor_tambahan = 10;
-            } elseif ($question->level == 3) {
-                $skor_tambahan = 15;
-            }
+            $skor_tambahan = $question->skor;
         }
 
         // Tambahkan skor ke attempt
@@ -136,40 +135,76 @@ class QuizRepository
         // Update jumlah soal dijawab
         $attempt->jumlah_soal_dijawab++;
 
-        // Cek di fase berapa
-        if ($attempt->fase == 1) {
-            if ($isCorrect) {
-                $attempt->benar_fase1++;
-            }
+        // cek fase
+        foreach ($jumlahSoalPerLevel as $key => $value) {
+            $lvlNumber = preg_replace('/[^0-9]/', '', $key); // Ambil angka dari key 'level1', 'level2', dst
 
-            if ($attempt->jumlah_soal_dijawab == 7) {
-                if ($attempt->benar_fase1 >= 4) {
-                    $attempt->level_akhir = 2; // naik ke Sedang
-                } else {
-                    $attempt->level_akhir = 1; // tetap Mudah
+            if ($attempt->fase == $lvlNumber) {
+
+                // Inisialisasi nilai benar_fase jika belum ada (opsional jika null)
+                $benarKey = 'benar_fase' . $lvlNumber;
+                if (!isset($attempt->$benarKey)) {
+                    $attempt->$benarKey = 0;
                 }
-                $attempt->fase = 2;
-                $attempt->jumlah_soal_dijawab = 0;
-            }
 
-        } elseif ($attempt->fase == 2) {
-            if ($isCorrect) {
-                $attempt->benar_fase2++;
-            }
-
-            if ($attempt->jumlah_soal_dijawab == 7) {
-                if ($attempt->benar_fase2 >= 5) {
-                    $attempt->level_akhir = 3; // naik ke Susah
-                } else {
-                    $attempt->level_akhir = 2; // tetap di Sedang
+                // Tambah nilai benar jika jawaban benar
+                if ($isCorrect) {
+                    $attempt->$benarKey++;
                 }
-                $attempt->fase = 3;
-                $attempt->jumlah_soal_dijawab = 0;
-            }
 
-        } elseif ($attempt->fase == 3) {
-            // Tidak ada perubahan level
+                $batasKey = 'batas_naik_level_fase' . $lvlNumber;
+                $batasNaik = $quizLevelSettings->$batasKey ?? null;
+
+                if ($batasNaik && $attempt->jumlah_soal_dijawab == $jumlahSoalPerLevel[$key]) {
+                    // Cek apakah bisa naik level
+                    if ($attempt->$benarKey >= $batasNaik) {
+                        $attempt->level_akhir = $lvlNumber + 1;
+                    } else {
+                        $attempt->level_akhir = $lvlNumber;
+                    }
+
+                    // Pindah ke fase berikutnya
+                    $attempt->fase = $lvlNumber + 1;
+                    $attempt->jumlah_soal_dijawab = 0;
+                }
+            }
         }
+
+
+        // Cek di fase berapa
+        // if ($attempt->fase == 1) {
+        //     if ($isCorrect) {
+        //         $attempt->benar_fase1++;
+        //     }
+
+        //     if ($attempt->jumlah_soal_dijawab == 7) {
+        //         if ($attempt->benar_fase1 >= 4) {
+        //             $attempt->level_akhir = 2; // naik ke Sedang
+        //         } else {
+        //             $attempt->level_akhir = 1; // tetap Mudah
+        //         }
+        //         $attempt->fase = 2;
+        //         $attempt->jumlah_soal_dijawab = 0;
+        //     }
+
+        // } elseif ($attempt->fase == 2) {
+        //     if ($isCorrect) {
+        //         $attempt->benar_fase2++;
+        //     }
+
+        //     if ($attempt->jumlah_soal_dijawab == 7) {
+        //         if ($attempt->benar_fase2 >= 5) {
+        //             $attempt->level_akhir = 3; // naik ke Susah
+        //         } else {
+        //             $attempt->level_akhir = 2; // tetap di Sedang
+        //         }
+        //         $attempt->fase = 3;
+        //         $attempt->jumlah_soal_dijawab = 0;
+        //     }
+
+        // } elseif ($attempt->fase == 3) {
+        //     // Tidak ada perubahan level
+        // }
 
         $attempt->save();
 

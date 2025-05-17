@@ -13,10 +13,9 @@ return new class extends Migration {
         Schema::create('quiz_level_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('quiz_id')->constrained('quizzes')->onDelete('cascade');
-            $table->integer('jumlah_soal_per_level')->default(7);
+            $table->json('jumlah_soal_per_level');
             $table->integer('level_awal')->default(1);
-            $table->integer('batas_naik_level_fase1')->default(4);
-            $table->integer('batas_naik_level_fase2')->default(5);
+            $table->json('batas_naik_level')->nullable(true);
             $table->integer('kkm')->default(70);
             $table->timestamps();
         });

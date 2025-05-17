@@ -6,6 +6,7 @@ use App\Exports\QuizExport;
 use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use App\Models\MataPelajaran;
+use App\Models\QuizLevelSetting;
 use App\Models\QuizQuestions;
 use App\Models\Quizzes;
 use App\Models\Siswa;
@@ -70,11 +71,27 @@ class QuizController extends Controller
         $rows = $data[0];
 
         $filteredRows = []; // baris valid
+        $jumlahSoalPerLevel = [
+            'level1' => 0,
+            'level2' => 0,
+            'level3' => 0,
+        ];
 
         foreach ($rows as $index => $row) {
             if ($index == 0 || !empty($row[1])) {
                 // Simpan header atau soal dengan kolom Pertanyaan (index 1) tidak kosong
                 $filteredRows[] = $row;
+
+                $level = $row[3];
+                if (!empty($level)) {
+                    if ($level == 1) {
+                        $jumlahSoalPerLevel['level1']++;
+                    } elseif ($level == 2) {
+                        $jumlahSoalPerLevel['level2']++;
+                    } elseif ($level == 3) {
+                        $jumlahSoalPerLevel['level3']++;
+                    }
+                }
             }
         }
 
@@ -89,11 +106,17 @@ class QuizController extends Controller
         Session::put('total_soal_tampil', $request->total_soal_tampil);
         Session::put('uploaded_filename', $request->file('file')->getClientOriginalName());
 
+        // quiz level settings
+        Session::put('jumlah_soal_per_level', $jumlahSoalPerLevel);
+        Session::put('level_awal', $request->level_awal);
+        Session::put('batas_naik_level_fase1', $request->batas_naik_level_fase1);
+        Session::put('batas_naik_level_fase2', $request->batas_naik_level_fase2);
+        Session::put('kkm', $request->kkm);
+
         return redirect()->back();
     }
 
-
-    public function resetPreview()
+    protected function removeSession()
     {
         session()->forget('judul');
         session()->forget('deskripsi');
@@ -102,6 +125,18 @@ class QuizController extends Controller
         session()->forget('total_soal');
         session()->forget('total_soal_tampil');
         session()->forget('uploaded_filename');
+
+        // quiz level settings
+        session()->forget('jumlah_soal_per_level');
+        session()->forget('level_awal');
+        session()->forget('batas_naik_level_fase1');
+        session()->forget('batas_naik_level_fase2');
+        session()->forget('kkm');
+    }
+
+    public function resetPreview()
+    {
+        $this->removeSession();
 
         return redirect()->back()->with('success', 'Data preview berhasil direset.');
     }
@@ -138,6 +173,15 @@ class QuizController extends Controller
             'total_soal_tampil' => $request->total_soal_tampil,
         ]);
 
+        QuizLevelSetting::create([
+            'quiz_id' => $quiz->id,
+            'jumlah_soal_per_level' => json_encode(session('jumlah_soal_per_level')),
+            'level_awal' => session('level_awal') ?? 1,
+            'batas_naik_level_fase1' => session('batas_naik_level_fase1') ?? 4,
+            'batas_naik_level_fase2' => session('batas_naik_level_fase2') ?? 5,
+            'kkm' => session('kkm') ?? 75,
+        ]);
+
         // Menampung data dalam array sebelum disimpan
         $quizQuestionsData = [];
 
@@ -153,6 +197,7 @@ class QuizController extends Controller
                 'opsi_d' => $row[7],
                 'jawaban_benar' => $jawabanBenar,
                 'level' => $row[3],
+                'fase' => $row[8] ?? 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -165,13 +210,7 @@ class QuizController extends Controller
 
 
         // Hapus session
-        session()->forget('judul');
-        session()->forget('deskripsi');
-        session()->forget('matapelajaran_id');
-        session()->forget('preview_soal');
-        session()->forget('total_soal');
-        session()->forget('total_soal_tampil');
-        session()->forget('uploaded_filename');
+        $this->removeSession();
 
         $matpel = MataPelajaran::findOrFail($request->matapelajaran_id);
         // Cari siswa berdasarkan kelas dan tahun ajaran

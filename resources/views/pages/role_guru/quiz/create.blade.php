@@ -24,19 +24,23 @@
                     Form Utama
                 </p>
             </header>
-            <div class="card-content">
-                <div class="grid grid-cols-1 gap-6 lg:grid-cols-1 mb-6">
+            <div class="card-content space-y-6">
+
+                {{-- Judul Quiz --}}
+                <div class="grid grid-cols-1">
                     <div class="field">
                         <label class="label">Judul Quiz</label>
                         <input name="judul" type="text" class="input" required placeholder="Masukkan Judul Quiz"
                             value="{{ session('judul', old('judul')) }}">
                     </div>
                 </div>
-                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
+
+                {{-- Deskripsi dan Mata Pelajaran --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="field">
                         <label class="label">Deskripsi</label>
                         <div
-                            class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                            class="w-full border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                             <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
                                 <textarea rows="8"
                                     class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
@@ -45,7 +49,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
+
+                    <div class="space-y-4">
                         <div class="field">
                             <label class="label">Mata Pelajaran</label>
                             <div class="control">
@@ -54,43 +59,104 @@
                                         <option value="">-- Pilih Mata Pelajaran --</option>
                                         @foreach ($matpel as $item)
                                         <option value="{{ $item->id }}" {{ session('matapelajaran_id',
-                                            old('matapelajaran_id'))==$item->id ? "selected" : "" }}>
-                                            {{$item->nama }}
+                                            old('matapelajaran_id'))==$item->id ? 'selected' : '' }}>
+                                            {{ $item->nama }}
                                         </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <input name="total_soal_tampil" type="hidden" class="input" required value="20"
-                            placeholder="Total soal yang akan ditampilkan ke Siswa">
+
                         <div class="field">
                             <label class="label">Total Soal</label>
-                            <input name="total_soal" type="text" class="input" required
-                                value="{{ session('total_soal', old('total_soal')) }}" readonly>
+                            <input name="total_soal" type="text" class="input" required readonly
+                                value="{{ session('total_soal', old('total_soal')) }}">
                         </div>
+
                         <div class="field">
-                            <label class="label">Upload Soal (Excel)</label>
-                            <input type="file" name="file" required accept=".xlsx,.xls">
-                            @if(session('uploaded_filename'))
-                            <p class="help is-success">File terakhir: {{ session('uploaded_filename') }}</p>
-                            @endif
+                            <label class="label">Total Soal Tampil (jumlah soal yang akan ditampilkan ke quiz)</label>
+                            <input name="total_soal_tampil" type="number" class="input" required
+                                value="{{ session('total_soal_tampil', old('total_soal_tampil', 20)) }}">
                         </div>
                     </div>
                 </div>
 
+                {{-- Pengaturan Level dan KKM --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="field">
+                        <label class="label">Level Quiz Awal</label>
+                        <input name="level_awal" type="number" min="1" class="input" required
+                            value="{{ session('level_awal', old('level_awal', 1)) }}" placeholder="Misal: 1">
+                    </div>
+
+                    <div class="field">
+                        <label class="label">KKM</label>
+                        <input name="kkm" type="number" min="0" max="100" class="input" required
+                            value="{{ session('kkm', old('kkm', 75)) }}" placeholder="Misal: 70">
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Batas Naik Level Fase 1</label>
+                        <input name="batas_naik_level_fase1" type="number" min="1" class="input" required
+                            value="{{ session('batas_naik_level_fase1', old('batas_naik_level_fase1', 3)) }}"
+                            placeholder="Misal: 3 jawaban benar">
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Batas Naik Level Fase 2</label>
+                        <input name="batas_naik_level_fase2" type="number" min="1" class="input" required
+                            value="{{ session('batas_naik_level_fase2', old('batas_naik_level_fase2', 5)) }}"
+                            placeholder="Misal: 5 jawaban benar">
+                    </div>
+                    <div class="field">
+                        <label class="label">Upload Soal (Excel)</label>
+                        <input type="file" name="file" required accept=".xlsx,.xls">
+                        @if(session('uploaded_filename'))
+                        <p class="help is-success">File terakhir: {{ session('uploaded_filename') }}</p>
+                        @endif
+                    </div>
+                    @if (session('jumlah_soal_per_level'))
+                    <div class="field mb-6">
+                        <label class="label">Jumlah Soal per Level</label>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div>
+                                <label>Mudah</label>
+                                <input type="number" min="1" class="input" required
+                                    value="{{ session('jumlah_soal_per_level')['level1'] }}"
+                                    placeholder="Jumlah soal mudah" readonly>
+                            </div>
+                            <div>
+                                <label>Sedang</label>
+                                <input type="number" min="1" class="input"
+                                    value="{{ session('jumlah_soal_per_level')['level2'] }}"
+                                    placeholder="Jumlah soal sedang" readonly>
+                            </div>
+                            <div>
+                                <label>Sulit</label>
+                                <input type="number" min="1" class="input"
+                                    value="{{ session('jumlah_soal_per_level')['level3'] }}"
+                                    placeholder="Jumlah soal sulit" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                </div>
+
                 <hr>
+
+                {{-- Tombol Aksi --}}
                 <div class="flex justify-between items-center">
                     <div class="flex gap-2">
-                        <a href="{{ route('quiz.preview.reset') }}" class="button orange">
-                            Reset
-                        </a>
-                        <button type="submit" class="button blue">
-                            Import
-                        </button>
+                        <a href="{{ route('quiz.preview.reset') }}" class="button orange">Reset</a>
+                        <button type="submit" class="button blue">Import</button>
                     </div>
                 </div>
+
             </div>
+
+
         </div>
     </form>
 
@@ -127,6 +193,7 @@
                         <th>No</th>
                         <th>Pertanyaan</th>
                         <th>Level</th>
+                        <th>Fase</th>
                         <th>Jawaban Benar</th>
                         <th>A</th>
                         <th>B</th>
@@ -145,6 +212,7 @@
                         <td data-label="No">{{ $index }}</td>
                         <td data-label="Pertanyaan">{{ $row[1] ?? '' }}</td>
                         <td data-label="Level">{{ $row[3] ?? '' }}</td>
+                        <td data-label="Fase">{{ $row[8] ?? 1 }}</td>
                         <td data-label="Jawaban Benar">{{ $row[2] ?? '' }}</td>
                         <td data-label="A">{{ $row[4] ?? '' }}</td>
                         <td data-label="B">{{ $row[5] ?? '' }}</td>

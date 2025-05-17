@@ -16,6 +16,10 @@ class Quizzes extends Model
         "matapelajaran_id",
     ];
 
+    public function levelSetting()
+    {
+        return $this->hasOne(QuizLevelSetting::class);
+    }
 
     public function quizAttempt()
     {

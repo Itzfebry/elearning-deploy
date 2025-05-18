@@ -73,18 +73,21 @@ class QuizController extends Controller
         $filteredRows = [];
         $jumlahSoalPerLevel = [];
         $batasNaikLevel = [];
+        $skorLevel = [];
 
         foreach ($rows as $index => $row) {
             if ($index == 0 || !empty($row[1])) {
                 $filteredRows[] = $row;
 
                 $level = $row[3];
+                $skor = $row[8];
                 if (!empty($level) && $index != 0) {
                     $key = 'level' . $level;
                     if (!isset($jumlahSoalPerLevel[$key])) {
                         $jumlahSoalPerLevel[$key] = 0;
                     }
                     $jumlahSoalPerLevel[$key]++;
+                    $skorLevel[$key] = $skor;
                 }
             }
         }
@@ -117,6 +120,7 @@ class QuizController extends Controller
         Session::put('jumlah_soal_per_level', $jumlahSoalPerLevel);
         Session::put('level_awal', $request->level_awal);
         Session::put('batas_naik_level', $batasNaikLevel);
+        Session::put('skor_level', $skorLevel);
         Session::put('kkm', $request->kkm);
 
         return redirect()->back();
@@ -136,6 +140,7 @@ class QuizController extends Controller
         session()->forget('jumlah_soal_per_level');
         session()->forget('level_awal');
         session()->forget('batas_naik_level');
+        session()->forget('skor_level');
         session()->forget('kkm');
     }
 
@@ -199,6 +204,7 @@ class QuizController extends Controller
             'jumlah_soal_per_level' => json_encode($request->jumlah_soal_per_level),
             'level_awal' => session('level_awal') ?? 1,
             'batas_naik_level' => json_encode($request->batas_naik_level),
+            'skor_level' => json_encode(session('skor_level')),
             'kkm' => session('kkm') ?? 75,
         ]);
 

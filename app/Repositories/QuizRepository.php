@@ -106,14 +106,16 @@ class QuizRepository
             'jawaban_siswa' => 'required|in:a,b,c,d',
         ]);
 
+
         $attempt = QuizAttempts::findOrFail($attempt_id);
+        $quizzes = Quizzes::findOrFail($attempt->quiz_id);
         $question = QuizQuestions::findOrFail($request->question_id);
         $quizLevelSettings = QuizLevelSetting::where('quiz_id', $attempt->quiz_id)->first();
 
         $jumlahSoalPerLevel = json_decode($quizLevelSettings->jumlah_soal_per_level, true);
         $batasNaikLevel = json_decode($quizLevelSettings->batas_naik_level, true);
 
-        $isCorrect = $request->jawaban_siswa === $question->jawaban_benar ? 1 : 0;
+        $isCorrect = $request->jawaban_siswa == $question->jawaban_benar ? 1 : 0;
 
         // Hitung skor tambahan
         $skor_tambahan = 0;
@@ -137,25 +139,27 @@ class QuizRepository
 
         // cek fase
         foreach ($jumlahSoalPerLevel as $key => $value) {
-            $lvlNumber = preg_replace('/[^0-9]/', '', $key); // Ambil angka dari key 'level1', 'level2', dst
+            $lvlNumber = preg_replace('/[^0-9]/', '', $key);
 
 
             if ($attempt->fase == $lvlNumber) {
                 $benar = json_decode($attempt->benar, true) ?? [];
-                $benar['fase' . $lvlNumber] = ($benar['fase' . $lvlNumber] ?? 0) + ($isCorrect ? 1 : 0);
-                $attempt->benar = json_encode($benar);
+                $jumlahFase = count($jumlahSoalPerLevel);
+                $isLastFase = $attempt->fase == $jumlahFase;
 
-                if ($isCorrect) {
-                    $benar['fase' . $lvlNumber]++;
+                if (!$isLastFase && $isCorrect) {
+                    $benar['fase' . $lvlNumber] = ($benar['fase' . $lvlNumber] ?? 0) + ($isCorrect ? 1 : 0);
                 }
+
+                $attempt->benar = json_encode($benar);
 
                 if ($attempt->jumlah_soal_dijawab == $value) {
                     if ($benar['fase' . $lvlNumber] >= $batasNaikLevel['fase' . $lvlNumber]) {
-                        if ($attempt->level_akhir < $lvlNumber) {
-                            $attempt->level_akhir += 1;
-                        }
+                        // if ($attempt->level_akhir < $lvlNumber) {
+                        $attempt->level_akhir += 1;
+                        // }
                     } else {
-                        $attempt->level_akhir = $lvlNumber;
+                        $attempt->level_akhir;
                     }
 
                     $attempt->fase += 1;
@@ -168,8 +172,8 @@ class QuizRepository
         $attempt->save();
 
         $jumlah_jawaban = QuizAttemptAnswers::where('attempt_id', $attempt->id)->count();
-        $total_soal_tampil = $attempt->quizzes->total_soal_tampil;
-        $selesai = $jumlah_jawaban + 1 >= $total_soal_tampil;
+        $total_soal_tampil = $quizzes->total_soal_tampil;
+        $selesai = $jumlah_jawaban >= $total_soal_tampil;
 
         return [
             'quiz_id' => $attempt->quiz_id,
@@ -183,7 +187,7 @@ class QuizRepository
 
     public function getFinishQuiz($quizId)
     {
-        $attempt = QuizAttempts::where('quiz_id', $quizId)->first();
+        $attempt = QuizAttempts::where('quiz_id', $quizId)->where('nisn', Auth::user()->siswa->nisn)->first();
         return $attempt;
     }
 

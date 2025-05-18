@@ -13,6 +13,7 @@ class QuizLevelSetting extends Model
         'jumlah_soal_per_level',
         'level_awal',
         'batas_naik_level',
+        'skor_level',
         'kkm',
     ];
 

@@ -110,6 +110,23 @@ class QuizController extends Controller
         ]);
     }
 
+    static function getNilai($first)
+    {
+        $quizId = $first->quiz_id;
+        $quizLevelSettings = QuizLevelSetting::where('quiz_id', $quizId)->first();
+        $jumlahSoalPerLevel = json_decode($quizLevelSettings->jumlah_soal_per_level, true);
+        $totalSkorLevel = 0;
+
+        foreach (json_decode($quizLevelSettings->skor_level) as $key => $value) {
+            $totalSkorLevel += $value * (int) $jumlahSoalPerLevel[$key];
+        }
+
+        return [
+            "total_skor_level" => $totalSkorLevel,
+            "kkm" => $quizLevelSettings->kkm,
+        ];
+    }
+
     public function getApiQuizGuru(Request $request)
     {
         $query = QuizAttempts::with(['quizzes', 'siswa'])
@@ -120,7 +137,21 @@ class QuizController extends Controller
                     ->where('tahun_ajaran', $request->tahun_ajaran);
             })->get();
 
-        return $this->okApiResponse($query);
+        $avgScores = $query->map(function ($items) {
+            $first = $items->first(); // untuk ambil info nama mapel
+            $avg = $items->avg('skor');
+
+            return [
+                'nama' => $first->siswa->nama,
+                'mapel_id' => $first->quizzes->mataPelajaran->id,
+                'mapel' => $first->quizzes->mataPelajaran->nama,
+                'skor' => $first->skor,
+                'persentase' => round(($avg / $this->getNilai($first)['total_skor_level']) * 100),
+                'kkm' => $this->getNilai($first)['kkm'],
+            ];
+        });
+
+        return $this->okApiResponse($avgScores);
     }
 
 }

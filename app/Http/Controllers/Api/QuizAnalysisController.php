@@ -4,11 +4,25 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\QuizAttempts;
+use App\Models\QuizLevelSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class QuizAnalysisController extends Controller
 {
+    static function getSkor($first)
+    {
+        $quizId = $first->quiz_id;
+        $quizLevelSettings = QuizLevelSetting::where('quiz_id', $quizId)->first();
+        $jumlahSoalPerLevel = json_decode($quizLevelSettings->jumlah_soal_per_level, true);
+        $totalSkorLevel = 0;
+
+        foreach (json_decode($quizLevelSettings->skor_level) as $key => $value) {
+            $totalSkorLevel += $value * (int) $jumlahSoalPerLevel[$key];
+        }
+        return $totalSkorLevel;
+    }
+
     public function analisis(Request $request)
     {
         $user = Auth::user()->siswa;
@@ -31,7 +45,7 @@ class QuizAnalysisController extends Controller
                 'mapel_id' => $first->quizzes->mataPelajaran->id,
                 'mapel' => $first->quizzes->mataPelajaran->nama,
                 'rata_rata_skor' => $avg,
-                'persentase' => round(($avg / 195) * 100),
+                'persentase' => round(($avg / $this->getSkor($first)) * 100),
             ];
         });
 

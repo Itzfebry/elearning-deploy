@@ -89,6 +89,12 @@
                         <span class="menu-item-label">Quiz</span>
                     </a>
                 </li>
+                <li class="{{ Request::is('rekap-quiz') || Request::is('rekap-quiz/*') ? 'active' : '' }}">
+                    <a href="{{ route('rekap.quiz') }}">
+                        <span class="icon"><i class="mdi mdi-lock"></i></span>
+                        <span class="menu-item-label">Rekap Quiz</span>
+                    </a>
+                </li>
             </ul>
             </p>
             @endif

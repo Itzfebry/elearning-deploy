@@ -8,6 +8,7 @@ use App\Http\Controllers\KelasContoller;
 use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\RoleGuru\MateriController;
 use App\Http\Controllers\RoleGuru\QuizController;
+use App\Http\Controllers\RoleGuru\RekapQuizController;
 use App\Http\Controllers\RoleGuru\TugasController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
@@ -114,5 +115,7 @@ Route::middleware(["auth", "role:guru"])->group(function () {
     Route::post('quiz/preview', [QuizController::class, 'preview'])->name('quiz.preview');
     Route::get('/quiz/reset-preview', [QuizController::class, 'resetPreview'])->name('quiz.preview.reset');
     Route::post('quiz/delete', [QuizController::class, 'destroy'])->name('quiz.delete');
+
+    Route::get('rekap-quiz', [RekapQuizController::class, 'index'])->name('rekap.quiz');
 
 });

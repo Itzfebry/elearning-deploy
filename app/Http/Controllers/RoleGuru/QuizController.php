@@ -72,6 +72,7 @@ class QuizController extends Controller
 
         $filteredRows = [];
         $jumlahSoalPerLevel = [];
+        $totalSoalPeLevel = [];
         $batasNaikLevel = [];
         $skorLevel = [];
 
@@ -85,8 +86,10 @@ class QuizController extends Controller
                     $key = 'level' . $level;
                     if (!isset($jumlahSoalPerLevel[$key])) {
                         $jumlahSoalPerLevel[$key] = 0;
+                        $totalSoalPeLevel[$key] = 0;
                     }
                     $jumlahSoalPerLevel[$key]++;
+                    $totalSoalPeLevel[$key]++;
                     $skorLevel[$key] = $skor;
                 }
             }
@@ -117,6 +120,7 @@ class QuizController extends Controller
         Session::put('uploaded_filename', $request->file('file')->getClientOriginalName());
 
         // quiz level settings
+        Session::put('total_soal_per_level', $totalSoalPeLevel);
         Session::put('jumlah_soal_per_level', $jumlahSoalPerLevel);
         Session::put('level_awal', $request->level_awal);
         Session::put('batas_naik_level', $batasNaikLevel);
@@ -137,6 +141,7 @@ class QuizController extends Controller
         session()->forget('uploaded_filename');
 
         // quiz level settings
+        session()->forget('total_soal_per_level');
         session()->forget('jumlah_soal_per_level');
         session()->forget('level_awal');
         session()->forget('batas_naik_level');

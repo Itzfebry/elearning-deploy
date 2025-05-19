@@ -108,6 +108,22 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2">
                     @if (session('batas_naik_level'))
                     <div class="field mb-1">
+                        <label class="label">Total Soal Setiap Level</label>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            @foreach (session('total_soal_per_level') as $item => $value)
+                            <div>
+                                <label>{{ $item }}</label>
+                                <input type="number" min="1" id="total_soal_per_level_{{ $item }}" class="input"
+                                    readonly required value="{{ $value }}" placeholder="Jumlah soal mudah">
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    @if (session('batas_naik_level'))
+                    <div class="field mb-1">
                         <label class="label">Jumlah yang harus dikerjakan setiap level</label>
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             @foreach (session('jumlah_soal_per_level') as $item => $value)
@@ -244,8 +260,25 @@
 @push('extraScript')
 <script>
     function updateHiddenInputPerLevel(item) {
-        const inputValue = document.getElementById(`jumlah_soal_per_level_${item}`).value;
+        var inputValueTotalLevel = document.getElementById(`total_soal_per_level_${item}`).value;
+        var inputValue = document.getElementById(`jumlah_soal_per_level_${item}`).value;
         document.getElementById(`hidden_input_per_level${item}`).value = inputValue;
+
+        console.log(`total ${item} : ` + inputValueTotalLevel);
+        console.log(`level ${item} : ` + inputValue);
+        
+        if (parseInt(inputValue) > parseInt(inputValueTotalLevel)) {
+            alert(`Jumlah soal yang harus dikerjakan setiap level pada : ${item} tidak boleh lebih besar dari total soal setiap level : ${item}`);
+            $(`#jumlah_soal_per_level_${item}`).val(inputValueTotalLevel);
+            return true;
+        }
+
+        const number = parseInt(item.replace(/\D/g, ''));
+        let inputBatasNaikLevel = parseInt($(`#batas_naik_level_fase${number}`).val());
+        if (parseInt(inputValue) < parseInt(inputBatasNaikLevel)) {
+            $(`#hidden_input_fase${number}`).val(inputValue);
+            $(`#batas_naik_level_fase${number}`).val(inputValue);
+        }
     }
     function updateHiddenInput(item) {
         let inputValue = parseInt($(`#batas_naik_level_${item}`).val());

@@ -69,6 +69,7 @@
                             <th>No</th>
                             <th>Pertanyaan</th>
                             <th>Level</th>
+                            <th>Skor</th>
                             <th>Jawaban Benar</th>
                             <th>A</th>
                             <th>B</th>
@@ -95,6 +96,7 @@
                             <td data-label="No">{{ $no++ }}</td>
                             <td data-label="Pertanyaan">{{ $item->pertanyaan }}</td>
                             <td data-label="Level">{{ $item->level }}</td>
+                            <td data-label="Skor">{{ $item->skor }}</td>
                             <td data-label="JawabanBenar">{{ $item->jawaban_benar }}</td>
                             <td data-label="A">{{ $item->opsi_a }}</td>
                             <td data-label="B">{{ $item->opsi_b }}</td>

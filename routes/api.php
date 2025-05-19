@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\TahunAjaranController;
 use App\Http\Controllers\Api\TugasController;
 use App\Http\Controllers\SiswaNotifikasiController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\CheckApiToken;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
@@ -64,4 +66,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Analysis Siswa
     Route::get('/analysis-siswa', [QuizAnalysisController::class, 'analisis']);
+});
+
+Route::middleware(CheckApiToken::class)->group(function () {
+    Route::get('/check-token', function (Request $request) {
+        return response()->json(['message' => 'Token valid']);
+    });
 });

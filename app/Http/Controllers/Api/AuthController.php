@@ -39,10 +39,10 @@ class AuthController extends Controller
             }
         }
 
-        $token = DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->first();
-        if (!is_null($token)) {
-            return $this->errorApiResponse("User sudah login di device lain. Harap logout terlebih dahulu.");
-        }
+        // $token = DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->first();
+        // if (!is_null($token)) {
+        //     return $this->errorApiResponse("User sudah login di device lain. Harap logout terlebih dahulu.");
+        // }
 
 
         // Jika user ditemukan dan password cocok

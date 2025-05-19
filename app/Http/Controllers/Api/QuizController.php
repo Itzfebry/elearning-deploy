@@ -84,8 +84,7 @@ class QuizController extends Controller
     public function getFinishQuiz(Request $request)
     {
         try {
-            $data = $this->param->getFinishQuiz($request->quiz_id);
-            return $this->okApiResponse($data);
+            return $this->param->getFinishQuiz($request->quiz_id);
         } catch (\Exception $e) {
             return $this->errorApiResponse('error', $e->getMessage());
         }
@@ -102,6 +101,7 @@ class QuizController extends Controller
 
         $skorMe = QuizAttempts::select('skor')
             ->where('nisn', Auth::user()->siswa->nisn)
+            ->where('quiz_id', $request->quiz_id)
             ->orderByDesc('skor')->first();
 
         return response()->json([

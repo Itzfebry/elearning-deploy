@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Http\Controllers\Traits\ApiResponse;
 use App\Models\QuizAttemptAnswers;
 use App\Models\QuizAttempts;
 use App\Models\QuizLevelSetting;
@@ -13,6 +14,8 @@ class QuizRepository
 {
     protected $model;
     protected $modelQuizzes;
+
+    use ApiResponse;
 
     public function __construct(QuizQuestions $quizQuestions, Quizzes $quizzes)
     {
@@ -187,8 +190,15 @@ class QuizRepository
 
     public function getFinishQuiz($quizId)
     {
-        $attempt = QuizAttempts::where('quiz_id', $quizId)->where('nisn', Auth::user()->siswa->nisn)->first();
-        return $attempt;
+        $attempt = QuizAttempts::where('quiz_id', $quizId)
+            ->where('nisn', Auth::user()->siswa->nisn)
+            ->first();
+
+        $attempt->jumlah_soal = $attempt->quizzes()->first()->total_soal_tampil;
+        $attempt->jawaban_benar = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', 1)->count();
+        $attempt->jawaban_salah = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', "0")->count();
+
+        return $this->okApiResponse($attempt);
     }
 
 }

@@ -153,7 +153,10 @@
             <!-- Footer -->
             <div class="py-4 px-8 transparent-footer border-t border-gray-100 text-center">
                 <p class="text-sm text-gray-700">
-                    Don't have an account? <a href="#" class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline">Contact admin</a>
+                    Don't have an account? 
+                    <a href="https://wa.me/6288231806421" target="_blank" class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline">
+                        Contact admin
+                    </a>
                 </p>
             </div>
         </div>

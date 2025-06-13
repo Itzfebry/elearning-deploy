@@ -49,20 +49,19 @@ class RekapQuizController extends Controller
                     ->where('tahun_ajaran', $request->tahun_ajaran);
             })->get();
 
-        $rekap = $query->map(function ($items) use ($request) {
-            $first = $items->first();
-            $avg = $items->avg('skor');
+        $rekap = $query->map(function ($item) use ($request) {
+            $nilaiData = $this->getNilai($item);
 
             return [
-                'matapelajaran' => $first->quizzes->mataPelajaran->nama,
-                'judul_quiz' => $first->quizzes->judul,
-                'nama_siswa' => $first->siswa->nama,
+                'matapelajaran' => $item->quizzes->mataPelajaran->nama,
+                'judul_quiz' => $item->quizzes->judul,
+                'nama_siswa' => $item->siswa->nama,
                 'tahun_ajaran' => $request->tahun_ajaran,
                 'kelas' => $request->kelas,
-                'mapel_id' => $first->quizzes->mataPelajaran->id,
-                'total_skor' => $first->skor,
-                'persentase' => round(($avg / $this->getNilai($first)['total_skor_level']) * 100),
-                'kkm' => $this->getNilai($first)['kkm'],
+                'mapel_id' => $item->quizzes->mataPelajaran->id,
+                'total_skor' => $item->skor,
+                'persentase' => round(($item->skor / $nilaiData['total_skor_level']) * 100),
+                'kkm' => $nilaiData['kkm'],
             ];
         });
 
@@ -70,6 +69,8 @@ class RekapQuizController extends Controller
             return Excel::download(new RekapExport($rekap), 'rekap-quiz' . $request->kelas . '.xlsx');
         }
 
-        return view("pages.role_guru.quiz.rekap-quiz", compact(['matpel', 'judulQuiz', 'kelas', 'tahunAjaran', 'rekap']));
+        // Convert $rekap to array to prevent automatic JSON conversion
+        $rekapArray = $rekap->toArray();
+        return view("pages.role_guru.quiz.rekap-quiz", compact(['matpel', 'judulQuiz', 'kelas', 'tahunAjaran', 'rekapArray']));
     }
 }

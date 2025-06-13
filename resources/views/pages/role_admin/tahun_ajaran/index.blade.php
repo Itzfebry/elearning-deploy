@@ -81,6 +81,13 @@
                                             <x-icon name="edit" class="w-4 h-4 text-white" />
                                         </span>
                                     </a>
+                                    <button type="button" class="button small red openModalBtn"
+                                        data-form_id="{{ $item->tahun }}"
+                                        data-form_name="{{ $item->tahun }}">
+                                        <span class="icon">
+                                            <x-icon name="delete" class="w-4 h-4 text-white" />
+                                        </span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -104,6 +111,42 @@
 <script>
     $('#page_length').on('change', function() {
         $('#form').submit();
+    });
+</script>
+<script>
+    $('.openModalBtn').on('click', function() {
+        const formId = $(this).data('form_id');
+        const formName = $(this).data('form_name');
+        
+        const modalContent = `
+            <div class="modal active">
+                <div class="modal-background --jb-modal-close"></div>
+                <div class="modal-card" style="max-width: 480px;">
+                    <header class="modal-card-head">
+                        <p class="modal-card-title">Konfirmasi Hapus</p>
+                    </header>
+                    <section class="modal-card-body">
+                        <p>Apakah Anda yakin ingin menghapus tahun ajaran <b>${formName}</b>?</p>
+                    </section>
+                    <footer class="modal-card-foot">
+                        <button class="button --jb-modal-close">Batal</button>
+                        <form action="{{ route('tahun-ajaran.delete') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="tahun" value="${formId}">
+                            <button type="submit" class="button red">Hapus</button>
+                        </form>
+                    </footer>
+                </div>
+            </div>
+        `;
+        $('#modalDelete').html(modalContent);
+
+        $('.--jb-modal-close').on('click', function() {
+            $('.modal').removeClass('active');
+            $('#modalDelete').empty();
+        });
+
+        $('.modal').addClass('active');
     });
 </script>
 @endpush

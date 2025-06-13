@@ -102,7 +102,6 @@
         .main-section {
             padding: 1.5rem;
             background-color: #f0f2f5;
-            min-height: calc(100vh - 200px);
         }
         .title {
             color: #333;
@@ -183,7 +182,6 @@
             position: relative;
             padding: 1.5rem;
             background-color: #f0f2f5;
-            min-height: calc(100vh - 200px);
             z-index: 5; /* Higher z-index */
             margin-top: 20px; /* Increased gap */
             border-top: 1px solid #f0f2f5;
@@ -226,6 +224,7 @@
             position: relative;
             z-index: 5;
             background-color: transparent;
+            padding-bottom: 100px; /* Add padding to account for footer height */
         }
     </style>
 </head>
@@ -285,6 +284,8 @@
     @include('sweetalert::alert')
     @include('partials.scripts')
     @stack('extraScript')
+
+    @stack('scripts')
 </body>
 
 </html>

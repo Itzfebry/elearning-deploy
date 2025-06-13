@@ -13,10 +13,13 @@ class DashboardController extends Controller
     {
         $this->param = $dashboard;
     }
-    public function index()
+
+    public function index(Request $request)
     {
-        $dashboard = $this->param->getData();
-        return view("pages.role_admin.dashboard.index", compact("dashboard"));
+        $tahunAjaran = $request->get('tahun_ajaran');
+        $kelas = $request->get('kelas');
+        $dashboard = $this->param->getData($tahunAjaran, $kelas);
+        return view('pages.role_admin.admin_dashboard.index', compact('dashboard'));
     }
 
     public function indexAdmin()

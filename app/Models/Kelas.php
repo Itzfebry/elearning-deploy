@@ -20,4 +20,9 @@ class Kelas extends Model
     // {
     //     return $this->belongsTo(Guru::class, 'nip_wali', 'nip');
     // }
+
+    public function mataPelajaran()
+    {
+        return $this->hasMany(MataPelajaran::class, 'kelas', 'nama');
+    }
 }

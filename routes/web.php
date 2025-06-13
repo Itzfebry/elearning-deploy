@@ -14,8 +14,20 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WaliKelasController;
+use App\Http\Controllers\GuruDashboardController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
+Route::get('/', function () {
+    if (Auth::check()) {
+        if (Auth::user()->role == 'admin') {
+            return redirect()->route('dashboard.admin');
+        } elseif (Auth::user()->role == 'guru') {
+            return redirect()->route('dashboard.guru');
+        }
+    }
+    return redirect()->route('login');
+})->name('root');
 
 Route::middleware(["guest", "web"])->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
@@ -29,7 +41,7 @@ Route::middleware(["auth", "web"])->group(function () {
 });
 
 Route::middleware(["auth", "role:admin"])->group(function () {
-    Route::get('/', [DashboardController::class, 'index']);
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard.admin');
 
     // Siswa
     Route::get('siswa', [SiswaController::class, 'index'])->name('siswa');
@@ -77,6 +89,7 @@ Route::middleware(["auth", "role:admin"])->group(function () {
     Route::post('tahun-ajaran/store', [TahunAjaranController::class, 'store'])->name('tahun-ajaran.store');
     Route::get('/tahun-ajaran/edit', [TahunAjaranController::class, 'edit'])->name('tahun-ajaran.edit');
     Route::put('/tahun-ajaran/update', [TahunAjaranController::class, 'update'])->name('tahun-ajaran.update');
+    Route::post('tahun-ajaran/delete', [TahunAjaranController::class, 'destroy'])->name('tahun-ajaran.delete');
 
     // Mata Pelajaran
     Route::get('mata-pelajaran', [MataPelajaranController::class, 'index'])->name('mata-pelajaran');
@@ -87,7 +100,7 @@ Route::middleware(["auth", "role:admin"])->group(function () {
 });
 
 Route::middleware(["auth", "role:guru"])->group(function () {
-    Route::get('dashboard-guru', [DashboardController::class, 'index'])->name('dashboard.guru');
+    Route::get('/guru/dashboard', [GuruDashboardController::class, 'index'])->name('dashboard.guru');
 
     // Mata Pelajaran
     Route::get('materi', [MateriController::class, 'index'])->name('materi');

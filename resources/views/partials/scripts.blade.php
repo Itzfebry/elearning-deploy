@@ -1,5 +1,4 @@
 <script type="text/javascript" src="{{ asset('template/js/main.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('template/js/chart.sample.min.js') }}"></script>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

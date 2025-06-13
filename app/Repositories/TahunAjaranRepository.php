@@ -46,9 +46,9 @@ class TahunAjaranRepository
         ]);
     }
 
-    public function destroy($id)
+    public function destroy($tahun)
     {
-        // return $this->model->where('tahun', $id)->delete();
+        return $this->model->where('tahun', $tahun)->delete();
     }
 
 }

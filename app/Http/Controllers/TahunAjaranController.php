@@ -100,8 +100,16 @@ class TahunAjaranController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $tahun = $request->input('tahun');
+            $this->param->destroy($tahun);
+            Alert::success("Berhasil", "Data Berhasil di Hapus.");
+            return redirect()->route("tahun-ajaran");
+        } catch (\Exception $e) {
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return back();
+        }
     }
 }

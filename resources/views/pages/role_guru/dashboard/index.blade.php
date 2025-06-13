@@ -8,10 +8,10 @@
         <div class="card-content">
             <div class="flex items-center justify-between">
                 <div class="widget-label">
-                    <h3>
+                    <h3 class="text-sm text-gray-500 mb-1">
                         Materi
                     </h3>
-                    <h1>
+                    <h1 class="text-2xl font-bold">
                         {{ $dashboard['materi'] }}
                     </h1>
                 </div>
@@ -23,10 +23,10 @@
         <div class="card-content">
             <div class="flex items-center justify-between">
                 <div class="widget-label">
-                    <h3>
+                    <h3 class="text-sm text-gray-500 mb-1">
                         Tugas
                     </h3>
-                    <h1>
+                    <h1 class="text-2xl font-bold">
                         {{ $dashboard['tugas'] }}
                     </h1>
                 </div>
@@ -39,10 +39,10 @@
         <div class="card-content">
             <div class="flex items-center justify-between">
                 <div class="widget-label">
-                    <h3>
+                    <h3 class="text-sm text-gray-500 mb-1">
                         Quiz
                     </h3>
-                    <h1>
+                    <h1 class="text-2xl font-bold">
                         {{ $dashboard['quiz'] }}
                     </h1>
                 </div>
@@ -58,10 +58,10 @@
         <div class="card-content">
             <div class="flex items-center justify-between">
                 <div class="widget-label">
-                    <h3>
+                    <h3 class="text-sm text-gray-500 mb-1">
                         Kelas
                     </h3>
-                    <h1>
+                    <h1 class="text-2xl font-bold">
                         {{ $dashboard['kelas'] }}
                     </h1>
                 </div>
@@ -74,10 +74,10 @@
         <div class="card-content">
             <div class="flex items-center justify-between">
                 <div class="widget-label">
-                    <h3>
+                    <h3 class="text-sm text-gray-500 mb-1">
                         Mata Pelajaran
                     </h3>
-                    <h1>
+                    <h1 class="text-2xl font-bold">
                         {{ $dashboard['mata_pelajaran'] }}
                     </h1>
                 </div>

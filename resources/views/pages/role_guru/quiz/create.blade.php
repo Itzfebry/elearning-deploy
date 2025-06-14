@@ -192,8 +192,8 @@
                     value="{{ session('matapelajaran_id', old('matapelajaran_id')) }}">
                 <input type="hidden" name="total_soal" id="total_soal"
                     value="{{ session('total_soal', old('total_soal')) }}">
-                <input type="hidden" name="total_soal_tampil"
-                    value="{{ session('total_soal_tampil', old('total_soal_tampil')) }}">
+                <input type="hidden" name="total_soal_tampil" id="total_soal_tampil_hidden"
+                    value="{{ session('total_soal_tampil', old('total_soal_tampil', 0)) }}">
 
                 @foreach (session('jumlah_soal_per_level') as $item => $value)
                 <input type="hidden" name="jumlah_soal_per_level[{{ $item }}]" id="hidden_input_per_level{{ $item }}"
@@ -258,7 +258,25 @@
 </section>
 @endsection
 @push('extraScript')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Konfigurasi default untuk SweetAlert2
+    const swalConfig = {
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        timer: null,
+        timerProgressBar: false,
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown animate__faster'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUp animate__faster'
+        }
+    };
+
     function updateHiddenInputPerLevel(item) {
         var inputValueTotalLevel = document.getElementById(`total_soal_per_level_${item}`).value;
         var inputValue = document.getElementById(`jumlah_soal_per_level_${item}`).value;
@@ -268,8 +286,16 @@
         console.log(`level ${item} : ` + inputValue);
         
         if (parseInt(inputValue) > parseInt(inputValueTotalLevel)) {
-            alert(`Jumlah soal yang harus dikerjakan setiap level pada : ${item} tidak boleh lebih besar dari total soal setiap level : ${item}`);
-            $(`#jumlah_soal_per_level_${item}`).val(inputValueTotalLevel);
+            Swal.fire({
+                ...swalConfig,
+                title: 'Validasi Gagal',
+                text: `Jumlah soal yang harus dikerjakan setiap level pada ${item} tidak boleh lebih besar dari total soal setiap level ${item}`,
+                icon: 'warning'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(`#jumlah_soal_per_level_${item}`).val(inputValueTotalLevel);
+                }
+            });
             return true;
         }
 
@@ -280,6 +306,7 @@
             $(`#batas_naik_level_fase${number}`).val(inputValue);
         }
     }
+
     function updateHiddenInput(item) {
         let inputValue = parseInt($(`#batas_naik_level_${item}`).val());
         document.getElementById(`hidden_input_${item}`).value = inputValue;
@@ -289,8 +316,16 @@
         const jumlahSoalPerLevel = document.getElementById(`jumlah_soal_per_level_level${number}`).value;
 
         if (inputValue > jumlahSoalPerLevel) {
-            alert(`Nilai Batas naik level ${item} tidak boleh lebih besar dari jumlah soal yang harus dikerjakan pada level${number}`);
-            $(`#batas_naik_level_${item}`).val(jumlahSoalPerLevel);
+            Swal.fire({
+                ...swalConfig,
+                title: 'Validasi Gagal',
+                text: `Nilai Batas naik level ${item} tidak boleh lebih besar dari jumlah soal yang harus dikerjakan pada level${number}`,
+                icon: 'warning'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(`#batas_naik_level_${item}`).val(jumlahSoalPerLevel);
+                }
+            });
             return true;
         }
     }
@@ -300,15 +335,45 @@
         const soalTampil = parseInt(val);
 
         if(soalTampil > totalSoal){
-            alert('Jumlah soal tampil tidak boleh lebih besar dari total soal');
-            $('#total_soal_tampil').val(0);
+            Swal.fire({
+                ...swalConfig,
+                title: 'Validasi Gagal',
+                text: 'Jumlah soal tampil tidak boleh lebih besar dari total soal',
+                icon: 'warning'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#total_soal_tampil').val(0);
+                    $('#total_soal_tampil_hidden').val(0);
+                }
+            });
             return false;
         } else if(soalTampil < 10){
-            alert('Jumlah soal tampil terlalu sedikit');
-            $('#total_soal_tampil').val(0);
+            Swal.fire({
+                ...swalConfig,
+                title: 'Validasi Gagal',
+                text: 'Jumlah soal tampil minimal 10 soal',
+                icon: 'warning'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#total_soal_tampil').val(0);
+                    $('#total_soal_tampil_hidden').val(0);
+                }
+            });
             return false;
         }
+        
+        // Update hidden input dengan nilai baru
+        $('#total_soal_tampil_hidden').val(soalTampil);
+        console.log('Updated total_soal_tampil_hidden to:', soalTampil);
     }
 
+    // Tambahkan event listener untuk memastikan nilai tersimpan saat form disubmit
+    $(document).ready(function() {
+        $('form').on('submit', function() {
+            const soalTampil = parseInt($('#total_soal_tampil').val());
+            $('#total_soal_tampil_hidden').val(soalTampil);
+            console.log('Form submitted with total_soal_tampil:', soalTampil);
+        });
+    });
 </script>
 @endpush

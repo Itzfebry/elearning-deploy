@@ -176,11 +176,13 @@ class QuizController extends Controller
         array_shift($preview);
 
         if (!$preview || count($preview) <= 1) {
+            \Log::error('Quiz Import Error: Tidak ada data untuk disimpan');
             Alert::error("Terjadi Kesalahan", "Tidak ada data untuk disimpan.");
             return redirect()->back();
         }
 
         if ($request->total_soal_tampil < 10) {
+            \Log::error('Quiz Import Error: Jumlah soal minimal 10');
             Alert::error("Terjadi Kesalahan", "Jumlah soal minimal 10.");
             return redirect()->back();
         }
@@ -190,72 +192,89 @@ class QuizController extends Controller
             $totalSoalPerLevel += (int) $value;
         }
 
+        // Update session dengan nilai total_soal_tampil yang baru
+        Session::put('total_soal_tampil', $request->total_soal_tampil);
+
         if ($totalSoalPerLevel != $request->total_soal_tampil) {
+            \Log::error('Quiz Import Error: Total jumlah yang harus dikerjakan harus sama dengan jumlah soal tampil');
+            \Log::error('Detail: Total soal per level = ' . $totalSoalPerLevel . ', Total soal tampil = ' . $request->total_soal_tampil);
+            \Log::error('Detail per level: ' . json_encode($request->jumlah_soal_per_level));
+            \Log::error('Saran: Sesuaikan jumlah soal per level agar totalnya ' . $request->total_soal_tampil . ' atau ubah total soal tampil menjadi ' . $totalSoalPerLevel);
             Alert::error("Terjadi Kesalahan", "Total jumlah yang harus dikerjakan harus sama dengan jumlah soal tampil.");
             return redirect()->back();
         }
 
-        // Simpan quiz dan soalnya ke DB
-        $quiz = Quizzes::create([
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
-            'matapelajaran_id' => $request->matapelajaran_id,
-            'total_soal' => $request->total_soal,
-            'total_soal_tampil' => $request->total_soal_tampil,
-        ]);
+        try {
+            // Simpan quiz dan soalnya ke DB
+            $quiz = Quizzes::create([
+                'judul' => $request->judul,
+                'deskripsi' => $request->deskripsi,
+                'matapelajaran_id' => $request->matapelajaran_id,
+                'total_soal' => $request->total_soal,
+                'total_soal_tampil' => $request->total_soal_tampil,
+            ]);
 
-        QuizLevelSetting::create([
-            'quiz_id' => $quiz->id,
-            'jumlah_soal_per_level' => json_encode($request->jumlah_soal_per_level),
-            'level_awal' => session('level_awal') ?? 1,
-            'batas_naik_level' => json_encode($request->batas_naik_level),
-            'skor_level' => json_encode(session('skor_level')),
-            'kkm' => session('kkm') ?? 75,
-        ]);
-
-        // Menampung data dalam array sebelum disimpan
-        $quizQuestionsData = [];
-
-        foreach ($preview as $row) {
-            $jawabanBenar = strtolower(trim($row[2]));
-            // Menyiapkan data untuk disimpan
-            $quizQuestionsData[] = [
+            QuizLevelSetting::create([
                 'quiz_id' => $quiz->id,
-                'pertanyaan' => $row[1],
-                'opsi_a' => $row[4],
-                'opsi_b' => $row[5],
-                'opsi_c' => $row[6],
-                'opsi_d' => $row[7],
-                'jawaban_benar' => $jawabanBenar,
-                'level' => $row[3],
-                'skor' => $row[8],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+                'jumlah_soal_per_level' => json_encode($request->jumlah_soal_per_level),
+                'level_awal' => session('level_awal') ?? 1,
+                'batas_naik_level' => json_encode($request->batas_naik_level),
+                'skor_level' => json_encode(session('skor_level')),
+                'kkm' => session('kkm') ?? 75,
+            ]);
+
+            // Menampung data dalam array sebelum disimpan
+            $quizQuestionsData = [];
+
+            foreach ($preview as $row) {
+                $jawabanBenar = strtolower(trim($row[2]));
+                // Menyiapkan data untuk disimpan
+                $quizQuestionsData[] = [
+                    'quiz_id' => $quiz->id,
+                    'pertanyaan' => $row[1],
+                    'opsi_a' => $row[4],
+                    'opsi_b' => $row[5],
+                    'opsi_c' => $row[6],
+                    'opsi_d' => $row[7],
+                    'jawaban_benar' => $jawabanBenar,
+                    'level' => $row[3],
+                    'skor' => $row[8],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            // Simpan semua data sekali gus menggunakan insert
+            if (!empty($quizQuestionsData)) {
+                QuizQuestions::insert($quizQuestionsData);
+            }
+
+            // Hapus session
+            $this->removeSession();
+
+            $matpel = MataPelajaran::findOrFail($request->matapelajaran_id);
+            // Cari siswa berdasarkan kelas dan tahun ajaran
+            $siswas = Siswa::where('kelas', $matpel['kelas'])
+                ->where('tahun_ajaran', $matpel['tahun_ajaran'])
+                ->get();
+
+            // Kirim notifikasi ke setiap siswa
+            foreach ($siswas as $siswa) {
+                $siswa->notify(new QuizBaruNotification($quiz));
+            }
+
+            \Log::info('Quiz berhasil diimport: ' . $request->judul);
+            Alert::success("Berhasil", "Data Berhasil di simpan.");
+            return redirect()->route('quiz');
+        } catch (\Exception $e) {
+            \Log::error('Quiz Import Error: ' . $e->getMessage());
+            Alert::error("Terjadi Kesalahan", $e->getMessage());
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Quiz Import Error: Database error - ' . $e->getMessage());
+            Alert::error("Terjadi Kesalahan", "Gagal menyimpan data quiz. Silakan coba lagi.");
+            return redirect()->back();
         }
-
-        // Simpan semua data sekali gus menggunakan insert
-        if (!empty($quizQuestionsData)) {
-            QuizQuestions::insert($quizQuestionsData);
-        }
-
-
-        // Hapus session
-        $this->removeSession();
-
-        $matpel = MataPelajaran::findOrFail($request->matapelajaran_id);
-        // Cari siswa berdasarkan kelas dan tahun ajaran
-        $siswas = Siswa::where('kelas', $matpel['kelas'])
-            ->where('tahun_ajaran', $matpel['tahun_ajaran'])
-            ->get();
-
-        // Kirim notifikasi ke setiap siswa
-        foreach ($siswas as $siswa) {
-            $siswa->notify(new QuizBaruNotification($quiz));
-        }
-
-        Alert::success("Berhasil", "Data Berhasil di simpan.");
-        return redirect()->route('quiz');
     }
 
 
@@ -291,10 +310,11 @@ class QuizController extends Controller
         try {
             $quiz = Quizzes::findOrFail($request->formid);
             $quiz->delete();
-            Alert::success("Berhasil", "Data berhasil dihapus.");
+            Alert::success("Berhasil", "Data Berhasil di simpan.");
             return redirect()->back();
         } catch (\Throwable $th) {
-            Alert::error($th->getMessage());
+            Alert::error("Terjadi Kesalahan", $th->getMessage());
+            return redirect()->back();
         }
     }
 }

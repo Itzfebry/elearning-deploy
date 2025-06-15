@@ -128,6 +128,14 @@
                     <span class="menu-item-label ml-3">Rekap Quiz</span>
                 </a>
             </li>
+            <li class="menu-item-animation {{ Request::is('rekap-tugas') || Request::is('rekap-tugas/*') ? 'active' : '' }}">
+                <a href="{{ route('rekap.tugas') }}" class="sidebar-link hover:bg-indigo-700 {{ Request::is('rekap-tugas*') ? 'bg-indigo-800 border-l-4 border-blue-300 active-link' : '' }}" style="transition: all 0.3s ease; border-radius: 0 8px 8px 0; margin: 4px 8px 4px 0;">
+                    <span class="icon-container" style="background: rgba(255, 255, 255, 0.189); padding: 10px; border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="mdi mdi-clipboard-check" style="font-size: 18px;"></i>
+                    </span>
+                    <span class="menu-item-label ml-3">Rekap Tugas</span>
+                </a>
+            </li>
         </ul>
         @endif
         

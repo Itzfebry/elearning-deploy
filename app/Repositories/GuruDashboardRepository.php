@@ -9,6 +9,7 @@ use App\Models\QuizAttempts;
 use App\Models\QuizLevelSetting;
 use App\Models\Quizzes;
 use App\Models\Siswa;
+use App\Models\SubmitTugas;
 use App\Models\TahunAjaran;
 use App\Models\Tugas;
 use App\Models\User;
@@ -156,6 +157,59 @@ class GuruDashboardRepository
             $kelasChartData[] = $siswaInKelasCount;
         }
 
+        // Prepare data for Nilai Rata-rata Tugas per Mata Pelajaran dan Kelas Chart
+        $tugasChartLabels = [];
+        $tugasChartData = [];
+        $tugasChartDataPerTugas = [];
+        
+        // Get all mata pelajaran that the teacher teaches with filters
+        $mataPelajaranQuery = MataPelajaran::where('guru_nip', $guru->nip)
+            ->when($tahunAjaran !== 'all', function ($query) use ($tahunAjaran) {
+                return $query->where('tahun_ajaran', $tahunAjaran);
+            })
+            ->when($kelas !== 'all', function ($query) use ($kelas) {
+                return $query->where('kelas', $kelas);
+            })
+            ->orderBy('nama', 'asc');
+
+        $mataPelajaranList = $mataPelajaranQuery->get();
+
+        foreach ($mataPelajaranList as $matpel) {
+            // Get all tasks for this mata pelajaran and class
+            $tugasForMatpel = Tugas::where('guru_nip', $guru->nip)
+                ->where('matapelajaran_id', $matpel->id)
+                ->where('kelas', $matpel->kelas)
+                ->when($tahunAjaran !== 'all', function ($query) use ($tahunAjaran) {
+                    return $query->where('tahun_ajaran', $tahunAjaran);
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            foreach ($tugasForMatpel as $tugas) {
+                // Get average score for this task
+                $avgNilai = SubmitTugas::where('tugas_id', $tugas->id)
+                    ->whereNotNull('nilai')
+                    ->avg('nilai');
+
+                if ($avgNilai !== null) {
+                    $tugasChartLabels[] = "{$matpel->nama} ({$matpel->kelas}) - {$tugas->nama}";
+                    $tugasChartData[] = round($avgNilai, 1);
+                    
+                    $tugasChartDataPerTugas[] = [
+                        'id_tugas' => $tugas->id,
+                        'nama_tugas' => $tugas->nama,
+                        'mata_pelajaran' => $matpel->nama,
+                        'kelas' => $matpel->kelas,
+                        'rata_rata' => round($avgNilai, 1),
+                        'jumlah_submit' => SubmitTugas::where('tugas_id', $tugas->id)->count(),
+                        'jumlah_dinilai' => SubmitTugas::where('tugas_id', $tugas->id)->whereNotNull('nilai')->count(),
+                        'tanggal_tugas' => $tugas->tanggal,
+                        'tenggat_waktu' => $tugas->tenggat
+                    ];
+                }
+            }
+        }
+
         return [
             'selected_year' => $tahunAjaran,
             'selected_kelas' => $kelas,
@@ -178,6 +232,11 @@ class GuruDashboardRepository
             'kelas_chart' => [
                 'labels' => $kelasChartLabels,
                 'data' => $kelasChartData,
+            ],
+            'tugas_chart' => [
+                'labels' => $tugasChartLabels,
+                'data' => $tugasChartData,
+                'data_per_tugas' => $tugasChartDataPerTugas,
             ],
         ];
     }

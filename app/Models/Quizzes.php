@@ -13,6 +13,7 @@ class Quizzes extends Model
         "deskripsi",
         "total_soal",
         "total_soal_tampil",
+        "waktu",
         "matapelajaran_id",
     ];
 

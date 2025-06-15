@@ -23,6 +23,7 @@ class ApiSubmitTugasRepository
             'nisn' => 'required|string|max:12',
             'text' => 'nullable|required_without:file|string',
             'file' => 'nullable|required_without:text|file|mimes:pdf,jpg,png',
+            'nilai' => 'nullable|integer|min:0|max:100'
         ]);
 
         $filePath = null;
@@ -38,6 +39,7 @@ class ApiSubmitTugasRepository
             'tanggal' => $tanggal,
             'text' => $request->text,
             'file' => $filePath,
+            'nilai' => $request->nilai
         ]);
 
         return $submit;
@@ -45,11 +47,18 @@ class ApiSubmitTugasRepository
 
     public function detail($request)
     {
-        $query = $this->model->where(function ($q) use ($request) {
+        // Cek jika ada parameter submit_id, maka ambil berdasarkan id
+        if ($request->has('submit_id')) {
+            $query = $this->model->with('siswa')->find($request->submit_id);
+            return $query;
+        }
+        
+        // Default: cari berdasarkan nisn dan tugas_id
+        $query = $this->model->with('siswa')->where(function ($q) use ($request) {
             $q->where('nisn', $request->nisn)
                 ->where('tugas_id', $request->tugas_id);
         })->first();
-
+        
         return $query;
     }
 
@@ -61,6 +70,7 @@ class ApiSubmitTugasRepository
             'id' => 'required|exists:submit_tugas,id',
             'nisn' => 'required|string|max:12',
             'text' => 'nullable|string',
+            'nilai' => 'nullable|integer|min:0|max:100'
         ]);
 
         $submit = $this->model->findOrFail($request->id);
@@ -81,10 +91,9 @@ class ApiSubmitTugasRepository
             'tanggal' => $tanggal,
             'text' => $request->text,
             'file' => $filePath,
+            'nilai' => $request->nilai
         ]);
 
         return $submit;
     }
-
-
 }

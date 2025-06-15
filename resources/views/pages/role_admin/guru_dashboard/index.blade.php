@@ -319,6 +319,66 @@
             </div>
         </div>
     </div>
+
+    <!-- Nilai Rata-rata Tugas Chart -->
+    <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div class="bg-gradient-to-r from-orange-500 to-red-600 p-6">
+            <div class="flex items-center">
+                <div class="bg-white/20 rounded-lg p-2 mr-3">
+                    <svg class="h-5 w-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold text-gray-800">Nilai Rata-rata Tugas per Mata Pelajaran</h2>
+            </div>
+        </div>
+        <div class="p-6">
+            <div style="height: 400px;">
+                <canvas id="tugasChart"></canvas>
+            </div>
+            <!-- Detail per tugas -->
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                    Detail Nilai per Tugas
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($dashboard['tugas_chart']['data_per_tugas'] as $tugas)
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">{{ $tugas['nama_tugas'] }}</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600">Mata Pelajaran:</span>
+                                    <span class="font-semibold text-gray-800 truncate" title="{{ $tugas['mata_pelajaran'] }}">
+                                        {{ Str::limit($tugas['mata_pelajaran'], 15) }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600">Kelas:</span>
+                                    <span class="font-semibold text-gray-800">{{ $tugas['kelas'] }}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600">Rata-rata Nilai:</span>
+                                    <span class="font-semibold text-gray-800">{{ $tugas['rata_rata'] }}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600">Submit/Dinilai:</span>
+                                    <span class="font-semibold text-gray-800">{{ $tugas['jumlah_dinilai'] }}/{{ $tugas['jumlah_submit'] }}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600">Tanggal:</span>
+                                    <span class="font-semibold text-gray-800">{{ \Carbon\Carbon::parse($tugas['tanggal_tugas'])->format('d/m/Y') }}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600">Tenggat:</span>
+                                    <span class="font-semibold text-gray-800">{{ \Carbon\Carbon::parse($tugas['tenggat_waktu'])->format('d/m/Y') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection
@@ -496,6 +556,112 @@
             }
         });
 
+        // Nilai Rata-rata Tugas Chart
+        var ctxTugas = document.getElementById('tugasChart').getContext('2d');
+        var tugasChart = new Chart(ctxTugas, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($dashboard['tugas_chart']['labels']) !!},
+                datasets: [{
+                    label: 'Nilai Rata-rata Tugas',
+                    data: {!! json_encode($dashboard['tugas_chart']['data']) !!},
+                    backgroundColor: 'rgba(251, 146, 60, 0.8)',
+                    borderColor: 'rgba(251, 146, 60, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'center',
+                        labels: {
+                            boxWidth: 20,
+                            padding: 20,
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            color: '#000000'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: 'rgba(251, 146, 60, 1)',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                return `Nilai Rata-rata: ${context.parsed.y}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 10,
+                            min: 0,
+                            max: 100,
+                            color: '#000000',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nilai Rata-rata',
+                            color: '#000000',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#000000',
+                            font: {
+                                size: 8,
+                                weight: 'bold'
+                            },
+                            maxRotation: 45,
+                            minRotation: 0
+                        },
+                        title: {
+                            display: true,
+                            text: 'Mata Pelajaran - Kelas - Nama Tugas',
+                            color: '#000000',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
         // Add hover effects to cards
         document.querySelectorAll('.group').forEach(card => {
             card.addEventListener('mouseenter', function() {
@@ -523,6 +689,7 @@
         console.log('Kelas Chart Data:', {!! json_encode($dashboard['kelas_chart']) !!});
         console.log('Quiz Passed:', Math.round({!! $dashboard['passed_quizzes'] !!}));
         console.log('Quiz Failed:', Math.round({!! $dashboard['failed_quizzes'] !!}));
+        console.log('Tugas Chart Data:', {!! json_encode($dashboard['tugas_chart']) !!});
     });
 </script>
 

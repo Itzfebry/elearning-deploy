@@ -33,12 +33,18 @@ class QuizController extends Controller
     {
         $nip = Auth::user()->guru->nip;
         $matpel = MataPelajaran::where('guru_nip', $nip)->get();
-        $judulQuiz = Quizzes::where('judul', $request->judul)->first();
         $kelas = Kelas::all();
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
 
-        $quiz = $this->param->getData($request);
-        return view("pages.role_guru.quiz.index", compact(['matpel', 'judulQuiz', 'kelas', 'tahunAjaran', 'quiz']));
+        // Get quizzes created by this teacher
+        $quiz = Quizzes::with('mataPelajaran')
+            ->whereHas('mataPelajaran', function ($q) use ($nip) {
+                $q->where('guru_nip', $nip);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view("pages.role_guru.quiz.index", compact(['matpel', 'kelas', 'tahunAjaran', 'quiz']));
     }
 
     public function getQuizByMatpel($id)
@@ -114,6 +120,7 @@ class QuizController extends Controller
         Session::put('judul', $request->judul);
         Session::put('deskripsi', $request->deskripsi);
         Session::put('matapelajaran_id', $request->matapelajaran_id);
+        Session::put('waktu', $request->waktu);
         Session::put('preview_soal', $filteredRows);
         Session::put('total_soal', $soalCount);
         Session::put('total_soal_tampil', $request->total_soal_tampil ?? 20);
@@ -135,6 +142,7 @@ class QuizController extends Controller
         session()->forget('judul');
         session()->forget('deskripsi');
         session()->forget('matapelajaran_id');
+        session()->forget('waktu');
         session()->forget('preview_soal');
         session()->forget('total_soal');
         session()->forget('total_soal_tampil');
@@ -212,6 +220,7 @@ class QuizController extends Controller
                 'matapelajaran_id' => $request->matapelajaran_id,
                 'total_soal' => $request->total_soal,
                 'total_soal_tampil' => $request->total_soal_tampil,
+                'waktu' => $request->waktu,
             ]);
 
             QuizLevelSetting::create([

@@ -189,16 +189,21 @@ class QuizRepository
     }
 
     public function getFinishQuiz($quizId)
-    {
-        $attempt = QuizAttempts::where('quiz_id', $quizId)
-            ->where('nisn', Auth::user()->siswa->nisn)
-            ->first();
+{
+    $attempt = QuizAttempts::where('quiz_id', $quizId)
+        ->where('nisn', Auth::user()->siswa->nisn)
+        ->orderByDesc('id') // ambil attempt terbaru
+        ->first();
 
-        $attempt->jumlah_soal = $attempt->quizzes()->first()->total_soal_tampil;
-        $attempt->jawaban_benar = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', 1)->count();
-        $attempt->jawaban_salah = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', "0")->count();
-
-        return $this->okApiResponse($attempt);
+    if (!$attempt) {
+        return $this->errorApiResponse('error', 'Data tidak ditemukan');
     }
+
+    $attempt->jumlah_soal = $attempt->quizzes()->first()->total_soal_tampil;
+    $attempt->jawaban_benar = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', 1)->count();
+    $attempt->jawaban_salah = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', "0")->count();
+
+    return $this->okApiResponse($attempt);
+}
 
 }

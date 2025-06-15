@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/submit-tugas', [SubmitTugasController::class, 'store']);
     Route::get('/get-detail-submit-tugas', [SubmitTugasController::class, 'detail']);
     Route::post('/update-tugas', [SubmitTugasController::class, 'update']);
+    Route::put('/submit-tugas/nilai', [SubmitTugasController::class, 'updateNilai']);
 
     // Kelas
     Route::get('/kelas', [KelasContoller::class, 'index']);

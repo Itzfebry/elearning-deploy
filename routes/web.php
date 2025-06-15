@@ -9,6 +9,7 @@ use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\RoleGuru\MateriController;
 use App\Http\Controllers\RoleGuru\QuizController;
 use App\Http\Controllers\RoleGuru\RekapQuizController;
+use App\Http\Controllers\RoleGuru\RekapTugasController;
 use App\Http\Controllers\RoleGuru\TugasController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\WaliKelasController;
 use App\Http\Controllers\GuruDashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Api\SubmitTugasController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -131,4 +133,13 @@ Route::middleware(["auth", "role:guru"])->group(function () {
 
     Route::get('rekap-quiz', [RekapQuizController::class, 'index'])->name('rekap.quiz');
 
+    // Rekap Tugas
+    Route::get('rekap-tugas', [RekapTugasController::class, 'index'])->name('rekap.tugas');
+    Route::get('rekap-tugas/detail/{id}', [RekapTugasController::class, 'detail'])->name('rekap.tugas.detail');
+    Route::post('rekap-tugas/nilai/{id}', [RekapTugasController::class, 'updateNilai'])->name('rekap.tugas.nilai');
+    Route::get('rekap-tugas/export', [RekapTugasController::class, 'export'])->name('rekap.tugas.export');
+    Route::get('rekap-tugas/export-detail', [RekapTugasController::class, 'exportDetail'])->name('rekap.tugas.export.detail');
 });
+
+// Route untuk API web (tanpa authentication)
+Route::get('/api/web/get-detail-submit-tugas', [SubmitTugasController::class, 'detail'])->name('api.web.submit-tugas.detail');

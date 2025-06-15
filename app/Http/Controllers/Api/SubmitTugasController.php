@@ -32,6 +32,17 @@ class SubmitTugasController extends Controller
     public function update(Request $request)
     {
         $data = $this->param->update($request);
-        return $this->okApiResponse($data, "update Tugas Berhasil");
+        return $this->okApiResponse($data, "Update Tugas Berhasil");
+    }
+
+    public function updateNilai(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:submit_tugas,id',
+            'nilai' => 'required|integer|min:0|max:100'
+        ]);
+
+        $data = $this->param->update($request);
+        return $this->okApiResponse($data, "Nilai berhasil diperbarui");
     }
 }

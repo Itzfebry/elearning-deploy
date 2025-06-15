@@ -15,6 +15,7 @@ class SubmitTugas extends Model
         "tugas_id",
         "text",
         "file",
+        "nilai"
     ];
 
     public function siswa()

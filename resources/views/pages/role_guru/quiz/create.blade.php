@@ -105,6 +105,14 @@
                             value="{{ session('kkm', old('kkm', 75)) }}" placeholder="Misal: 70">
                     </div>
                 </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="field">
+                        <label class="label">Waktu Pengerjaan (Menit)</label>
+                        <input name="waktu" type="number" min="1" class="input" required
+                            value="{{ session('waktu', old('waktu', 30)) }}" placeholder="Misal: 30">
+                        <p class="help">Waktu maksimal untuk mengerjakan quiz dalam menit</p>
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2">
                     @if (session('batas_naik_level'))
                     <div class="field mb-1">
@@ -194,6 +202,7 @@
                     value="{{ session('total_soal', old('total_soal')) }}">
                 <input type="hidden" name="total_soal_tampil" id="total_soal_tampil_hidden"
                     value="{{ session('total_soal_tampil', old('total_soal_tampil', 0)) }}">
+                <input type="hidden" name="waktu" value="{{ session('waktu', old('waktu', 30)) }}">
 
                 @foreach (session('jumlah_soal_per_level') as $item => $value)
                 <input type="hidden" name="jumlah_soal_per_level[{{ $item }}]" id="hidden_input_per_level{{ $item }}"

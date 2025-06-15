@@ -20,7 +20,7 @@ class Tugas extends Model
 
     public function submitTugas()
     {
-        return $this->hasOne(SubmitTugas::class, "tugas_id", "id");
+        return $this->hasMany(SubmitTugas::class, "tugas_id", "id");
     }
     public function guru()
     {

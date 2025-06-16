@@ -67,7 +67,7 @@ class QuizController extends Controller
             $data = $this->param->nextQuestion($attempt_id);
             return $this->okApiResponse($data);
         } catch (\Exception $e) {
-            return $this->errorApiResponse('error', $e->getMessage());
+            return $this->errorApiResponse($e->getMessage(), 500);
         }
     }
 
@@ -76,8 +76,10 @@ class QuizController extends Controller
         try {
             $data = $this->param->answer($request, $attempt_id);
             return $this->okApiResponse($data);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->errorApiResponse('Validation error: ' . $e->getMessage(), 422);
         } catch (\Exception $e) {
-            return $this->errorApiResponse('error', $e->getMessage());
+            return $this->errorApiResponse($e->getMessage(), 400);
         }
     }
 
@@ -86,7 +88,7 @@ class QuizController extends Controller
         try {
             return $this->param->getFinishQuiz($request->quiz_id);
         } catch (\Exception $e) {
-            return $this->errorApiResponse('error', $e->getMessage());
+            return $this->errorApiResponse($e->getMessage(), 500);
         }
     }
 
@@ -152,6 +154,27 @@ class QuizController extends Controller
         });
 
         return $this->okApiResponse($avgScores);
+    }
+
+    public function debugQuiz($attempt_id)
+    {
+        try {
+            $attempt = QuizAttempts::findOrFail($attempt_id);
+            $questions = QuizQuestions::where('quiz_id', $attempt->quiz_id)->get();
+            $answeredQuestions = QuizAttemptAnswers::where('attempt_id', $attempt_id)->get();
+            
+            return response()->json([
+                'attempt' => $attempt,
+                'total_questions' => $questions->count(),
+                'answered_questions' => $answeredQuestions->count(),
+                'questions_by_level' => $questions->groupBy('level'),
+                'answered_question_ids' => $answeredQuestions->pluck('question_id'),
+                'current_level' => $attempt->level_akhir,
+                'current_fase' => $attempt->fase,
+            ]);
+        } catch (\Exception $e) {
+            return $this->errorApiResponse($e->getMessage(), 500);
+        }
     }
 
 }

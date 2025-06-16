@@ -105,14 +105,23 @@ class QuizRepository
     public function answer($request, $attempt_id)
     {
         $request->validate([
-            'question_id' => 'required|exists:quiz_questions,id',
+            'question_id' => 'required|integer',
             'jawaban_siswa' => 'required|in:a,b,c,d',
         ]);
 
-
+        // Validasi attempt
         $attempt = QuizAttempts::findOrFail($attempt_id);
+        
+        // Validasi question exists dan belongs to the correct quiz
+        $question = QuizQuestions::where('id', $request->question_id)
+            ->where('quiz_id', $attempt->quiz_id)
+            ->first();
+            
+        if (!$question) {
+            throw new \Exception('The selected question is invalid or does not belong to this quiz.');
+        }
+
         $quizzes = Quizzes::findOrFail($attempt->quiz_id);
-        $question = QuizQuestions::findOrFail($request->question_id);
         $quizLevelSettings = QuizLevelSetting::where('quiz_id', $attempt->quiz_id)->first();
 
         $jumlahSoalPerLevel = json_decode($quizLevelSettings->jumlah_soal_per_level, true);
@@ -189,21 +198,20 @@ class QuizRepository
     }
 
     public function getFinishQuiz($quizId)
-{
-    $attempt = QuizAttempts::where('quiz_id', $quizId)
-        ->where('nisn', Auth::user()->siswa->nisn)
-        ->orderByDesc('id') // ambil attempt terbaru
-        ->first();
+    {
+        $attempt = QuizAttempts::where('quiz_id', $quizId)
+            ->where('nisn', Auth::user()->siswa->nisn)
+            ->orderByDesc('id') // ambil attempt terbaru
+            ->first();
 
-    if (!$attempt) {
-        return $this->errorApiResponse('error', 'Data tidak ditemukan');
+        if (!$attempt) {
+            return $this->errorApiResponse('Data tidak ditemukan', 404);
+        }
+
+        $attempt->jumlah_soal = $attempt->quizzes()->first()->total_soal_tampil;
+        $attempt->jawaban_benar = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', 1)->count();
+        $attempt->jawaban_salah = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', "0")->count();
+
+        return $this->okApiResponse($attempt);
     }
-
-    $attempt->jumlah_soal = $attempt->quizzes()->first()->total_soal_tampil;
-    $attempt->jawaban_benar = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', 1)->count();
-    $attempt->jawaban_salah = (string) QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', "0")->count();
-
-    return $this->okApiResponse($attempt);
-}
-
 }

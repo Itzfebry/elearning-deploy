@@ -56,6 +56,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/quiz-attempts/finish', [QuizController::class, 'getFinishQuiz']);
     Route::get('/quiz-top-five', [QuizController::class, 'getTopFive']);
     Route::get('/get-quiz-attempt-guru', [QuizController::class, 'getApiQuizGuru']);
+    Route::get('/quiz-attempts/{attempt}/debug', [QuizController::class, 'debugQuiz']);
 
     // Notifikasi
     Route::get('/siswa/notifikasi/count', [SiswaNotifikasiController::class, 'notifCount']);

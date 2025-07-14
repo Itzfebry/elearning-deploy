@@ -84,6 +84,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="field relative">
+                        <label class="label">Tanggal Pembuatan (Tanggal & Jam)</label>
+                        <span class="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                            <i class="mdi mdi-calendar-clock"></i>
+                        </span>
+                        <input name="tanggal" type="datetime-local" class="input pl-10" required placeholder="Pilih tanggal & jam" value="{{ $materi->tanggal ? \Carbon\Carbon::parse($materi->tanggal)->format('Y-m-d\\TH:i') : '' }}">
+                    </div>
                 </div>
                 <hr>
                 <div class="field grouped">

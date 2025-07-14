@@ -107,7 +107,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-1">
                             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline">Forgot password?</a>
+                            {{-- <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline">Forgot password?</a> --}}
                         </div>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

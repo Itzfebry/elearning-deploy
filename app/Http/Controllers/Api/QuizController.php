@@ -177,4 +177,46 @@ class QuizController extends Controller
         }
     }
 
+    public function autoFinish($attempt_id)
+    {
+        $attempt = \App\Models\QuizAttempts::findOrFail($attempt_id);
+
+        // Ambil semua soal quiz
+        $allQuestions = \App\Models\QuizQuestions::where('quiz_id', $attempt->quiz_id)->pluck('id')->toArray();
+
+        // Ambil semua question_id yang sudah dijawab
+        $answered = \App\Models\QuizAttemptAnswers::where('attempt_id', $attempt_id)->pluck('question_id')->toArray();
+
+        // Cari soal yang belum dijawab
+        $unanswered = array_diff($allQuestions, $answered);
+
+        foreach ($unanswered as $questionId) {
+            \App\Models\QuizAttemptAnswers::create([
+                'attempt_id' => $attempt->id,
+                'question_id' => $questionId,
+                'jawaban_siswa' => '',
+                'benar' => 0,
+            ]);
+        }
+
+        // Hitung penilaian berdasarkan jawaban yang benar-benar dikerjakan
+        $jawaban_benar = \App\Models\QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', 1)->count();
+        $jawaban_salah = \App\Models\QuizAttemptAnswers::where('attempt_id', $attempt->id)->where('benar', 0)->count();
+        $total_dikerjakan = $jawaban_benar + $jawaban_salah;
+        $skor = $attempt->skor;
+        $persentase = $total_dikerjakan > 0 ? round(($jawaban_benar / $total_dikerjakan) * 100) : 0;
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Quiz auto-finished successfully',
+            'data' => [
+                'jawaban_benar' => $jawaban_benar,
+                'jawaban_salah' => $jawaban_salah,
+                'total_dikerjakan' => $total_dikerjakan,
+                'skor' => $skor,
+                'persentase' => $persentase,
+                'attempt' => $attempt
+            ]
+        ]);
+    }
 }

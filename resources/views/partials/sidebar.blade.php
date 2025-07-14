@@ -84,6 +84,22 @@
                     <span class="menu-item-label ml-3">Admin</span>
                 </a>
             </li>
+            <li class="menu-item-animation {{ Request::is('admin/pindah-data') ? 'active' : '' }}">
+                <a href="{{ route('admin.pindah-data') }}" class="sidebar-link hover:bg-indigo-700 {{ Request::is('admin/pindah-data') ? 'bg-indigo-800 border-l-4 border-blue-300 active-link' : '' }}" style="transition: all 0.3s ease; border-radius: 0 8px 8px 0; margin: 4px 8px 4px 0;">
+                    <span class="icon-container" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="mdi mdi-swap-horizontal" style="font-size: 18px;"></i>
+                    </span>
+                    <span class="menu-item-label ml-3">Pemindahan Data</span>
+                </a>
+            </li>
+            <li class="menu-item-animation {{ Request::is('admin/audit-log') ? 'active' : '' }}">
+                <a href="{{ route('admin.audit-log') }}" class="sidebar-link hover:bg-indigo-700 {{ Request::is('admin/audit-log') ? 'bg-indigo-800 border-l-4 border-blue-300 active-link' : '' }}" style="transition: all 0.3s ease; border-radius: 0 8px 8px 0; margin: 4px 8px 4px 0;">
+                    <span class="icon-container" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="mdi mdi-file-document-box-search" style="font-size: 18px;"></i>
+                    </span>
+                    <span class="menu-item-label ml-3">Audit Log</span>
+                </a>
+            </li>
             <li class="menu-item-animation {{ Request::is('mata-pelajaran') || Request::is('mata-pelajaran/*') ? 'active' : '' }}">
                 <a href="{{ route('mata-pelajaran') }}" class="sidebar-link hover:bg-indigo-700 {{ Request::is('mata-pelajaran*') ? 'bg-indigo-800 border-l-4 border-blue-300 active-link' : '' }}" style="transition: all 0.3s ease; border-radius: 0 8px 8px 0; margin: 4px 8px 4px 0;">
                     <span class="icon-container" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">

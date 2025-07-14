@@ -26,12 +26,12 @@ class MateriBaruNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
+        $this->materi->loadMissing('mataPelajaran');
         return [
             'judul' => $this->materi->judul_materi,
             'type' => "Materi",
-            'tanggal' => $this->materi->tanggal,
-            'tahun_ajaran' => $this->materi->tahun_ajaran,
             'matapelajaran_id' => $this->materi->matapelajaran_id,
+            'matapelajaran_nama' => $this->materi->mataPelajaran->nama ?? null,
         ];
     }
 }

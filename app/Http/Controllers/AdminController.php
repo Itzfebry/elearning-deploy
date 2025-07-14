@@ -8,6 +8,11 @@ use App\Repositories\UserRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\MataPelajaran;
+use App\Models\Guru;
+use App\Models\Tugas;
+use App\Models\Quizzes;
+use App\Models\AuditLog;
 
 class AdminController extends Controller
 {
@@ -133,5 +138,56 @@ class AdminController extends Controller
             Alert::error("Terjadi Kesalahan", $e->getMessage());
             return back();
         }
+    }
+
+    // Menampilkan halaman form pemindahan data
+    public function pindahDataPage()
+    {
+        $mataPelajaran = MataPelajaran::all();
+        $guru = Guru::all();
+        return view('pages.role_admin.pindah_data', compact('mataPelajaran', 'guru'));
+    }
+
+    // Proses pemindahan data guru
+    public function pindahGuruMatpel(Request $request)
+    {
+        $request->validate([
+            'mata_pelajaran_id' => 'required|exists:matapelajaran,id',
+            'guru_lama_nip' => 'required|exists:guru,nip',
+            'guru_baru_nip' => 'required|exists:guru,nip',
+        ]);
+
+        if ($request->guru_lama_nip == $request->guru_baru_nip) {
+            Alert::error('Gagal', 'Guru lama dan guru baru tidak boleh sama.');
+            return back()->withInput();
+        }
+
+        $mapel = MataPelajaran::where('id', $request->mata_pelajaran_id)
+            ->where('guru_nip', $request->guru_lama_nip)
+            ->first();
+
+        if (!$mapel) {
+            Alert::error('Gagal', 'Guru lama bukan pengampu mata pelajaran yang dipilih.');
+            return back()->withInput();
+        }
+
+        // Update tugas
+        Tugas::where('guru_nip', $request->guru_lama_nip)
+            ->where('matapelajaran_id', $request->mata_pelajaran_id)
+            ->update(['guru_nip' => $request->guru_baru_nip]);
+
+        // Update guru pengampu pada tabel matapelajaran
+        MataPelajaran::where('id', $request->mata_pelajaran_id)
+            ->where('guru_nip', $request->guru_lama_nip)
+            ->update(['guru_nip' => $request->guru_baru_nip]);
+
+        Alert::success('Berhasil', 'Data guru berhasil dipindahkan.');
+        return redirect()->route('admin.pindah-data');
+    }
+
+    public function auditLogPage()
+    {
+        $logs = AuditLog::with('user')->orderBy('created_at', 'desc')->paginate(30);
+        return view('pages.role_admin.audit_log', compact('logs'));
     }
 }

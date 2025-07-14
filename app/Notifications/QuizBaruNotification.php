@@ -26,10 +26,12 @@ class QuizBaruNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
+        $this->param->loadMissing('mataPelajaran');
         return [
             'judul' => $this->param->judul,
             'type' => "Quiz",
             'matapelajaran_id' => $this->param->matapelajaran_id,
+            'matapelajaran_nama' => $this->param->mataPelajaran->nama ?? null,
         ];
     }
 }

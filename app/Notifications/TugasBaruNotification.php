@@ -26,13 +26,13 @@ class TugasBaruNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
+        // Pastikan relasi sudah di-load
+        $this->tugas->loadMissing('mataPelajaran');
         return [
             'judul' => $this->tugas->nama,
             'type' => "Tugas",
-            'tenggat' => $this->tugas->tenggat,
-            'kelas' => $this->tugas->kelas,
-            'tahun_ajaran' => $this->tugas->tahun_ajaran,
             'matapelajaran_id' => $this->tugas->matapelajaran_id,
+            'matapelajaran_nama' => $this->tugas->mataPelajaran->nama ?? null,
         ];
     }
 }

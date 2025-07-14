@@ -52,7 +52,7 @@ class MateriController extends Controller
     public function store(Request $request)
     {
         try {
-            $tanggal = now()->format('Y-m-d');
+            $tanggal = $request->input('tanggal');
             $guruNip = $request->user()->guru->nip;
 
             // dd($request->file('path'));
@@ -135,7 +135,7 @@ class MateriController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $tanggal = now()->format('Y-m-d');
+            $tanggal = $request->input('tanggal');
             $guruNip = $request->user()->guru->nip;
 
             $materi = $this->param->find($id);
@@ -185,7 +185,9 @@ class MateriController extends Controller
                 ]);
             }
 
-            $this->param->update($validated, $id, );
+            $validated['tanggal'] = $tanggal;
+
+            $this->param->update($validated, $id);
 
             Alert::success("Berhasil", "Data berhasil diperbarui.");
             return redirect()->route("materi");

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\TahunAjaran;
+use App\Models\AuditLog;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\WaliKelasRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -51,6 +53,8 @@ class WaliKelasController extends Controller
             ]);
 
             $this->param->store($data);
+            // Update kolom nip_wali pada tabel kelas
+            Kelas::where('nama', $data['kelas'])->update(['nip_wali' => $data['wali_nip']]);
             Alert::success("Berhasil", "Data Berhasil di Tambahkan.");
             return redirect()->route("wali-kelas");
         } catch (\Exception $e) {
@@ -95,6 +99,8 @@ class WaliKelasController extends Controller
             ]);
 
             $this->param->update($data, $id);
+            // Update kolom nip_wali pada tabel kelas
+            Kelas::where('nama', $data['kelas'])->update(['nip_wali' => $data['wali_nip']]);
             Alert::success("Berhasil", "Data Berhasil di ubah.");
             return redirect()->route("wali-kelas");
         } catch (\Exception $e) {
@@ -112,7 +118,20 @@ class WaliKelasController extends Controller
     public function destroy(Request $request)
     {
         try {
+            $wali = $this->param->find($request->formid);
+            // Cek apakah wali kelas masih aktif di tabel kelas
+            $isWali = Kelas::where('nip_wali', $wali->wali_nip)->exists();
+            if ($isWali) {
+                Alert::error('Gagal', 'Tidak dapat menghapus wali kelas karena masih aktif di kelas. Silakan ganti wali kelas terlebih dahulu.');
+                return back();
+            }
             $this->param->destroy($request->formid);
+            // Audit log
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'delete_wali_kelas',
+                'description' => 'Menghapus wali kelas: ' . $wali->wali_nip,
+            ]);
             Alert::success("Berhasil", "Data Berhasil di hapus.");
             return redirect()->route("wali-kelas");
         } catch (\Exception $e) {

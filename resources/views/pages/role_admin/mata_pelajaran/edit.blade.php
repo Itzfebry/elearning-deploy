@@ -25,7 +25,7 @@
                         <label class="label">Guru Pengampu</label>
                         <div class="control">
                             <div class="select">
-                                <select name="guru_nip" required>
+                                <select name="guru_nip" required data-old="{{ $mataPelajaran->guru_nip }}">
                                     <option value="">-- Pilih Guru --</option>
                                     @foreach ($guru as $item)
                                     <option value="{{ $item->nip }}" {{ $mataPelajaran->guru_nip == $item->nip ?
@@ -79,3 +79,31 @@
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const guruSelect = document.getElementById('guru_nip');
+        const oldGuru = guruSelect.getAttribute('data-old');
+        form.addEventListener('submit', function(e) {
+            if (guruSelect.value !== oldGuru) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Peringatan!',
+                    text: 'Anda mengganti pengampu mata pelajaran tanpa fitur pemindahan data. Data tugas dan submit tugas lama tetap milik guru sebelumnya. Lanjutkan?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Lanjutkan',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
+        });
+    });
+</script>
+@endpush

@@ -68,6 +68,9 @@ Route::middleware(["auth", "role:admin"])->group(function () {
     Route::get('admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
     Route::put('admin/update/{id}', [AdminController::class, 'update'])->name('admin.update');
     Route::post('admin/delete', [AdminController::class, 'destroy'])->name('admin.delete');
+    Route::get('admin/pindah-data', [App\Http\Controllers\AdminController::class, 'pindahDataPage'])->name('admin.pindah-data');
+    Route::post('admin/pindah-data', [App\Http\Controllers\AdminController::class, 'pindahGuruMatpel'])->name('admin.pindah-data.proses');
+    Route::get('admin/audit-log', [App\Http\Controllers\AdminController::class, 'auditLogPage'])->name('admin.audit-log');
 
     // kelas
     Route::get('kelas', [KelasContoller::class, 'index'])->name('kelas');

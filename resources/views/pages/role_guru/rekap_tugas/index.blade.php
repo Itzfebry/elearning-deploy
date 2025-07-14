@@ -98,6 +98,7 @@
                             <th>Tenggat</th>
                             <th>Jumlah Submit</th>
                             <th>Sudah Dinilai</th>
+                            <th>Deskripsi</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -110,10 +111,10 @@
                                 </td>
                                 <td>{{ $t->mataPelajaran->nama ?? '-' }}</td>
                                 <td>{{ $t->kelas }}</td>
-                                <td>{{ \Carbon\Carbon::parse($t->tanggal)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($t->created_at)->format('d/m/Y H:i') }}</td>
                                 <td>
                                     <span class="tag {{ \Carbon\Carbon::parse($t->tenggat)->isPast() ? 'is-danger' : 'is-success' }}">
-                                        {{ \Carbon\Carbon::parse($t->tenggat)->format('d/m/Y') }}
+                                        {{ \Carbon\Carbon::parse($t->tenggat)->format('d/m/Y H:i') }}
                                     </span>
                                 </td>
                                 <td>
@@ -129,6 +130,9 @@
                                     <span class="tag {{ $sudahDinilai == $totalSubmit && $totalSubmit > 0 ? 'is-success' : 'is-warning' }}">
                                         {{ $sudahDinilai }}/{{ $totalSubmit }}
                                     </span>
+                                </td>
+                                <td>
+                                    {{ $t->deskripsi ? Str::limit($t->deskripsi, 40) : '-' }}
                                 </td>
                                 <td>
                                     <div class="buttons are-small">

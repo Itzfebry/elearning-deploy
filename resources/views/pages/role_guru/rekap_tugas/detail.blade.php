@@ -31,6 +31,10 @@
                         <td>{{ $tugas->nama }}</td>
                     </tr>
                     <tr>
+                        <td class="has-text-weight-bold">Deskripsi:</td>
+                        <td>{{ $tugas->deskripsi ?? '-' }}</td>
+                    </tr>
+                    <tr>
                         <td class="has-text-weight-bold">Mata Pelajaran:</td>
                         <td>{{ $tugas->mataPelajaran->nama ?? '-' }}</td>
                     </tr>
@@ -40,13 +44,13 @@
                     </tr>
                     <tr>
                         <td class="has-text-weight-bold">Tanggal Dibuat:</td>
-                        <td>{{ \Carbon\Carbon::parse($tugas->tanggal)->format('d/m/Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($tugas->created_at)->format('d/m/Y H:i') }}</td>
                     </tr>
                     <tr>
                         <td class="has-text-weight-bold">Tenggat Waktu:</td>
                         <td>
                             <span class="tag {{ \Carbon\Carbon::parse($tugas->tenggat)->isPast() ? 'is-danger' : 'is-success' }}">
-                                {{ \Carbon\Carbon::parse($tugas->tenggat)->format('d/m/Y') }}
+                                {{ \Carbon\Carbon::parse($tugas->tenggat)->format('d/m/Y H:i') }}
                             </span>
                         </td>
                     </tr>
@@ -100,7 +104,7 @@
                                     <strong>{{ $submit->siswa->nama ?? 'Siswa tidak ditemukan' }}</strong>
                                 </td>
                                 <td>{{ $submit->nisn }}</td>
-                                <td>{{ \Carbon\Carbon::parse($submit->tanggal)->format('d/m/Y H:i') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($submit->updated_at)->format('d/m/Y H:i') }}</td>
                                 <td>
                                     @if($submit->nilai !== null)
                                         <span class="tag is-success">Sudah Dinilai</span>

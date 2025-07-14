@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\TahunAjaran;
+use App\Models\AuditLog;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\MataPelajaranRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -95,8 +97,20 @@ class MataPelajaranController extends Controller
                 'tahun_ajaran' => 'required',
             ]);
 
+            $old = $this->param->find($id);
+            $isManual = $old->guru_nip !== $data['guru_nip'];
             $this->param->update($data, $id);
+            // Audit log
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'update_pengampu_mapel',
+                'description' => 'Update pengampu mapel: ' . $old->nama . ' (' . $old->id . ') dari ' . $old->guru_nip . ' ke ' . $data['guru_nip'],
+            ]);
+            if ($isManual) {
+                Alert::warning('Perhatian', 'Anda mengganti pengampu mata pelajaran tanpa fitur pemindahan data. Data tugas dan submit tugas lama tetap milik guru sebelumnya.');
+            } else {
             Alert::success("Berhasil", "Data Berhasil di Ubah.");
+            }
             return redirect()->route("mata-pelajaran");
         } catch (\Exception $e) {
             Alert::error("Terjadi Kesalahan", $e->getMessage());

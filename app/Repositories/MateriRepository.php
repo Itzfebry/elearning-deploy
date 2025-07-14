@@ -85,6 +85,7 @@ class MateriRepository
         $siswas = Siswa::where('tahun_ajaran', $data['tahun_ajaran'])->get();
 
         // Kirim notifikasi ke setiap siswa
+        $materi->load('mataPelajaran');
         foreach ($siswas as $siswa) {
             $siswa->notify(new MateriBaruNotification($materi));
         }
@@ -95,6 +96,7 @@ class MateriRepository
     public function update($data, $id)
     {
         return $this->model->where('id', $id)->update([
+            "tanggal" => $data["tanggal"],
             "matapelajaran_id" => $data["matapelajaran_id"],
             "semester" => $data["semester"],
             "type" => $data["type"],

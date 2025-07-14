@@ -43,13 +43,14 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Tanggal</th>
+                            <th>Tanggal Dibuat</th>
                             <th>Tenggat</th>
                             <th>Guru</th>
                             <th>Matpel</th>
                             <th>Tugas</th>
                             <th>Kelas</th>
-                            <th>Tahu Ajaran</th>
+                            <th>Tahun Ajaran</th>
+                            <th>Deskripsi</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -62,13 +63,14 @@
                         @forelse ($tugas as $item)
                         <tr>
                             <td data-label="No">{{ $i++ }}</td>
-                            <td data-label="Tanggal">{{ $item->tanggal }}</td>
-                            <td data-label="tenggat">{{ $item->tenggat }}</td>
+                            <td data-label="Tanggal Dibuat">{{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i') : '-' }}</td>
+                            <td data-label="Tenggat">{{ $item->tenggat ? \Carbon\Carbon::parse($item->tenggat)->format('d-m-Y H:i') : '-' }}</td>
                             <td data-label="Guru">{{ $item->guru->nama }}</td>
-                            <td data-label="Tugas">{{ $item->nama }}</td>
                             <td data-label="Matpel">{{ $item->mataPelajaran->nama }}</td>
+                            <td data-label="Tugas">{{ $item->nama }}</td>
                             <td data-label="Kelas">{{ $item->kelas }}</td>
                             <td data-label="TahunAjaran">{{ $item->tahun_ajaran }}</td>
+                            <td data-label="Deskripsi">{{ $item->deskripsi ? Str::limit($item->deskripsi, 40) : '-' }}</td>
                             <td class="actions-cell content-delete">
                                 <div class="buttons right nowrap">
                                     <a href="{{ route('tugas.edit', $item->id) }}" class="button small blue --jb-modal"

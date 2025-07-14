@@ -24,7 +24,7 @@ class TugasController extends Controller
 
     public function dateFormat($date)
     {
-        return date('Y-m-d', strtotime($date));
+        return date('Y-m-d H:i:s', strtotime($date));
     }
 
     public function dataRequirement()
@@ -71,6 +71,7 @@ class TugasController extends Controller
                 'matapelajaran_id' => 'required',
                 'kelas' => 'required',
                 'tahun_ajaran' => 'required',
+                'deskripsi' => 'nullable|string',
             ]);
 
             $this->param->store($data);
@@ -121,6 +122,7 @@ class TugasController extends Controller
                 'matapelajaran_id' => 'required',
                 'kelas' => 'required',
                 'tahun_ajaran' => 'required',
+                'deskripsi' => 'nullable|string',
             ]);
 
             $this->param->update($data, $id);

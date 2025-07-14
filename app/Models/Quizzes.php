@@ -27,6 +27,11 @@ class Quizzes extends Model
         return $this->hasOne(QuizAttempts::class, "quiz_id", "id");
     }
 
+    public function quizLevelSetting()
+    {
+        return $this->hasOne(QuizLevelSetting::class, 'quiz_id', 'id');
+    }
+
     public function mataPelajaran()
     {
         return $this->belongsTo(MataPelajaran::class, "matapelajaran_id", "id");

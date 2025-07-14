@@ -16,6 +16,7 @@ class Tugas extends Model
         "matapelajaran_id",
         "kelas",
         "tahun_ajaran",
+        'deskripsi',
     ];
 
     public function submitTugas()

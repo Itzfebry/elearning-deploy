@@ -73,6 +73,7 @@ class TugasRepository
             "matapelajaran_id" => $data["matapelajaran_id"],
             "kelas" => $data["kelas"],
             "tahun_ajaran" => $data["tahun_ajaran"],
+            "deskripsi" => $data["deskripsi"] ?? null,
         ]);
 
         // Cari siswa berdasarkan kelas dan tahun ajaran
@@ -97,6 +98,8 @@ class TugasRepository
             "nama" => $data["nama"],
             "matapelajaran_id" => $data["matapelajaran_id"],
             "kelas" => $data["kelas"],
+            "tahun_ajaran" => $data["tahun_ajaran"],
+            "deskripsi" => $data["deskripsi"] ?? null,
         ]);
     }
 

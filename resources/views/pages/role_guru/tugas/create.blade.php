@@ -16,17 +16,19 @@
                 @csrf
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
 
-                    <div id="date-range-picker" date-rangepicker class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                        <div class="field">
-                            <label class="label">Tanggal</label>
-                            <input id="datepicker-range-start" name="tanggal" type="text" class="input" required
-                                placeholder="Pilih tanggal" value="{{ old('tanggal') }}">
+                    <div class="field relative">
+                        <label class="label">Tanggal Pembuatan (Tanggal & Jam)</label>
+                        <span class="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                            <i class="mdi mdi-calendar-clock"></i>
+                        </span>
+                        <input name="tanggal" type="datetime-local" class="input pl-10" required placeholder="Pilih tanggal & jam" value="{{ old('tanggal') }}">
                         </div>
-                        <div class="field">
-                            <label class="label">Tenggat</label>
-                            <input id="datepicker-range-end" name="tenggat" type="text" class="input" required
-                                placeholder="Pilih batas tanggal" value="{{ old('tenggat') }}">
-                        </div>
+                    <div class="field relative">
+                        <label class="label">Tenggat (Tanggal & Jam)</label>
+                        <span class="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                            <i class="mdi mdi-clock-outline"></i>
+                        </span>
+                        <input name="tenggat" type="datetime-local" class="input pl-10" required placeholder="Pilih tenggat (tanggal & jam)" value="{{ old('tenggat') }}">
                     </div>
                     <div class="field">
                         <label class="label">Mata Pelajaran</label>
@@ -82,6 +84,12 @@
                                     class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
                                     placeholder="Masukkkan Tugas..." name="nama" required>{{ old('nama') }}</textarea>
                             </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Deskripsi Tugas (Opsional)</label>
+                        <div class="control">
+                            <textarea class="textarea" name="deskripsi" placeholder="Deskripsi tugas (boleh dikosongkan)">{{ old('deskripsi') }}</textarea>
                         </div>
                     </div>
                 </div>

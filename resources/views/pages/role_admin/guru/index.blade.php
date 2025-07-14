@@ -39,6 +39,19 @@
                 </div>
             </header>
             <div class="card-content">
+                <div class="mb-4" id="guru-note-box">
+                    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded shadow relative">
+                        <button type="button" onclick="document.getElementById('guru-note-box').style.display='none'" class="absolute top-2 right-2 text-yellow-700 hover:text-yellow-900 focus:outline-none" title="Tutup catatan" style="background: none; border: none; font-size: 1.2rem;">
+                            <i class="mdi mdi-close"></i>
+                        </button>
+                        <div class="flex items-center">
+                            <span class="mr-2"><i class="mdi mdi-alert-circle" style="font-size: 1.3rem;"></i></span>
+                            <div>
+                                <b>Catatan:</b> Sebelum menghapus data guru, <b>pastikan lakukan pemindahan data jika diperlukan</b> agar data tugas, materi, dan relasi lain tetap aman.
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <table>
                     <thead>
                         <tr>

@@ -17,7 +17,7 @@ class ApiSubmitTugasRepository
 
     public function store($request)
     {
-        $tanggal = now()->format('Y-m-d');
+        $tanggal = now(); // Ubah agar menyimpan datetime lengkap
         $request->validate([
             'tugas_id' => 'required|exists:tugas,id',
             'nisn' => 'required|string|max:12',
@@ -36,7 +36,7 @@ class ApiSubmitTugasRepository
         $submit = SubmitTugas::create([
             'tugas_id' => $request->tugas_id,
             'nisn' => $request->nisn,
-            'tanggal' => $tanggal,
+            'tanggal' => $tanggal, // simpan datetime lengkap
             'text' => $request->text,
             'file' => $filePath,
             'nilai' => $request->nilai
@@ -64,7 +64,7 @@ class ApiSubmitTugasRepository
 
     public function update($request)
     {
-        $tanggal = now()->format('Y-m-d');
+        $tanggal = now(); // Ubah agar menyimpan datetime lengkap
 
         $request->validate([
             'id' => 'required|exists:submit_tugas,id',
@@ -88,7 +88,7 @@ class ApiSubmitTugasRepository
 
         $submit->update([
             'nisn' => $request->nisn,
-            'tanggal' => $tanggal,
+            'tanggal' => $tanggal, // simpan datetime lengkap
             'text' => $request->text,
             'file' => $filePath,
             'nilai' => $request->nilai

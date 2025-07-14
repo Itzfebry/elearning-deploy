@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckApiToken;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleGuru\QuizRankingController;
 
 Route::middleware(['guest'])->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('api.login');
@@ -57,6 +58,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/quiz-top-five', [QuizController::class, 'getTopFive']);
     Route::get('/get-quiz-attempt-guru', [QuizController::class, 'getApiQuizGuru']);
     Route::get('/quiz-attempts/{attempt}/debug', [QuizController::class, 'debugQuiz']);
+    Route::post('/quiz-attempts/auto-finish/{attempt}', [App\Http\Controllers\Api\QuizController::class, 'autoFinish']);
+    Route::get('/quiz/{quizId}/ranking', [QuizRankingController::class, 'ranking']);
+    Route::get('/quiz/{quizId}/skor-saya', [QuizRankingController::class, 'skorSaya']);
 
     // Notifikasi
     Route::get('/siswa/notifikasi/count', [SiswaNotifikasiController::class, 'notifCount']);

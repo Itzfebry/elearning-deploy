@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Siswa;
 use App\Models\SubmitTugas;
 use App\Models\Tugas;
+use App\Http\Resources\TugasResource;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +20,7 @@ class ApiTugasRepository
 
     public function getDataApi($request, $param)
     {
-        $query = $this->model->with(['mataPelajaran']);
+        $query = $this->model->with(['mataPelajaran', 'submitTugas']);
 
         if ($request->user->role == "siswa") {
             if ($param->type_tugas == "selesai") {
@@ -27,8 +28,7 @@ class ApiTugasRepository
                     $q->where('nisn', $request->nisn);
                 });
             } else {
-                $query->with('submitTugas')
-                    ->whereDoesntHave("submitTugas", function ($q) use ($request) {
+                $query->whereDoesntHave("submitTugas", function ($q) use ($request) {
                         $q->where('nisn', $request->nisn);
                     });
             }
@@ -38,15 +38,6 @@ class ApiTugasRepository
                     ->where("tahun_ajaran", $request->tahun_ajaran);
             });
         } else {
-            // if ($param->type_tugas == "selesai") {
-            //     $query->withWhereHas('submitTugas');
-            // } else {
-            //     $query->with('submitTugas')
-            //         ->whereDoesntHave('submitTugas');
-            // }
-
-            $query->with('submitTugas');
-
             $query->where(function ($q) use ($request, $param) {
                 $q->where("guru_nip", $request->nip)
                     ->where('kelas', $param->kelas)
@@ -58,7 +49,7 @@ class ApiTugasRepository
 
         $data = $query->get();
 
-        return $data;
+        return TugasResource::collection($data);
     }
 
     public function getSubmitTugasSiswa($request)

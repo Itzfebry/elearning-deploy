@@ -37,7 +37,7 @@ class QuizController extends Controller
         $tahunAjaran = TahunAjaran::where('status', 'aktif')->get();
 
         // Get quizzes created by this teacher
-        $quiz = Quizzes::with('mataPelajaran')
+        $quiz = Quizzes::with(['mataPelajaran', 'quizLevelSetting'])
             ->whereHas('mataPelajaran', function ($q) use ($nip) {
                 $q->where('guru_nip', $nip);
             })
@@ -181,6 +181,12 @@ class QuizController extends Controller
     public function store(Request $request)
     {
         $preview = session('preview_soal');
+        if (!is_array($preview)) {
+            return redirect()->back()->with('validation_error', [
+                'title' => 'Error',
+                'message' => 'Data soal tidak ditemukan atau session sudah habis. Silakan ulangi proses import/preview quiz.'
+            ]);
+        }
         array_shift($preview);
 
         if (!$preview || count($preview) <= 1) {
@@ -195,22 +201,180 @@ class QuizController extends Controller
             return redirect()->back();
         }
 
+        // ========================================
+        // VALIDASI KETAT UNTUK MENCEGAH BUG QUIZ
+        // ========================================
+
+        // 1. VALIDASI: Total soal per level harus sama dengan total soal tampil
         $totalSoalPerLevel = 0;
         foreach ($request->jumlah_soal_per_level as $key => $value) {
             $totalSoalPerLevel += (int) $value;
         }
 
+        if ($totalSoalPerLevel != $request->total_soal_tampil) {
+            \Log::error('Quiz Import Error: Total soal per level tidak sama dengan total soal tampil');
+            \Log::error('Detail: Total soal per level = ' . $totalSoalPerLevel . ', Total soal tampil = ' . $request->total_soal_tampil);
+            \Log::error('Detail per level: ' . json_encode($request->jumlah_soal_per_level));
+            
+            return redirect()->back()->with('validation_error', [
+                'title' => 'Error Validasi',
+                'message' => "Total soal per level ($totalSoalPerLevel) harus sama dengan total soal tampil ({$request->total_soal_tampil}).<br><br><strong>POTENSI BUG:</strong> Jika tidak sama, siswa bisa stuck di level tertentu karena soal tidak cukup.<br><strong>CATATAN:</strong> Pastikan jumlah soal per level dijumlahkan sama dengan total soal tampil."
+            ]);
+        }
+
+        // 2. VALIDASI: Hitung jumlah soal yang tersedia per level dari data import
+        $levelCounts = [];
+        foreach ($preview as $row) {
+            if (!empty($row[3])) { // level
+                $level = $row[3];
+                $levelCounts[$level] = ($levelCounts[$level] ?? 0) + 1;
+            }
+        }
+
+        // 3. VALIDASI: Jumlah soal per level tidak boleh melebihi soal yang tersedia
+        foreach ($request->jumlah_soal_per_level as $key => $value) {
+            $level = str_replace('level', '', $key);
+            $availableInLevel = $levelCounts[$level] ?? 0;
+            
+            if ($value > $availableInLevel) {
+                \Log::error('Quiz Import Error: Jumlah soal setting melebihi soal yang tersedia');
+                \Log::error('Detail: Level ' . $level . ' - Setting: ' . $value . ', Tersedia: ' . $availableInLevel);
+                
+                return redirect()->back()->with('validation_error', [
+                    'title' => 'Error Validasi',
+                    'message' => "Level $level: Setting $value soal, tapi hanya ada $availableInLevel soal tersedia.<br><br><strong>POTENSI BUG:</strong> Sistem akan stuck karena tidak ada cukup soal di level tersebut.<br><strong>CATATAN:</strong> Kurangi jumlah soal setting atau tambah soal di level tersebut."
+                ]);
+            }
+        }
+
+        // 4. VALIDASI: Batas naik level tidak boleh melebihi jumlah soal di level tersebut
+        foreach ($request->batas_naik_level as $key => $value) {
+            $level = str_replace('fase', '', $key);
+            $soalInLevel = $request->jumlah_soal_per_level["level$level"] ?? 0;
+            
+            // VALIDASI BARU: Batas naik level tidak boleh sama atau lebih besar dari jumlah soal di level
+            if ($value >= $soalInLevel) {
+                return redirect()->back()->with('validation_error', [
+                    'title' => 'Error Validasi',
+                    'message' => "Level $level: Syarat naik level ($value) tidak boleh sama atau lebih besar dari jumlah soal ($soalInLevel).<br><br><strong>POTENSI BUG:</strong> Jika siswa salah satu saja, quiz akan stuck di level ini.<br><strong>CATATAN:</strong> Kurangi syarat naik level atau tambah jumlah soal di level ini."
+                ]);
+            }
+            
+            if ($value > $soalInLevel) {
+                \Log::error('Quiz Import Error: Batas naik level melebihi jumlah soal di level');
+                \Log::error('Detail: Level ' . $level . ' - Batas naik: ' . $value . ', Soal di level: ' . $soalInLevel);
+                return redirect()->back()->with('validation_error', [
+                    'title' => 'Error Validasi',
+                    'message' => "Level $level: Batas naik level ($value) tidak boleh melebihi jumlah soal ($soalInLevel).<br><br><strong>POTENSI BUG:</strong> Siswa tidak akan pernah naik level karena batas terlalu tinggi.<br><strong>CATATAN:</strong> Batas naik level harus ≤ jumlah soal di level tersebut."
+                ]);
+            }
+        }
+
+        // 5. VALIDASI: Pastikan ada soal di setiap level yang di-setting
+        foreach ($request->jumlah_soal_per_level as $key => $value) {
+            $level = str_replace('level', '', $key);
+            $availableInLevel = $levelCounts[$level] ?? 0;
+            
+            if ($availableInLevel == 0) {
+                \Log::error('Quiz Import Error: Tidak ada soal di level yang di-setting');
+                \Log::error('Detail: Level ' . $level . ' tidak memiliki soal di data import');
+                
+                return redirect()->back()->with('validation_error', [
+                    'title' => 'Error Validasi',
+                    'message' => "Level $level: Tidak ada soal tersedia di level ini.<br><br><strong>POTENSI BUG:</strong> Sistem akan stuck karena tidak ada soal di level tersebut.<br><strong>CATATAN:</strong> Pastikan data import memiliki soal dengan level $level atau hapus setting level ini."
+                ]);
+            }
+        }
+
+        // 6. VALIDASI: Level harus berurutan (1, 2, 3, dst)
+        $levels = array_keys($request->jumlah_soal_per_level);
+        sort($levels);
+        $expectedLevels = [];
+        for ($i = 1; $i <= count($levels); $i++) {
+            $expectedLevels[] = "level$i";
+        }
+        
+        if ($levels !== $expectedLevels) {
+            \Log::error('Quiz Import Error: Level tidak berurutan');
+            \Log::error('Detail: Level yang ada = ' . json_encode($levels) . ', Level yang diharapkan = ' . json_encode($expectedLevels));
+            
+            return redirect()->back()->with('validation_error', [
+                'title' => 'Error Validasi',
+                'message' => "Level harus berurutan (Level 1, Level 2, Level 3, dst).<br><br><strong>POTENSI BUG:</strong> Sistem adaptive learning akan bingung dengan level yang tidak berurutan.<br><strong>CATATAN:</strong> Pastikan level di data import berurutan dari 1, 2, 3, dst."
+            ]);
+        }
+
         // Update session dengan nilai total_soal_tampil yang baru
         Session::put('total_soal_tampil', $request->total_soal_tampil);
 
-        if ($totalSoalPerLevel != $request->total_soal_tampil) {
-            \Log::error('Quiz Import Error: Total jumlah yang harus dikerjakan harus sama dengan jumlah soal tampil');
-            \Log::error('Detail: Total soal per level = ' . $totalSoalPerLevel . ', Total soal tampil = ' . $request->total_soal_tampil);
-            \Log::error('Detail per level: ' . json_encode($request->jumlah_soal_per_level));
-            \Log::error('Saran: Sesuaikan jumlah soal per level agar totalnya ' . $request->total_soal_tampil . ' atau ubah total soal tampil menjadi ' . $totalSoalPerLevel);
-            Alert::error("Terjadi Kesalahan", "Total jumlah yang harus dikerjakan harus sama dengan jumlah soal tampil.");
-            return redirect()->back();
+        // VALIDASI: Jumlah soal yang harus dikerjakan per level tidak boleh melebihi jumlah soal di bank soal
+        $totalSoalPerLevel = 0;
+        foreach ($request->jumlah_soal_per_level as $key => $value) {
+            $level = str_replace('level', '', $key);
+            $soalTersedia = $request->total_soal_per_level["level$level"] ?? 0;
+            if ($value > $soalTersedia) {
+                return redirect()->back()->with('validation_error', [
+                    'title' => 'Error Validasi',
+                    'message' => "Level $level: Jumlah soal yang dikerjakan ($value) tidak boleh lebih besar dari jumlah soal di bank soal ($soalTersedia)."
+                ]);
+            }
+            $totalSoalPerLevel += (int) $value;
         }
+        // VALIDASI: Total soal yang harus dikerjakan (semua level) harus sama dengan total soal tampil
+        if ($totalSoalPerLevel != $request->total_soal_tampil) {
+            return redirect()->back()->with('validation_error', [
+                'title' => 'Error Validasi',
+                'message' => "Total soal yang harus dikerjakan ($totalSoalPerLevel) tidak sama dengan total soal tampil ({$request->total_soal_tampil}).<br><br><strong>POTENSI BUG:</strong> Quiz bisa stuck atau soal tidak cukup.<br><strong>CATATAN:</strong> Sesuaikan jumlah soal per level agar totalnya sama dengan total soal tampil."
+            ]);
+        }
+
+        // VALIDASI: Cegah quiz stuck jika syarat naik level tidak tercapai dan soal habis
+        foreach ($request->batas_naik_level as $key => $value) {
+            $level = str_replace('fase', '', $key);
+            $jumlah_soal = $request->jumlah_soal_per_level["level$level"] ?? 0;
+            $batas_naik = $value;
+            // Jika syarat naik lebih besar dari jumlah soal, mustahil
+            if ($batas_naik > $jumlah_soal) {
+                return redirect()->back()->with('validation_error', [
+                    'title' => 'Error Validasi',
+                    'message' => "Level $level: Syarat naik level ($batas_naik) tidak boleh lebih besar dari jumlah soal yang dikerjakan ($jumlah_soal)."
+                ]);
+            }
+            // Jika syarat naik level terlalu rendah, tetap valid, tapi cek kemungkinan stuck
+            // Simulasi: Jika siswa menjawab semua soal tapi benar kurang dari syarat naik, quiz stuck
+            // Contoh: syarat naik 3 dari 10, jika siswa hanya benar 2, quiz stuck
+            // Validasi: syarat naik level harus bisa dicapai dengan minimal 1 benar di setiap soal
+            // (tidak perlu, karena sudah dicegah oleh logika di atas)
+            // Namun, jika syarat naik terlalu rendah, warning saja (tidak error)
+            // Jika syarat naik terlalu tinggi, error
+            // Jika syarat naik level tidak tercapai dan soal habis, quiz stuck
+            // (Sudah dicegah oleh validasi di atas)
+        }
+
+        // VALIDASI: Cegah quiz stuck jika siswa gagal naik level dan soal habis
+        /*
+        $levelKeys = array_keys($request->jumlah_soal_per_level);
+        $levelCount = count($levelKeys);
+        for ($i = 0; $i < $levelCount - 1; $i++) { // Kecuali level terakhir
+            $currentLevelKey = $levelKeys[$i];
+            $nextLevelKeys = array_slice($levelKeys, $i + 1);
+            $soalDiLevelIni = (int) $request->jumlah_soal_per_level[$currentLevelKey];
+            $soalDiLevelBerikutnya = 0;
+            foreach ($nextLevelKeys as $k) {
+                $soalDiLevelBerikutnya += (int) $request->jumlah_soal_per_level[$k];
+            }
+            $totalSoalTampil = (int) $request->total_soal_tampil;
+            $batasNaik = (int) ($request->batas_naik_level['fase' . ($i + 1)] ?? 0);
+            // Jika semua soal di level ini habis, dan siswa gagal naik (benar < batas naik), quiz stuck
+            // Kondisi: soal di level ini = total soal tampil - soal di level berikutnya
+            if ($soalDiLevelIni === $totalSoalTampil - $soalDiLevelBerikutnya && $soalDiLevelIni > 0 && $batasNaik > 0) {
+                return redirect()->back()->with('validation_error', [
+                    'title' => 'Konfigurasi Quiz Tidak Valid',
+                    'message' => "Quiz tidak bisa disimpan karena pada fase " . ($i + 1) . ", siswa yang gagal naik ke level berikutnya akan kehabisan soal. Mohon ulangi konfigurasi quiz agar lebih seimbang dan baik."
+                ]);
+            }
+        }
+        */
 
         try {
             // Simpan quiz dan soalnya ke DB
@@ -273,16 +437,22 @@ class QuizController extends Controller
             }
 
             \Log::info('Quiz berhasil diimport: ' . $request->judul);
-            Alert::success("Berhasil", "Data Berhasil di simpan.");
-            return redirect()->route('quiz');
+            return redirect()->route('quiz')->with('success_message', [
+                'title' => 'Berhasil',
+                'message' => 'Data quiz berhasil disimpan dan notifikasi telah dikirim ke siswa.'
+            ]);
         } catch (\Exception $e) {
             \Log::error('Quiz Import Error: ' . $e->getMessage());
-            Alert::error("Terjadi Kesalahan", $e->getMessage());
-            return redirect()->back();
+            return redirect()->back()->with('validation_error', [
+                'title' => 'Terjadi Kesalahan',
+                'message' => 'Gagal menyimpan data quiz: ' . $e->getMessage()
+            ]);
         } catch (\Illuminate\Database\QueryException $e) {
             \Log::error('Quiz Import Error: Database error - ' . $e->getMessage());
-            Alert::error("Terjadi Kesalahan", "Gagal menyimpan data quiz. Silakan coba lagi.");
-            return redirect()->back();
+            return redirect()->back()->with('validation_error', [
+                'title' => 'Terjadi Kesalahan',
+                'message' => 'Gagal menyimpan data quiz. Silakan coba lagi.'
+            ]);
         }
     }
 
@@ -319,11 +489,15 @@ class QuizController extends Controller
         try {
             $quiz = Quizzes::findOrFail($request->formid);
             $quiz->delete();
-            Alert::success("Berhasil", "Data Berhasil di simpan.");
-            return redirect()->back();
+            return redirect()->back()->with('success_message', [
+                'title' => 'Berhasil',
+                'message' => 'Data quiz berhasil dihapus.'
+            ]);
         } catch (\Throwable $th) {
-            Alert::error("Terjadi Kesalahan", $th->getMessage());
-            return redirect()->back();
+            return redirect()->back()->with('validation_error', [
+                'title' => 'Terjadi Kesalahan',
+                'message' => 'Gagal menghapus data quiz: ' . $th->getMessage()
+            ]);
         }
     }
 }

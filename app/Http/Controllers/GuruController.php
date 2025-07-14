@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
+use App\Models\MataPelajaran;
+use App\Models\Kelas;
+use App\Models\AuditLog;
 use App\Repositories\GuruRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 class GuruController extends Controller
 {
@@ -126,8 +130,26 @@ class GuruController extends Controller
     public function destroy(Request $request)
     {
         try {
+            $guru = Guru::find($request->formid);
+            if (!$guru) {
+                Alert::error('Gagal', 'Guru tidak ditemukan.');
+                return back();
+            }
+            $nip = trim(strtoupper($guru->nip));
+            // Cek apakah guru masih menjadi wali kelas (robust, ignore case & space)
+            $isWali = Kelas::whereRaw('TRIM(UPPER(nip_wali)) = ?', [$nip])->exists();
+            if ($isWali) {
+                Alert::error('Gagal', 'Tidak dapat menghapus guru karena masih menjadi wali kelas. Silakan ganti wali kelas terlebih dahulu.');
+                return back();
+            }
             $this->param->destroy($request->formid);
             $this->param2->destroy($request->user_id);
+            // Audit log
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'delete_guru',
+                'description' => 'Menghapus guru: ' . $guru->nama . ' (' . $guru->nip . ')',
+            ]);
             Alert::success("Berhasil", "Data Berhasil di hapus data.");
             return redirect()->route("guru");
         } catch (\Exception $e) {

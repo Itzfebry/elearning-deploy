@@ -17,17 +17,19 @@
                 @method('PUT')
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
 
-                    <div id="date-range-picker" date-rangepicker class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                        <div class="field">
-                            <label class="label">Tanggal</label>
-                            <input id="datepicker-range-start" name="tanggal" type="text" class="input" required
-                                placeholder="Pilih tanggal" value="{{ $tugas->tanggal }}">
+                    <div class="field relative">
+                        <label class="label">Tanggal Pembuatan (Tanggal & Jam)</label>
+                        <span class="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                            <i class="mdi mdi-calendar-clock"></i>
+                        </span>
+                        <input name="tanggal" type="datetime-local" class="input pl-10" required placeholder="Pilih tanggal & jam" value="{{ $tugas->tanggal ? \Carbon\Carbon::parse($tugas->tanggal)->format('Y-m-d\\TH:i') : '' }}">
                         </div>
-                        <div class="field">
-                            <label class="label">Tenggat</label>
-                            <input id="datepicker-range-end" name="tenggat" type="text" class="input" required
-                                placeholder="Pilih batas tanggal" value="{{ $tugas->tenggat }}">
-                        </div>
+                    <div class="field relative">
+                        <label class="label">Tenggat (Tanggal & Jam)</label>
+                        <span class="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                            <i class="mdi mdi-clock-outline"></i>
+                        </span>
+                        <input name="tenggat" type="datetime-local" class="input pl-10" required placeholder="Pilih tenggat (tanggal & jam)" value="{{ $tugas->tenggat ? \Carbon\Carbon::parse($tugas->tenggat)->format('Y-m-d\\TH:i') : '' }}">
                     </div>
                     <div class="field">
                         <label class="label">Mata Pelajaran</label>
@@ -88,6 +90,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="field">
+                        <label class="label">Deskripsi Tugas (Opsional)</label>
+                        <div class="control">
+                            <textarea class="textarea" name="deskripsi" placeholder="Deskripsi tugas (boleh dikosongkan)">{{ old('deskripsi', $tugas->deskripsi) }}</textarea>
+                        </div>
+                    </div>
                 </div>
                 <hr>
                 <div class="field grouped">
@@ -102,22 +110,3 @@
     </div>
 </section>
 @endsection
-@push('extraScript')
-<script>
-    $(document).ready(function() {
-        const tanggal = new Date("{{ $tugas->tanggal }}");
-        const tenggat = new Date("{{ $tugas->tenggat }}");
-
-        const formatted1 = ("0" + (tanggal.getMonth() + 1)).slice(-2) + "/" +
-                        ("0" + tanggal.getDate()).slice(-2) + "/" +
-                        tanggal.getFullYear();
-
-        const formatted2 = ("0" + (tenggat.getMonth() + 1)).slice(-2) + "/" +
-                        ("0" + tenggat.getDate()).slice(-2) + "/" +
-                        tenggat.getFullYear();
-
-        $('#datepicker-range-start').val(formatted1);
-        $('#datepicker-range-end').val(formatted2);
-    });
-</script>
-@endpush

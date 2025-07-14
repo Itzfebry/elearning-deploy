@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ApiResponse;
+use App\Http\Resources\SubmitTugasResource;
 use App\Repositories\ApiSubmitTugasRepository;
 use Illuminate\Http\Request;
 
@@ -20,19 +21,19 @@ class SubmitTugasController extends Controller
     public function store(Request $request)
     {
         $data = $this->param->store($request);
-        return $this->okApiResponse($data, "Submit Tugas Berhasil");
+        return $this->okApiResponse(new SubmitTugasResource($data), "Submit Tugas Berhasil");
     }
 
     public function detail(Request $request)
     {
         $data = $this->param->detail($request);
-        return $this->okApiResponse($data, "Berhasil get submit tugas");
+        return $this->okApiResponse(new SubmitTugasResource($data), "Berhasil get submit tugas");
     }
 
     public function update(Request $request)
     {
         $data = $this->param->update($request);
-        return $this->okApiResponse($data, "Update Tugas Berhasil");
+        return $this->okApiResponse(new SubmitTugasResource($data), "Update Tugas Berhasil");
     }
 
     public function updateNilai(Request $request)
@@ -43,6 +44,6 @@ class SubmitTugasController extends Controller
         ]);
 
         $data = $this->param->update($request);
-        return $this->okApiResponse($data, "Nilai berhasil diperbarui");
+        return $this->okApiResponse(new SubmitTugasResource($data), "Nilai berhasil diperbarui");
     }
 }

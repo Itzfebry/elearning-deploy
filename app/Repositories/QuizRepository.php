@@ -106,7 +106,8 @@ class QuizRepository
     {
         $request->validate([
             'question_id' => 'required|integer',
-            'jawaban_siswa' => 'required|in:a,b,c,d',
+            // Hilangkan validasi in:a,b,c,d agar jawaban_siswa boleh kosong
+            'jawaban_siswa' => 'nullable',
         ]);
 
         // Validasi attempt
@@ -127,7 +128,8 @@ class QuizRepository
         $jumlahSoalPerLevel = json_decode($quizLevelSettings->jumlah_soal_per_level, true);
         $batasNaikLevel = json_decode($quizLevelSettings->batas_naik_level, true);
 
-        $isCorrect = $request->jawaban_siswa == $question->jawaban_benar ? 1 : 0;
+        // Jika jawaban kosong, otomatis salah
+        $isCorrect = ($request->jawaban_siswa && $request->jawaban_siswa == $question->jawaban_benar) ? 1 : 0;
 
         // Hitung skor tambahan
         $skor_tambahan = 0;
@@ -138,11 +140,11 @@ class QuizRepository
         // Tambahkan skor ke attempt
         $attempt->skor += $skor_tambahan;
 
-        // Simpan jawaban
+        // Simpan jawaban (jika kosong, simpan string kosong)
         QuizAttemptAnswers::create([
             'attempt_id' => $attempt->id,
             'question_id' => $question->id,
-            'jawaban_siswa' => $request->jawaban_siswa,
+            'jawaban_siswa' => $request->jawaban_siswa ?? '',
             'benar' => $isCorrect,
         ]);
 

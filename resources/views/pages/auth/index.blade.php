@@ -161,6 +161,25 @@
             </div>
         </div>
 
+        <!-- Section: Informasi Kredensial Login -->
+        <div class="mt-8 mb-4 p-4 rounded-xl shadow-md bg-white/80 backdrop-blur-md">
+            <h3 class="font-semibold text-lg mb-2 text-indigo-700">Informasi Kredensial Login</h3>
+            <div class="mb-2">
+                <span class="font-medium text-gray-800">Dosen/Admin:</span>
+                <ul class="ml-4 text-sm text-gray-700">
+                    <li>Email: <span class="font-mono">admin@gmail.com</span></li>
+                    <li>Password: <span class="font-mono">12345</span></li>
+                </ul>
+            </div>
+            <div>
+                <span class="font-medium text-gray-800">Siswa:</span>
+                <ul class="ml-4 text-sm text-gray-700">
+                    <li>NISN: <span class="font-mono">1234567890</span></li>
+                    <li>Password: <span class="font-mono">1234567890</span></li>
+                </ul>
+            </div>
+        </div>
+
         <!-- Additional information -->
         <div class="mt-6 text-center text-gray-500 text-sm">
             &copy; {{ date('Y') }} SDN Koncer 2 Bondowoso. All rights reserved.
